@@ -1,0 +1,33 @@
+# Apache rewrite rules for Single Page Application (SPA) on Bluehost Shared Hosting
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Serve existing files and directories directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Route all other requests to index.html for client-side routing
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Caching & Security Headers for Production Performance
+<IfModule mod_headers.c>
+  # Enable HTTP Strict Transport Security (HSTS)
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+  
+  # Prevent MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Prevent clickjacking
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Enable XSS protection
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
