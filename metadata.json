@@ -1,0 +1,6 @@
+{
+  "name": "Adhigam IAS",
+  "description": "Full-stack Civil Services preparation platform with public portal, aspirant portal, quiz engine, Mains answer-writing reviews, and admin CMS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
