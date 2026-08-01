@@ -1,0 +1,105 @@
+name: Bluehost Branch Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  # -------------------------------------------------------------
+  # JOB 1: PR Validation Check (Runs when PR opened to main/master)
+  # -------------------------------------------------------------
+  validate-pr:
+    name: Validate PR Build & Types
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Type Checks & Linter
+        run: npm run lint
+
+      - name: Verify Production Build
+        run: npm run build
+
+  # -------------------------------------------------------------
+  # JOB 2: Debug Build & Deployment (Pushes to 'develop' branch)
+  # -------------------------------------------------------------
+  deploy-debug:
+    name: Build & Deploy Debug Version (develop branch)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Debug Version
+        run: npm run build:debug
+
+      - name: Sync Debug Build to Bluehost FTP (Staging)
+        uses: SamKirsch/ftp-deploy-action@v4.3.5
+        with:
+          server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+          username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+          password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+          server-dir: ${{ secrets.BLUEHOST_DEBUG_FTP_PATH || '/public_html/staging/' }}
+          local-dir: './dist/'
+          delete-excluded: false
+
+  # -------------------------------------------------------------
+  # JOB 3: Production Build & Deployment (Pushes to 'main' or 'master')
+  # -------------------------------------------------------------
+  deploy-production:
+    name: Build & Deploy Production Version (main/master branch)
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Production Version
+        run: npm run build
+
+      - name: Sync Production Build to Bluehost FTP (Live Website)
+        uses: SamKirsch/ftp-deploy-action@v4.3.5
+        with:
+          server: ${{ secrets.BLUEHOST_FTP_SERVER }}
+          username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
+          password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+          server-dir: ${{ secrets.BLUEHOST_PROD_FTP_PATH || '/public_html/' }}
+          local-dir: './dist/'
+          delete-excluded: false

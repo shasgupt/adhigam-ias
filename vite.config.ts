@@ -3,13 +3,23 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({mode}) => {
+  const isDebug = mode === 'debug' || process.env.BUILD_MODE === 'debug';
+
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
+    },
+    build: {
+      sourcemap: isDebug,
+      minify: isDebug ? false : 'esbuild',
+      cssMinify: !isDebug,
+    },
+    define: {
+      'import.meta.env.VITE_APP_ENV': JSON.stringify(isDebug ? 'debug' : 'production'),
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

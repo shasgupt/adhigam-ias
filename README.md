@@ -89,8 +89,15 @@ This configuration defines:
 ```
 adhigam-ias/
 ├── README.md                   # Main repository guide and overview (this file)
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # Automated Git branch CI/CD pipeline (develop vs main)
 ├── doc/
-│   └── architecture.md         # Full technical architecture & AI Agent directives
+│   ├── architecture.md         # Full technical architecture & AI Agent directives
+│   ├── bluehost_deployment.md  # Step-by-step Bluehost deployment guide (.htaccess, cPanel, Node)
+│   └── bluehost_branch_workflow.md # Git branch CI/CD pipeline guide (develop debug vs main prod)
+├── public/
+│   └── .htaccess               # Apache SPA rewrite rules & HTTPS headers for Bluehost
 ├── src/
 │   ├── components/
 │   │   ├── AdhigamLogo.tsx     # Vector SVG Seal Emblem & Brand Typo
@@ -141,10 +148,23 @@ adhigam-ias/
    ```
    *The application will boot on `http://localhost:3000`.*
 
-3. **Build for Production**:
+3. **Build for Debug / Staging (`develop` branch)**:
+   ```bash
+   npm run build:debug
+   ```
+   *Generates sourcemaps, unminified output, and enables debug logging for testing.*
+
+4. **Build for Production (`main` / `master` branch)**:
    ```bash
    npm run build
    ```
+   *Generates optimized, minified bundles ready for live production deployment.*
+
+---
+
+## 🌐 Bluehost Hosting & Branch Pipeline Documentation
+- 📄 [Bluehost Hosting & cPanel Setup Guide](./doc/bluehost_deployment.md)
+- 📄 [Git Branch CI/CD Deployment Workflow Guide (`develop` debug vs `main` prod)](./doc/bluehost_branch_workflow.md)
 
 ---
 

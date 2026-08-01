@@ -43,33 +43,14 @@ npm run build
 ---
 
 ### Option B: Debug / Staging Build (For Testing & Troubleshooting on Bluehost)
-If you are deploying to a testing subdomain (e.g. `test.yourdomain.com` or `debug.yourdomain.com`) and need detailed console logs and unminified stack traces:
+If you are deploying to a testing subdomain (e.g. `debug.yourdomain.com` or `/staging`) and need detailed console logs and unminified stack traces:
 
-1. Temporarily modify `vite.config.ts` to include sourcemaps:
-   ```ts
-   // vite.config.ts
-   import { defineConfig } from 'vite';
-   import react from '@vitejs/plugin-react';
+```bash
+# Run automated debug build with sourcemaps & unminified assets
+npm run build:debug
+```
 
-   export default defineConfig({
-     plugins: [react()],
-     build: {
-       sourcemap: true, // Enables browser devtools stack tracing
-       minify: false    // Keeps bundle unminified for easy debugging
-     },
-     server: {
-       port: 3000,
-       host: '0.0.0.0'
-     }
-   });
-   ```
-
-2. Run the build command:
-   ```bash
-   npm run build
-   ```
-
-3. **Output**: The `dist/` folder will contain `.js.map` files allowing browser DevTools on Bluehost to display exact source lines when errors occur.
+*For automated Git branch-based hosting (`develop` branch ➔ `debug.yourdomain.com`, `main` branch ➔ `yourdomain.com`), see the dedicated [Git Branch Deployment Guide](./bluehost_branch_workflow.md).*
 
 ---
 
