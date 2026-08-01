@@ -1,7 +1,27 @@
 // Shared API Client for Adhigam IAS
+import {
+  fallbackAnnouncements,
+  fallbackCourses,
+  fallbackTestSeries,
+  fallbackArticles,
+  fallbackQuizzes,
+  fallbackPrompts,
+} from '../data/fallbackData';
 
 const getAdminToken = () => localStorage.getItem('adhigam_token');
 const getAspirantToken = () => localStorage.getItem('adhigam_aspirant_token');
+
+// Static hosting fallback map for GET endpoints when backend is static (e.g. Bluehost public_html)
+const getFallbackData = (endpoint: string): any => {
+  if (endpoint.includes('/api/courses')) return fallbackCourses;
+  if (endpoint.includes('/api/test-series')) return fallbackTestSeries;
+  if (endpoint.includes('/api/articles')) return fallbackArticles;
+  if (endpoint.includes('/api/quizzes')) return fallbackQuizzes;
+  if (endpoint.includes('/api/prompts')) return fallbackPrompts;
+  if (endpoint.includes('/api/announcements')) return fallbackAnnouncements;
+  if (endpoint.includes('/api/auth/me') || endpoint.includes('/api/aspirants/me')) return { user: null };
+  return [];
+};
 
 async function request<T = any>(
   endpoint: string,
@@ -19,18 +39,51 @@ async function request<T = any>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(endpoint, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(endpoint, {
+      ...options,
+      headers,
+    });
 
-  const data = await response.json().catch(() => ({}));
+    const contentType = response.headers.get('content-type') || '';
 
-  if (!response.ok) {
-    throw new Error(data.error || data.message || `Request failed with status ${response.status}`);
+    // If server returned HTML (e.g. Bluehost SPA rewrite of unknown route or static file fallback)
+    if (contentType.includes('text/html')) {
+      return getFallbackData(endpoint) as T;
+    }
+
+    const text = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return getFallbackData(endpoint) as T;
+    }
+
+    if (!response.ok) {
+      // If error status and GET endpoint, provide graceful fallback
+      if (options.method === 'GET' || !options.method) {
+        return getFallbackData(endpoint) as T;
+      }
+      throw new Error(data.error || data.message || `Request failed with status ${response.status}`);
+    }
+
+    // Safety check: if GET expects array or data, ensure valid object returned
+    if ((options.method === 'GET' || !options.method) && data && typeof data === 'object' && !Array.isArray(data)) {
+      const fallback = getFallbackData(endpoint);
+      if (Array.isArray(fallback) && !Array.isArray(data)) {
+        return fallback as T;
+      }
+    }
+
+    return data as T;
+  } catch (err) {
+    // Network or server unreachable (e.g. static hosting on Bluehost)
+    if (options.method === 'GET' || !options.method) {
+      return getFallbackData(endpoint) as T;
+    }
+    throw err;
   }
-
-  return data as T;
 }
 
 export const api = {
@@ -50,3 +103,4 @@ export const aspirantApi = {
     request<T>(endpoint, { method: 'PUT', body: JSON.stringify(body) }, true),
   delete: <T = any>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }, true),
 };
+

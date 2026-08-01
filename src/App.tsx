@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AspirantAuthProvider, useAspirantAuth } from './context/AspirantAuthContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { SiteHeader } from './components/SiteHeader';
 import { SiteFooter } from './components/SiteFooter';
 import { AnnouncementBanner } from './components/AnnouncementBanner';
@@ -38,14 +39,18 @@ function MainAppContent() {
   }, []);
 
   const handleNavigate = (path: string, tab?: 'public' | 'aspirant' | 'admin') => {
-    window.history.pushState({}, '', path);
+    try {
+      window.history.pushState({}, '', path);
+    } catch {
+      // Fallback for sandboxed or constrained frames
+    }
     setCurrentPath(path);
 
     if (tab) {
       setActiveTab(tab);
-    } else if (path.startsWith('/admin')) {
+    } else if (path.includes('/admin')) {
       setActiveTab('admin');
-    } else if (path.startsWith('/me') || path.startsWith('/login')) {
+    } else if (path.includes('/me') || path.includes('/login')) {
       setActiveTab('aspirant');
     } else {
       setActiveTab('public');
@@ -56,6 +61,38 @@ function MainAppContent() {
   const handleOpenEnquire = (courseTitle?: string) => {
     setSelectedCourseTitle(courseTitle || 'GS Foundation 2026');
     setEnquireModalOpen(true);
+  };
+
+  // Helper to determine view when activeTab is public
+  const renderPublicView = () => {
+    const p = currentPath.toLowerCase();
+
+    if (p.includes('/courses')) {
+      return <CoursesView onOpenEnquire={handleOpenEnquire} />;
+    }
+    if (p.includes('/test-series')) {
+      return <TestSeriesView onOpenEnquire={handleOpenEnquire} />;
+    }
+    if (p.includes('/free')) {
+      return (
+        <FreeResourcesView
+          initialSubTab={
+            p.includes('quizzes')
+              ? 'quizzes'
+              : p.includes('answer-writing')
+              ? 'answer-writing'
+              : 'current-affairs'
+          }
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+    if (p.includes('/contact')) {
+      return <JoinContactView />;
+    }
+
+    // Default fallback to HomeView for /, /index.html, /sandbox, or unknown routes
+    return <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />;
   };
 
   return (
@@ -74,32 +111,7 @@ function MainAppContent() {
       {/* Main View Router */}
       <main className="flex-1">
         {/* PUBLIC AREA */}
-        {activeTab === 'public' && (
-          <>
-            {currentPath === '/' && (
-              <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />
-            )}
-            {currentPath.startsWith('/courses') && (
-              <CoursesView onOpenEnquire={handleOpenEnquire} />
-            )}
-            {currentPath.startsWith('/test-series') && (
-              <TestSeriesView onOpenEnquire={handleOpenEnquire} />
-            )}
-            {currentPath.startsWith('/free') && (
-              <FreeResourcesView
-                initialSubTab={
-                  currentPath.includes('quizzes')
-                    ? 'quizzes'
-                    : currentPath.includes('answer-writing')
-                    ? 'answer-writing'
-                    : 'current-affairs'
-                }
-                onNavigate={handleNavigate}
-              />
-            )}
-            {currentPath === '/contact' && <JoinContactView />}
-          </>
-        )}
+        {activeTab === 'public' && renderPublicView()}
 
         {/* ASPIRANT PORTAL AREA */}
         {activeTab === 'aspirant' && (
@@ -139,10 +151,13 @@ function MainAppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AspirantAuthProvider>
-        <MainAppContent />
-      </AspirantAuthProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AspirantAuthProvider>
+          <MainAppContent />
+        </AspirantAuthProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
+

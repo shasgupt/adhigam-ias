@@ -7,6 +7,7 @@ export default defineConfig(({mode}) => {
   const isDebug = mode === 'debug' || process.env.BUILD_MODE === 'debug';
 
   return {
+    base: process.env.VITE_BASE_PATH || './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

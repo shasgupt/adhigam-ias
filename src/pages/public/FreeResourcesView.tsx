@@ -61,9 +61,9 @@ export const FreeResourcesView: React.FC<FreeResourcesProps> = ({
       api.get<Prompt[]>('/api/prompts'),
     ])
       .then(([aData, qData, pData]) => {
-        setArticles(aData);
-        setQuizzes(qData);
-        setPrompts(pData);
+        setArticles(Array.isArray(aData) ? aData : []);
+        setQuizzes(Array.isArray(qData) ? qData : []);
+        setPrompts(Array.isArray(pData) ? pData : []);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

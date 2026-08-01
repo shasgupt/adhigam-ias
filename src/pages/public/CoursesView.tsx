@@ -12,14 +12,15 @@ export const CoursesView: React.FC<{ onOpenEnquire: (title?: string) => void }> 
 
   useEffect(() => {
     api.get<Course[]>('/api/courses')
-      .then(setCourses)
+      .then((data) => setCourses(Array.isArray(data) ? data : []))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
+  const safeCourses = Array.isArray(courses) ? courses : [];
   const filtered = filterCategory === 'all'
-    ? courses
-    : courses.filter((c) => c.category === filterCategory);
+    ? safeCourses
+    : safeCourses.filter((c) => c && c.category === filterCategory);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 space-y-8">

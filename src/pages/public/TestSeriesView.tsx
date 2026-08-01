@@ -10,7 +10,7 @@ export const TestSeriesView: React.FC<{ onOpenEnquire: (title?: string) => void 
 
   useEffect(() => {
     api.get<TestSeries[]>('/api/test-series')
-      .then(setTestSeries)
+      .then((data) => setTestSeries(Array.isArray(data) ? data : []))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);

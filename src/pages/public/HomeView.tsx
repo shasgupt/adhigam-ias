@@ -41,21 +41,21 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
       api.get<Prompt[]>('/api/prompts'),
     ])
       .then(([cData, tData, aData, qData, pData]) => {
-        setCourses(cData);
-        setTestSeries(tData);
-        setArticles(aData);
-        setQuizzes(qData);
-        setPrompts(pData);
+        setCourses(Array.isArray(cData) ? cData : []);
+        setTestSeries(Array.isArray(tData) ? tData : []);
+        setArticles(Array.isArray(aData) ? aData : []);
+        setQuizzes(Array.isArray(qData) ? qData : []);
+        setPrompts(Array.isArray(pData) ? pData : []);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
-  const featuredCourses = courses.filter((c) => c.featured).slice(0, 3);
-  const featuredTestSeries = testSeries.slice(0, 2);
-  const latestArticles = articles.slice(0, 3);
-  const todaysPrompt = prompts[0];
-  const todaysQuiz = quizzes[0];
+  const featuredCourses = (Array.isArray(courses) ? courses : []).filter((c) => c && c.featured).slice(0, 3);
+  const featuredTestSeries = (Array.isArray(testSeries) ? testSeries : []).slice(0, 2);
+  const latestArticles = (Array.isArray(articles) ? articles : []).slice(0, 3);
+  const todaysPrompt = (Array.isArray(prompts) ? prompts : [])[0];
+  const todaysQuiz = (Array.isArray(quizzes) ? quizzes : [])[0];
 
   return (
     <div className="space-y-16 pb-16">
