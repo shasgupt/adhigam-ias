@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-10-02T10:30:07.860Z",
+  "lastUpdated": "2026-10-02T10:12:15.316Z",
   "users": [
     {
       "id": "user_admin_1",
@@ -8,7 +8,7 @@
       "name": "Adhigam IAS Academic Directorate",
       "role": "admin",
       "department": "Directorate & Academic Lead",
-      "createdAt": "2026-10-02T10:30:07.858Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     },
     {
       "id": "user_faculty_1",
@@ -16,7 +16,7 @@
       "name": "Sociology Optional Faculty Team",
       "role": "instructor",
       "department": "Sociology Optional & Mains Evaluation",
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     },
     {
       "id": "user_aspirant_1",
@@ -26,7 +26,7 @@
       "phone": "",
       "targetYear": "UPSC CSE Mains 2027",
       "optionalSubject": "Sociology",
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     }
   ],
   "announcements": [
@@ -38,7 +38,7 @@
       "type": "new_batch",
       "link": "/test-series",
       "published": true,
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     },
     {
       "id": "ann_schedule",
@@ -48,7 +48,7 @@
       "type": "info",
       "link": "/test-series",
       "published": true,
-      "createdAt": "2026-10-01T10:30:07.860Z"
+      "createdAt": "2026-10-01T09:57:49.719Z"
     }
   ],
   "courses": [],
@@ -514,7 +514,7 @@
         }
       ],
       "image": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800",
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     }
   ],
   "articles": [
@@ -533,7 +533,7 @@
       ],
       "author": "Prof. Ananya Roy",
       "published": true,
-      "publishedAt": "2026-10-01T10:30:07.860Z",
+      "publishedAt": "2026-10-01T09:57:49.719Z",
       "readTime": "6 min read",
       "keyTakeaways": [
         "Article 163 discretionary powers are subject to judicial review.",
@@ -541,7 +541,7 @@
         "Sarkaria and Punchhi commission reports provide actionable governance reforms."
       ],
       "image": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800",
-      "createdAt": "2026-10-01T10:30:07.860Z"
+      "createdAt": "2026-10-01T09:57:49.719Z"
     }
   ],
   "quizzes": [
@@ -568,7 +568,7 @@
           "explanation": "In Justice K.S. Puttaswamy (Retd.) v. Union of India (2017), a nine-judge bench unanimously affirmed that the Right to Privacy is an intrinsic part of the right to life and personal liberty under Article 21."
         }
       ],
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     }
   ],
   "quizAttempts": [],
@@ -588,11 +588,25 @@
         "conclusionWeight": "20% (Synthesis of methodological pluralism)"
       },
       "published": true,
-      "createdAt": "2026-10-02T10:30:07.860Z"
+      "createdAt": "2026-10-02T09:57:49.719Z"
     }
   ],
   "writingAttempts": [],
   "enquiries": [
+    {
+      "id": "enq_1790935935316",
+      "referenceId": "ADHIGAM-Q-6978",
+      "name": "Pooja Verma",
+      "email": "pooja.v@example.com",
+      "phone": "9876543210",
+      "telegram": "",
+      "category": "RISE 2.0 Enrolment",
+      "courseKeyOrTitle": "RISE 2.0 Test Series",
+      "preferredMode": "online",
+      "message": "Interested in Early Bird admission and sample model answers.",
+      "status": "new",
+      "createdAt": "2026-10-02T10:12:15.316Z"
+    },
     {
       "id": "enq_1",
       "referenceId": "ADHIGAM-Q-7341",
@@ -605,7 +619,7 @@
       "preferredMode": "online",
       "message": "I want to enroll under the Early Bird offer (₹7,650) before 9th October. Could you please share the UPI / QR code payment process and confirmation steps?",
       "status": "new",
-      "createdAt": "2026-10-02T05:30:07.860Z"
+      "createdAt": "2026-10-02T04:57:49.719Z"
     },
     {
       "id": "enq_2",
@@ -619,9 +633,9 @@
       "preferredMode": "online",
       "message": "I completed the previous edition of RISE. How do I verify my existing student status to avail of the 25% discount fee of ₹6,675?",
       "adminReply": "Verification confirmed! You can complete payment for ₹6,675. Welcome back to RISE 2.0.",
-      "repliedAt": "2026-10-02T08:30:07.860Z",
+      "repliedAt": "2026-10-02T07:57:49.719Z",
       "status": "contacted",
-      "createdAt": "2026-10-01T10:30:07.860Z"
+      "createdAt": "2026-10-01T09:57:49.719Z"
     },
     {
       "id": "enq_3",
@@ -635,9 +649,9 @@
       "preferredMode": "online",
       "message": "If I write my answers on UPSC-format ruled paper, scan and send the PDF by 9:00 PM via Telegram (@adhigamias1), will the evaluated copy be returned with line-by-line comments within 3 days?",
       "adminReply": "Yes, exactly! Submit your single scanned PDF by 9:00 PM on test day (Mon/Wed/Fri) via Telegram or email. Evaluated copy with detailed faculty comments is returned within 3 days.",
-      "repliedAt": "2026-10-01T16:30:07.860Z",
+      "repliedAt": "2026-10-01T15:57:49.719Z",
       "status": "resolved",
-      "createdAt": "2026-09-30T10:30:07.860Z"
+      "createdAt": "2026-09-30T09:57:49.719Z"
     }
   ],
   "bookmarks": [],
