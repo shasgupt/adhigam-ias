@@ -64,11 +64,11 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             </span>
           </div>
 
-          {/* Aspirant Portal Entry (Zero Public Admin Buttons) */}
+          {/* Portals: Aspirant & Admin */}
           <div className="flex items-center gap-2 ml-auto text-xs">
             <button
               onClick={() => onNavigate(aspirantUser ? '/me' : '/login', 'aspirant')}
-              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'aspirant'
                   ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
                   : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
@@ -81,17 +81,22 @@ export const SiteHeader: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Staff CMS link only if staff is actively authenticated */}
-            {staffUser && (
-              <button
-                onClick={() => onNavigate('/admin', 'admin')}
-                className="px-2.5 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1 text-slate-300 hover:text-white hover:bg-white/10"
-                title="Staff Session Active"
-              >
-                <ShieldCheck className="w-3 h-3 text-amber-300" />
-                <span>Faculty CMS</span>
-              </button>
-            )}
+            {/* Admin & Faculty Portal Button */}
+            <button
+              onClick={() => onNavigate('/admin', 'admin')}
+              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'admin'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
+                  : 'bg-slate-800/80 text-amber-300 hover:text-white hover:bg-slate-800 border border-amber-400/30'
+              }`}
+              title="Directorate & Faculty Admin CMS"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>{staffUser ? 'Faculty CMS' : 'Admin Portal'}</span>
+              {staffUser && (
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse ml-0.5" />
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -286,7 +291,31 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             Student Query Desk & Status Track
           </button>
 
-          <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
+          {/* Portals Section */}
+          <div className="pt-2 pb-1 border-t border-slate-200 grid grid-cols-2 gap-2">
+            <button
+              onClick={() => {
+                onNavigate(aspirantUser ? '/me' : '/login', 'aspirant');
+                setMobileMenuOpen(false);
+              }}
+              className="p-2 bg-indigo-50 border border-indigo-200 text-indigo-900 rounded-md font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-indigo-700" />
+              <span>{aspirantUser ? 'My Workbench' : 'Aspirant Portal'}</span>
+            </button>
+            <button
+              onClick={() => {
+                onNavigate('/admin', 'admin');
+                setMobileMenuOpen(false);
+              }}
+              className="p-2 bg-slate-900 border border-slate-800 text-amber-300 rounded-md font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>{staffUser ? 'Faculty CMS' : 'Admin Portal'}</span>
+            </button>
+          </div>
+
+          <div className="pt-2 border-t border-slate-200 flex flex-col gap-2">
             <button
               onClick={() => {
                 onOpenEnquire();
