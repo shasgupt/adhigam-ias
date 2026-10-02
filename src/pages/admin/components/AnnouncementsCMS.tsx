@@ -43,7 +43,7 @@ export const AnnouncementsCMS: React.FC<AnnouncementsCMSProps> = ({
   const openEditModal = (a: Announcement) => {
     setEditingItem(a);
     setBadgeText(a.badgeText || 'ALERT');
-    setMessage(a.message);
+    setMessage(a.message || a.content || '');
     setLinkUrl(a.linkUrl || '');
     setPublished(Boolean(a.published ?? true));
     setIsCreating(true);

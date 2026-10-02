@@ -4,6 +4,10 @@ dist/
 coverage/
 .last-build-type
 adhigam-ias-v*.zip
+*.zip
+*.tar.gz
+public/*.zip
+public/*.tar.gz
 .DS_Store
 *.log
 .env*

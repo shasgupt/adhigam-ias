@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
+import fs from 'fs';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
@@ -30,6 +31,42 @@ const PORT = 3000;
 
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(express.static(path.join(process.cwd(), 'public')));
+
+// Explicit Source Code Download Route
+app.get('/api/download-code', (req: Request, res: Response) => {
+  const filePath = path.join(process.cwd(), 'public', 'adhigam-ias-code.zip');
+  res.download(filePath, 'adhigam-ias-source-code.zip', (err) => {
+    if (err) {
+      console.error('Download error:', err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Could not download source code archive.' });
+      }
+    }
+  });
+});
+
+app.get('/api/download-code-tar', (req: Request, res: Response) => {
+  const filePath = path.join(process.cwd(), 'public', 'adhigam-ias-code.tar.gz');
+  res.download(filePath, 'adhigam-ias-source-code.tar.gz');
+});
+
+app.get('/api/download-code-base64', (req: Request, res: Response) => {
+  try {
+    const filePath = path.join(process.cwd(), 'public', 'adhigam-ias-code.zip');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Zip file not found' });
+    }
+    const buffer = fs.readFileSync(filePath);
+    res.json({
+      filename: 'adhigam-ias-source-code.zip',
+      base64: buffer.toString('base64'),
+      size: buffer.length,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to read zip file.' });
+  }
+});
 
 // Simple Auth Token Generator & Session Store
 interface Session {
@@ -299,7 +336,7 @@ app.get('/api/quizzes', (req: Request, res: Response) => {
     paperTag: q.paperTag,
     timeLimitMinutes: q.timeLimitMinutes,
     totalMarks: q.totalMarks,
-    questionCount: q.questions.length,
+    questionCount: (q.questions || []).length,
     createdAt: q.createdAt,
   }));
   res.json(list);
@@ -310,7 +347,7 @@ app.get('/api/quizzes/:id', (req: Request, res: Response) => {
   if (!quiz) return res.status(404).json({ error: 'Quiz not found.' });
 
   // Exclude correctOptionIndex for quiz taking mode
-  const clientQuestions = quiz.questions.map(({ correctOptionIndex, explanation, ...rest }) => rest);
+  const clientQuestions = (quiz.questions || []).map(({ correctOptionIndex, explanation, ...rest }) => rest);
   res.json({
     ...quiz,
     questions: clientQuestions,
@@ -326,7 +363,7 @@ app.post('/api/quizzes/:id/submit', (req: Request, res: Response) => {
   let incorrectCount = 0;
   let unattemptedCount = 0;
 
-  const questionBreakdown = quiz.questions.map((q) => {
+  const questionBreakdown = (quiz.questions || []).map((q) => {
     const selected = userAnswers?.[q.id];
     const isAttempted = selected !== undefined && selected !== null && selected !== -1;
     const isCorrect = isAttempted && selected === q.correctOptionIndex;
@@ -358,7 +395,7 @@ app.post('/api/quizzes/:id/submit', (req: Request, res: Response) => {
     aspirantName: aspirant?.name || 'Guest Aspirant',
     userAnswers: userAnswers || {},
     score,
-    totalQuestions: quiz.questions.length,
+    totalQuestions: (quiz.questions || []).length,
     correctCount,
     incorrectCount,
     unattemptedCount,

@@ -11,11 +11,14 @@ import {
   CreditCard,
   MessageSquare,
   Sparkles,
+  Download,
+  Loader2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useAspirantAuth } from '../context/AspirantAuthContext';
 import { INSTITUTE_CONFIG } from '../data/instituteConfig';
 import { AdhigamLogo } from './AdhigamLogo';
+import { downloadSourceArchive } from '../lib/downloadHelper';
 
 interface HeaderProps {
   activeTab: 'public' | 'aspirant' | 'admin';
@@ -33,6 +36,16 @@ export const SiteHeader: React.FC<HeaderProps> = ({
   const { user: staffUser, logout: staffLogout } = useAuth();
   const { user: aspirantUser, logout: aspirantLogout } = useAspirantAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadSource = async () => {
+    setDownloading(true);
+    try {
+      await downloadSourceArchive('zip');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 text-slate-800 shadow-xs">
@@ -66,6 +79,22 @@ export const SiteHeader: React.FC<HeaderProps> = ({
 
           {/* Aspirant Portal Entry (Zero Public Admin Buttons) */}
           <div className="flex items-center gap-2 ml-auto text-xs">
+            {/* In-App Direct Code Download */}
+            <button
+              onClick={handleDownloadSource}
+              disabled={downloading}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+              title="Download full project source code as .ZIP"
+            >
+              {downloading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Download className="w-3.5 h-3.5 text-white" />
+              )}
+              <span className="hidden sm:inline">Download Code (.zip)</span>
+              <span className="sm:hidden">Code (.zip)</span>
+            </button>
+
             <button
               onClick={() => onNavigate(aspirantUser ? '/me' : '/login', 'aspirant')}
               className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${

@@ -352,7 +352,7 @@ export const FreeResourcesView: React.FC<FreeResourcesProps> = ({
 
             <div className="p-6 space-y-6">
               {/* Key Takeaways Box */}
-              {activeArticle.keyTakeaways?.length > 0 && (
+              {activeArticle.keyTakeaways && activeArticle.keyTakeaways.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
                   <h4 className="text-xs font-bold uppercase text-amber-900 font-serif-heading flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Key Takeaways for Mains:
