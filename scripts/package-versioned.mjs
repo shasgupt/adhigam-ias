@@ -210,14 +210,28 @@ if (!existsSync(nodeModulesDir) || !viteBinExists) {
 
 // Run build if not skipped
 if (!skipBuild) {
-  const buildScript = isDebug ? 'npm run build:debug' : 'npm run build';
-  console.log(`⚙️  Executing build: "${buildScript}"...`);
+  console.log(`⚙️  Executing Vite build (${buildTag.toUpperCase()})...`);
   try {
-    execSync(buildScript, { cwd: projectRoot, stdio: 'inherit' });
-    console.log(`✅ Build completed successfully.\n`);
+    // 1. Clear build marker
+    const markerScript = join(projectRoot, 'scripts', 'set-build-type.mjs');
+    execSync(`"${process.execPath}" "${markerScript}" clear`, { cwd: projectRoot, stdio: 'inherit' });
+
+    // 2. Run Vite build directly with Node.js to bypass Windows shell/PATH issues
+    const viteJsPath = join(projectRoot, 'node_modules', 'vite', 'bin', 'vite.js');
+    if (existsSync(viteJsPath)) {
+      const modeFlag = isDebug ? '--mode debug' : '';
+      execSync(`"${process.execPath}" "${viteJsPath}" build ${modeFlag}`.trim(), { cwd: projectRoot, stdio: 'inherit' });
+    } else {
+      const fallbackCmd = isDebug ? 'npx vite build --mode debug' : 'npx vite build';
+      execSync(fallbackCmd, { cwd: projectRoot, stdio: 'inherit' });
+    }
+
+    // 3. Set build marker
+    execSync(`"${process.execPath}" "${markerScript}" ${buildTag}`, { cwd: projectRoot, stdio: 'inherit' });
+    console.log(`\n✅ Build completed successfully.\n`);
   } catch (error) {
     console.error(`\n❌ Build failed with error:`, error.message);
-    console.error(`💡 Tip: Ensure you ran 'npm install' and that Vite is available.`);
+    console.error(`💡 Tip: Ensure you ran 'npm install' in your project folder.`);
     process.exit(1);
   }
 } else {
