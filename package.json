@@ -1,13 +1,13 @@
 {
-  "name": "react-example",
+  "name": "adhigam-ias",
   "private": true,
   "version": "0.6.0",
   "type": "module",
   "scripts": {
-    "dev": "npx vite --port=3000 --host=0.0.0.0",
-    "build": "node scripts/set-build-type.mjs clear && npx vite build && node scripts/set-build-type.mjs release",
-    "build:debug": "node scripts/set-build-type.mjs clear && npx vite build --mode debug && node scripts/set-build-type.mjs debug",
-    "preview": "npx vite preview",
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "build": "node scripts/set-build-type.mjs clear && vite build && node scripts/set-build-type.mjs release",
+    "build:debug": "node scripts/set-build-type.mjs clear && vite build --mode debug && node scripts/set-build-type.mjs debug",
+    "preview": "vite preview",
     "clean": "rm -rf dist server.js *.zip",
     "lint": "tsc --noEmit",
     "version:patch": "npm version patch --no-git-tag-version",
@@ -31,6 +31,7 @@
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.3.0"
   },
   "devDependencies": {

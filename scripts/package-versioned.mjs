@@ -191,13 +191,24 @@ console.log(`• Build Tag:   ${buildTag.toUpperCase()}`);
 console.log(`• Engine:      Node.js Built-in Zero-Dependency Archiver`);
 console.log(`-----------------------------------------------\n`);
 
-// Ensure dependencies are installed before building
+// Ensure all critical build plugins and dependencies are installed
 const nodeModulesDir = join(projectRoot, 'node_modules');
-const viteBinExists = existsSync(join(nodeModulesDir, 'vite')) || existsSync(join(nodeModulesDir, '.bin', 'vite')) || existsSync(join(nodeModulesDir, '.bin', 'vite.cmd'));
+const criticalPackages = [
+  'vite',
+  '@tailwindcss/vite',
+  '@vitejs/plugin-react',
+  'react',
+  'react-dom',
+];
 
-if (!existsSync(nodeModulesDir) || !viteBinExists) {
-  console.log(`⚠️  Local 'node_modules' or 'vite' binary was not found.`);
-  console.log(`📥 Automatically running "npm install" to populate project dependencies...\n`);
+const missingPackage = criticalPackages.find((pkgName) => {
+  const pkgDir = join(nodeModulesDir, ...pkgName.split('/'));
+  return !existsSync(pkgDir);
+});
+
+if (!existsSync(nodeModulesDir) || missingPackage) {
+  console.log(`⚠️  Local dependencies appear incomplete (missing: ${missingPackage || 'node_modules'}).`);
+  console.log(`📥 Running "npm install" to ensure all Vite plugins and packages are ready...\n`);
   try {
     execSync('npm install', { cwd: projectRoot, stdio: 'inherit' });
     console.log(`\n✅ Dependencies installed successfully.\n`);
@@ -211,7 +222,7 @@ if (!existsSync(nodeModulesDir) || !viteBinExists) {
 // Run build if not skipped
 if (!skipBuild) {
   console.log(`⚙️  Executing Vite build (${buildTag.toUpperCase()})...`);
-  try {
+  const runBuildProcess = () => {
     // 1. Clear build marker
     const markerScript = join(projectRoot, 'scripts', 'set-build-type.mjs');
     execSync(`"${process.execPath}" "${markerScript}" clear`, { cwd: projectRoot, stdio: 'inherit' });
@@ -228,11 +239,22 @@ if (!skipBuild) {
 
     // 3. Set build marker
     execSync(`"${process.execPath}" "${markerScript}" ${buildTag}`, { cwd: projectRoot, stdio: 'inherit' });
+  };
+
+  try {
+    runBuildProcess();
     console.log(`\n✅ Build completed successfully.\n`);
   } catch (error) {
-    console.error(`\n❌ Build failed with error:`, error.message);
-    console.error(`💡 Tip: Ensure you ran 'npm install' in your project folder.`);
-    process.exit(1);
+    console.log(`\n⚠️  Build failed on initial attempt. Attempting 'npm install' repair...`);
+    try {
+      execSync('npm install', { cwd: projectRoot, stdio: 'inherit' });
+      runBuildProcess();
+      console.log(`\n✅ Build completed successfully after dependency repair.\n`);
+    } catch (retryError) {
+      console.error(`\n❌ Build failed with error:`, retryError.message);
+      console.error(`💡 Tip: Run 'npm install' in your project terminal to install all packages.`);
+      process.exit(1);
+    }
   }
 } else {
   console.log(`⏭️  Skipping build step (--skip-build requested).\n`);
