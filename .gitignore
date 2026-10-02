@@ -2,6 +2,8 @@ node_modules/
 build/
 dist/
 coverage/
+.last-build-type
+adhigam-ias-v*.zip
 .DS_Store
 *.log
 .env*

@@ -40,6 +40,26 @@ npm run build
 - **Output Directory**: `dist/`
 - **Output Characteristics**: Minified JS/CSS bundles, stripped console logs, optimized for maximum performance and security.
 
+### Versioned, Build-Tagged Bluehost ZIP
+
+Increment the project version when starting a release, then build and package it. The archive is tagged `release` or `debug` according to the last successful build:
+
+```bash
+npm run version:patch
+npm run build
+npm run package:dist
+```
+
+Use `npm run version:minor` or `npm run version:major` for larger releases. Version increments update `package.json` and `package-lock.json` without creating a Git tag. Production builds create `adhigam-ias-v<version>-release.zip`; debug builds create `adhigam-ias-v<version>-debug.zip`. Both archives contain the contents of `dist/`, including hidden files such as `.htaccess`.
+
+Example:
+```bash
+npm run version:minor
+npm run build
+npm run package:dist
+```
+This changes the app version from `1.4.1` to `1.5.0` and creates a ZIP such as `adhigam-ias-v1.5.0-release.zip` for upload to Bluehost.
+
 ---
 
 ### Option B: Debug / Staging Build (For Testing & Troubleshooting on Bluehost)

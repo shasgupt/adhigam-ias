@@ -1,15 +1,19 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build --mode production && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/server.cjs",
-    "build:debug": "vite build --mode debug && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build": "node scripts/set-build-type.mjs clear && vite build --mode production && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/server.cjs && node scripts/set-build-type.mjs release",
+    "build:debug": "node scripts/set-build-type.mjs clear && vite build --mode debug && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && node scripts/set-build-type.mjs debug",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist server.cjs",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
+    "package:dist": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-dist.ps1"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
