@@ -2,8 +2,12 @@ import React from 'react';
 import { Mail, Send, ExternalLink, Calendar, CheckCircle2, Shield, MessageSquare, ArrowRight, Code } from 'lucide-react';
 import { INSTITUTE_CONFIG } from '../data/instituteConfig';
 import { AdhigamLogo } from './AdhigamLogo';
+import packageJson from '../../package.json';
 
 export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
+  const currentVersion = import.meta.env.VITE_APP_VERSION || packageJson.version || '0.4.2';
+  const buildType = import.meta.env.VITE_APP_BUILD_TYPE || (import.meta.env.DEV ? 'Debug' : 'Release');
+
   return (
     <footer className="bg-slate-950 text-slate-300 pt-12 pb-8 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
@@ -158,8 +162,8 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] text-amber-300/90 font-mono font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            {INSTITUTE_CONFIG.version || 'v2.4.0'} • Release
+            <span className={`w-1.5 h-1.5 rounded-full ${buildType === 'Debug' ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+            v{currentVersion.replace(/^v/, '')} • {buildType}
           </span>
           <span className="text-slate-700">|</span>
           <a
