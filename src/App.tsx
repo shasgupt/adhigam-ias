@@ -80,7 +80,7 @@ function MainAppContent() {
               <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />
             )}
             {currentPath.startsWith('/courses') && (
-              <CoursesView onOpenEnquire={handleOpenEnquire} />
+              <CoursesView onOpenEnquire={handleOpenEnquire} onNavigate={handleNavigate} />
             )}
             {currentPath.startsWith('/test-series') && (
               <TestSeriesView onOpenEnquire={handleOpenEnquire} />

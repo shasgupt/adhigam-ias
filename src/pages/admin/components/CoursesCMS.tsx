@@ -185,6 +185,25 @@ export const CoursesCMS: React.FC<CoursesCMSProps> = ({ courses, onRefresh }) =>
         </button>
       </div>
 
+      {/* Umbrella Programmes Notice */}
+      <div className="bg-amber-50/70 border border-amber-200/90 rounded-xl p-4 text-xs text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="space-y-1">
+          <p className="font-bold flex items-center gap-1.5 text-amber-900">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            Adhigam IAS Umbrella Programmes Framework:
+          </p>
+          <p className="text-amber-800 text-[11px] leading-relaxed">
+            The public website is currently clean with zero dummy data. Any course or programme you create and toggle as <strong>"Published"</strong> will immediately appear in the <strong>"Adhigam IAS Umbrella"</strong> section on the home page and in the <strong>Academic Offerings</strong> directory.
+          </p>
+        </div>
+        <button
+          onClick={openCreateModal}
+          className="px-3.5 py-1.5 bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 font-bold rounded-lg text-xs shrink-0 cursor-pointer"
+        >
+          + Add Course Now
+        </button>
+      </div>
+
       {/* Filter and Search Bar */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[240px]">

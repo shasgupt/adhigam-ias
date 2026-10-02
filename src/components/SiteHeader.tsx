@@ -64,53 +64,34 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             </span>
           </div>
 
-          {/* Portal Switcher Tabs */}
-          <div className="flex items-center gap-1.5 ml-auto text-xs">
-            <span className="text-slate-400 font-bold uppercase tracking-widest mr-1 text-[10px] hidden sm:inline">
-              Portal:
-            </span>
-
-            <button
-              onClick={() => onNavigate('/', 'public')}
-              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
-                activeTab === 'public'
-                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
-                  : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
-              }`}
-            >
-              <BookOpen className="w-3 h-3" />
-              Public Portal
-            </button>
-
+          {/* Aspirant Portal Entry (Zero Public Admin Buttons) */}
+          <div className="flex items-center gap-2 ml-auto text-xs">
             <button
               onClick={() => onNavigate(aspirantUser ? '/me' : '/login', 'aspirant')}
-              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${
                 activeTab === 'aspirant'
                   ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
                   : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
               }`}
             >
-              <UserCheck className="w-3 h-3" />
-              Aspirant Portal
+              <UserCheck className="w-3.5 h-3.5 text-amber-300" />
+              <span>{aspirantUser ? 'My Aspirant Workbench' : 'Aspirant Portal'}</span>
               {aspirantUser && (
                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse ml-0.5" />
               )}
             </button>
 
-            <button
-              onClick={() => onNavigate(staffUser ? '/admin' : '/admin/login', 'admin')}
-              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
-                activeTab === 'admin'
-                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
-                  : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
-              }`}
-            >
-              <ShieldCheck className="w-3 h-3 text-amber-300" />
-              Admin / Faculty CMS
-              {staffUser && (
-                <span className="w-1.5 h-1.5 bg-sky-400 rounded-full ml-0.5" />
-              )}
-            </button>
+            {/* Staff CMS link only if staff is actively authenticated */}
+            {staffUser && (
+              <button
+                onClick={() => onNavigate('/admin', 'admin')}
+                className="px-2.5 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1 text-slate-300 hover:text-white hover:bg-white/10"
+                title="Staff Session Active"
+              >
+                <ShieldCheck className="w-3 h-3 text-amber-300" />
+                <span>Faculty CMS</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -124,34 +105,46 @@ export const SiteHeader: React.FC<HeaderProps> = ({
         >
           <AdhigamLogo size="md" showText={true} showMotto={false} />
           <div className="hidden sm:block pl-3 border-l border-slate-200">
-            <span className="text-[11px] font-bold text-[#D97706] uppercase tracking-wider block">
-              RISE 2.0
+            <span className="text-[11px] font-bold text-[#0F2C59] uppercase tracking-wider block">
+              ADHIGAM IAS
             </span>
-            <span className="text-[10px] text-slate-500 font-medium">
-              Sociology Optional Test Series
+            <span className="text-[10px] text-amber-700 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              Home of RISE 2.0 (Flagship)
             </span>
           </div>
         </div>
 
         {/* Desktop Links (When in Public Mode) */}
         {activeTab === 'public' && (
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold uppercase tracking-wider">
+          <nav className="hidden lg:flex items-center gap-5 text-xs font-semibold uppercase tracking-wider">
             <button
               onClick={() => onNavigate('/')}
               className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer ${
                 currentPath === '/' ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
               }`}
             >
-              Home
+              Adhigam Ecosystem
+            </button>
+
+            <button
+              onClick={() => onNavigate('/courses')}
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer ${
+                currentPath.startsWith('/courses') ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
+              }`}
+            >
+              Academic Offerings
             </button>
 
             <button
               onClick={() => onNavigate('/test-series')}
-              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1 ${
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1.5 ${
                 currentPath.startsWith('/test-series') ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
               }`}
             >
-              <Calendar className="w-3.5 h-3.5 text-[#D97706]" />
+              <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded text-[9px] font-black uppercase">
+                Flagship
+              </span>
               RISE 2.0 (49 Tests)
             </button>
 
@@ -169,17 +162,12 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             </button>
 
             <button
-              onClick={() => {
-                onNavigate('/test-series');
-                setTimeout(() => {
-                  const el = document.getElementById('fees-enrolment');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className="text-slate-600 hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1"
+              onClick={() => onNavigate('/free')}
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1 ${
+                currentPath.startsWith('/free') ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
+              }`}
             >
-              <CreditCard className="w-3.5 h-3.5 text-emerald-600" />
-              Fee & Enrolment
+              Knowledge Hub
             </button>
 
             <button
@@ -189,7 +177,7 @@ export const SiteHeader: React.FC<HeaderProps> = ({
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5 text-indigo-600" />
-              Student Queries & Track
+              Queries Desk
             </button>
           </nav>
         )}
@@ -239,9 +227,9 @@ export const SiteHeader: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-slate-200 px-4 pt-3 pb-6 space-y-3 text-sm shadow-md animate-in slide-in-from-top duration-150">
-          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 mb-2">
-            <span className="font-bold">RISE 2.0 Sociology Optional</span>
-            <p className="text-[11px] text-amber-800 mt-0.5">49 Tests • Starts 12 Oct 2026 • Early Bird: ₹7,650</p>
+          <div className="p-3 bg-slate-900 text-white rounded-lg border border-slate-800 text-xs mb-2">
+            <span className="font-bold text-amber-300">ADHIGAM IAS ACADEMY</span>
+            <p className="text-[11px] text-slate-300 mt-0.5">Premier UPSC Civil Services Ecosystem • Home of RISE 2.0</p>
           </div>
 
           <button
@@ -251,7 +239,17 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             }}
             className="w-full text-left font-semibold text-slate-800 py-1.5"
           >
-            Home
+            Adhigam Ecosystem
+          </button>
+
+          <button
+            onClick={() => {
+              onNavigate('/courses');
+              setMobileMenuOpen(false);
+            }}
+            className="w-full text-left font-semibold text-slate-800 py-1.5"
+          >
+            Academic Offerings
           </button>
 
           <button
@@ -261,22 +259,21 @@ export const SiteHeader: React.FC<HeaderProps> = ({
             }}
             className="w-full text-left font-semibold text-slate-800 py-1.5 flex items-center justify-between"
           >
-            <span>RISE 2.0 Test Series</span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-[9px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded uppercase">Flagship</span>
+              RISE 2.0 Test Series
+            </span>
             <span className="text-[10px] bg-[#0F2C59] text-amber-300 font-bold px-2 py-0.5 rounded">49 Tests</span>
           </button>
 
           <button
             onClick={() => {
-              onNavigate('/test-series');
+              onNavigate('/free');
               setMobileMenuOpen(false);
-              setTimeout(() => {
-                const el = document.getElementById('fees-enrolment');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
             }}
             className="w-full text-left font-semibold text-slate-800 py-1.5"
           >
-            Fee Structure & Early Bird
+            Knowledge Hub & Resources
           </button>
 
           <button

@@ -66,6 +66,12 @@ export interface InstituteConfig {
   aboutText: string;
   visionText: string;
   missionText: string;
+  umbrellaOverview: string;
+  ecosystemPillars: {
+    title: string;
+    description: string;
+    badge?: string;
+  }[];
 }
 
 export const INSTITUTE_CONFIG: InstituteConfig = {
@@ -166,11 +172,15 @@ export const INSTITUTE_CONFIG: InstituteConfig = {
   ],
 
   aboutText:
-    "ADHIGAM IAS is dedicated to structured, disciplined Civil Services preparation. RISE 2.0 provides an intensive answer-writing cycle for Sociology Optional with regular question papers, model answers, and prompt evaluations.",
+    "ADHIGAM IAS is a premier institution dedicated to structured, disciplined Civil Services preparation. Rooted in academic rigor and ethical governance, Adhigam IAS provides holistic guidance across Optional subjects, General Studies, and structured answer-writing methodologies.",
   visionText:
-    "To instill analytical clarity, disciplined answer articulation, and sociological mastery for high-scoring UPSC Mains execution.",
+    "To build analytical clarity, disciplined answer articulation, and sociological mastery for high-scoring UPSC Mains execution across all aspirants.",
   missionText:
     "To help aspirants transition from passive reading to active expression through purposeful, regular, and feedback-led writing.",
+  umbrellaOverview:
+    "ADHIGAM IAS provides structured academic guidance and comprehensive curriculum offerings for UPSC Civil Services excellence. Our flagship RISE 2.0 Sociology Optional Test Series is currently open for enrolment. Additional foundation courses, optional subjects, and mentorship modules will be announced as authorized by the academic directorate.",
+
+  ecosystemPillars: [],
 };
 
 export const instituteConfig = INSTITUTE_CONFIG;

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Sparkles,
   BookOpen,
@@ -49,6 +49,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
   const [trackingLoading, setTrackingLoading] = useState(false);
   const [trackedResults, setTrackedResults] = useState<any[] | null>(null);
   const [trackingError, setTrackingError] = useState('');
+
+  // Dynamic Umbrella Courses (Zero Dummy Data, Admin Managed)
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get<any[]>('/api/courses')
+      .then((data) => setCourses(data.filter((c: any) => c.published)))
+      .catch(() => setCourses([]));
+  }, []);
 
   // Filtered Schedule
   const filteredSchedule = useMemo(() => {
@@ -122,67 +131,151 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
   return (
     <div className="space-y-16 pb-16">
       {/* ========================================================================= */}
-      {/* 00 | HERO SECTION: ADHIGAM IAS RISE 2.0                                   */}
+      {/* 00 | HERO SECTION: ADHIGAM IAS ACADEMY & FLAGSHIP SPOTLIGHT               */}
       {/* ========================================================================= */}
-      <section className="relative bg-[#FDFBF7] text-slate-800 pt-10 pb-16 px-4 border-b border-amber-200/60">
-        <div className="max-w-7xl mx-auto space-y-10">
-          {/* Top Academy Crest & Title */}
-          <div className="flex flex-col items-center text-center space-y-4 max-w-4xl mx-auto">
-            <AdhigamLogo size="lg" showText={false} />
+      <section className="relative bg-[#FDFBF7] text-slate-800 pt-12 pb-16 px-4 border-b border-amber-200/60 overflow-hidden">
+        {/* Subtle decorative background circles */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-200/15 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="inline-flex items-center gap-2 bg-[#0F2C59] text-amber-300 px-3.5 py-1 rounded-md text-xs font-bold uppercase tracking-widest shadow-xs">
+        <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+          {/* Master Academy Header */}
+          <div className="flex flex-col items-center text-center space-y-5 max-w-4xl mx-auto">
+            <AdhigamLogo size="xl" showText={false} />
+
+            <div className="inline-flex items-center gap-2 bg-[#0F2C59] text-amber-300 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-              ADHIGAM IAS • UPSC Civil Services Mains 2027
+              ADHIGAM IAS • PREMIER ACADEMY FOR UPSC CIVIL SERVICES
             </div>
 
             <div className="space-y-2">
-              <h1 className="text-3xl sm:text-5xl font-black font-serif-heading text-[#0F2C59] tracking-tight">
-                ADHIGAM IAS <span className="text-[#D97706]">RISE 2.0</span>
+              <h1 className="text-4xl sm:text-6xl font-black font-serif-heading text-[#0F2C59] tracking-tight">
+                ADHIGAM IAS
               </h1>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans-ui text-slate-800 tracking-wide uppercase">
-                {INSTITUTE_CONFIG.subtitle}
-              </h2>
-              <p className="text-sm sm:text-base font-bold text-amber-900 tracking-wider uppercase bg-amber-100/70 border border-amber-300/80 px-4 py-1.5 rounded-lg inline-block">
-                {INSTITUTE_CONFIG.secondaryTagline}
+              <p className="text-lg sm:text-xl font-bold font-serif-heading text-[#D97706] italic">
+                "{INSTITUTE_CONFIG.tagline}"
+              </p>
+              <p className="text-xs sm:text-sm font-semibold text-slate-500 uppercase tracking-widest">
+                {INSTITUTE_CONFIG.motto}
               </p>
             </div>
 
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl font-sans-ui">
-              {INSTITUTE_CONFIG.examTarget}. Regular answer-writing routine, planned coverage of Paper I & Paper II, application of thinkers & perspectives, model answers, and prompt line-by-line evaluation.
+              Empowering civil services aspirants through structured pedagogy, rigorous academic mentorship, deep conceptual clarity, and disciplined examination execution.
             </p>
 
-            {/* Quick Action CTA Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <button
-                onClick={() => onOpenEnquire('RISE 2.0 - Early Bird Enrolment (₹7,650)')}
-                className="bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-amber-400/40"
+                onClick={() => onNavigate('/courses')}
+                className="px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-[#0F2C59] bg-amber-100 hover:bg-amber-200 border border-amber-300 transition-colors cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-amber-400" /> Enrol in RISE 2.0 (Early Bird: ₹7,650)
+                Explore Academy Offerings
               </button>
-
               <button
-                onClick={() => {
-                  const el = document.getElementById('test-schedule');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-5 py-3 border border-slate-300 rounded-lg text-xs font-semibold text-[#0F2C59] bg-white hover:bg-amber-50/50 flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                onClick={() => onNavigate('/contact')}
+                className="px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 transition-colors cursor-pointer"
               >
-                <Calendar className="w-4 h-4 text-[#D97706]" /> View 49-Test Schedule
+                Counselling & Desk
               </button>
+            </div>
+          </div>
 
-              <a
-                href={INSTITUTE_CONFIG.contact.telegramLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-3 bg-sky-50 border border-sky-200 hover:bg-sky-100 text-sky-800 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all"
-              >
-                <Send className="w-4 h-4 text-sky-600" /> Telegram: {INSTITUTE_CONFIG.contact.telegram}
-              </a>
+          {/* NEW FLAGSHIP SPOTLIGHT: RISE 2.0 */}
+          <div className="bg-gradient-to-br from-[#0F2C59] via-[#143872] to-[#0A1E3D] text-white rounded-2xl p-6 sm:p-10 shadow-xl border border-amber-400/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+                <div className="inline-flex items-center gap-2 bg-amber-400 text-slate-950 px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  New Flagship Programme Launch
+                </div>
+                <span className="text-xs text-amber-200 font-semibold">
+                  Adhigam IAS Academy Flagship • UPSC CSE Mains 2027
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="space-y-1">
+                    <span className="text-xs uppercase tracking-widest text-amber-400 font-bold">
+                      Flagship Test Series
+                    </span>
+                    <h2 className="text-2xl sm:text-4xl font-black font-serif-heading text-white">
+                      RISE 2.0 – Sociology Optional Test Series
+                    </h2>
+                    <p className="text-sm font-bold text-amber-300 uppercase tracking-wide">
+                      {INSTITUTE_CONFIG.subtitle}
+                    </p>
+                  </div>
+
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl font-sans-ui">
+                    {INSTITUTE_CONFIG.examTarget}. Built on the Adhigam IAS standard of discipline, RISE 2.0 provides an intensive 49-test cycle covering Paper I & Paper II with model answers and evaluated copies returned within 3 days.
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <button
+                      onClick={() => onOpenEnquire('RISE 2.0 - Early Bird Enrolment (₹7,650)')}
+                      className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4 text-slate-950" /> Enrol in RISE 2.0 (Early Bird: ₹7,650)
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById('test-schedule');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="px-5 py-3 border border-white/20 rounded-lg text-xs font-semibold text-white bg-white/10 hover:bg-white/20 flex items-center gap-2 transition-all cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4 text-amber-400" /> View 49-Test Schedule
+                    </button>
+
+                    <a
+                      href={INSTITUTE_CONFIG.contact.telegramLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-3 bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30 text-sky-200 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all"
+                    >
+                      <Send className="w-4 h-4 text-sky-400" /> Telegram: {INSTITUTE_CONFIG.contact.telegram}
+                    </a>
+                  </div>
+                </div>
+
+                {/* Quick Snapshot Badge in Hero Spotlight */}
+                <div className="lg:col-span-4 bg-white/5 border border-white/10 rounded-xl p-5 space-y-4 backdrop-blur-xs">
+                  <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest block border-b border-white/10 pb-2">
+                    RISE 2.0 Highlights
+                  </span>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span className="text-slate-400 text-[10px] uppercase block">Total Tests</span>
+                      <span className="text-lg font-bold text-white">49 Tests</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[10px] uppercase block">Marks/Test</span>
+                      <span className="text-lg font-bold text-white">50 Marks</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[10px] uppercase block">Frequency</span>
+                      <span className="text-lg font-bold text-white">Mon • Wed • Fri</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[10px] uppercase block">Evaluation</span>
+                      <span className="text-lg font-bold text-emerald-400">Within 3 Days</span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400">Early Bird Offer:</span>
+                    <span className="font-bold text-amber-300 text-sm">₹7,650</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* 6 Key Programme Pillars from PDF Page 1 */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4 border-t border-amber-200/50">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
             <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
               <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Total Tests</span>
               <span className="text-xl font-black text-[#0F2C59] block mt-0.5">49 Tests</span>
@@ -223,6 +316,122 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
       </section>
 
       {/* ========================================================================= */}
+      {/* ADHIGAM IAS ACADEMY PROGRAMMES & CURRICULUM OFFERINGS                     */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="border-b border-slate-100 pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0F2C59] bg-amber-100 border border-amber-300 px-3 py-1 rounded-md inline-block">
+                Academy Programmes & Offerings
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59]">
+                A Comprehensive Ecosystem for Civil Services Excellence
+              </h2>
+              <p className="text-sm text-slate-600 max-w-2xl font-sans-ui leading-relaxed">
+                ADHIGAM IAS operates as a comprehensive academic institution. While <strong className="text-slate-900">RISE 2.0</strong> is our flagship programme for Sociology Optional, our academy nurtures every critical dimension of UPSC preparation through disciplined guidance and structured evaluations.
+              </p>
+            </div>
+
+            <button
+              onClick={() => onNavigate('/courses')}
+              className="text-xs font-bold text-[#0F2C59] hover:text-[#D97706] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+            >
+              View All Academic Offerings <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Dynamic Academy Offerings / Clean Framework (Zero Dummy Data, Zero Admin Buttons) */}
+          {courses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="p-5 bg-slate-50 hover:bg-white rounded-xl border border-slate-200 hover:border-amber-400 transition-all space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-200 text-slate-800 px-2 py-0.5 rounded">
+                        {course.category?.replace('_', ' ')}
+                      </span>
+                      <span className="text-[10px] text-slate-500 font-semibold">{course.mode}</span>
+                    </div>
+                    <h3 className="text-base font-bold text-[#0F2C59] font-serif-heading">
+                      {course.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                      {course.description}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => onOpenEnquire(course.title)}
+                    className="w-full py-2 bg-[#0F2C59] hover:bg-[#0c2347] text-white rounded-lg font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Enquire for Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-6 sm:p-8 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div className="space-y-2 max-w-2xl">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded inline-block">
+                    Academy Programmes Directory
+                  </span>
+                  <h3 className="text-lg font-bold font-serif-heading text-[#0F2C59]">
+                    Upcoming Institute Programmes & Mentorship Modules
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    ADHIGAM IAS will publish future batch announcements for General Studies, Optional subjects, and Mentorship modules here upon official release by the academic directorate.
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Currently open for admissions: <strong className="text-slate-800">RISE 2.0 Sociology Optional Test Series (49 Tests)</strong>.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+                  <button
+                    onClick={() => onOpenEnquire('Adhigam IAS Upcoming Batches Enrolment Interest')}
+                    className="w-full sm:w-auto px-5 py-2.5 bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-xs border border-amber-400/40"
+                  >
+                    Register Enrolment Interest
+                  </button>
+                  <button
+                    onClick={() => onOpenEnquire('Academic Counselling & Course Advice')}
+                    className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Request Counselling
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Adhigam Academic Commitment Banner */}
+          <div className="p-4 sm:p-5 bg-slate-900 text-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-sm shrink-0">
+                AI
+              </div>
+              <div>
+                <span className="font-bold text-white block text-sm">Adhigam Academic Directorate</span>
+                <span className="text-slate-400">Structured pedagogy, faculty mentorship, and transparent evaluation criteria.</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => onOpenEnquire('Adhigam IAS General Enquiry & Mentorship')}
+                className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-lg font-bold transition-colors cursor-pointer"
+              >
+                Schedule Mentorship Call
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
       {/* 01 | WHY RISE 2.0? & THE RISE PRACTICE PROMISE                            */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4">
@@ -237,7 +446,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-6 space-y-4 text-sm text-slate-700 leading-relaxed font-sans-ui">
+            <div className="lg:col-span-7 space-y-4 text-sm text-slate-700 leading-relaxed font-sans-ui">
               <p className="font-semibold text-slate-900 text-base">
                 {INSTITUTE_CONFIG.riseWhy}
               </p>
@@ -251,7 +460,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
             </div>
 
             {/* The RISE Practice Promise Cards */}
-            <div className="lg:col-span-6 space-y-3">
+            <div className="lg:col-span-5 space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                 THE RISE PRACTICE PROMISE:
               </h3>
@@ -281,7 +490,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
       <section className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Programme Snapshot */}
-          <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
                 02 | Programme Snapshot
@@ -328,7 +537,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
           </div>
 
           {/* Test-Day Routine */}
-          <div className="lg:col-span-6 bg-slate-900 text-white rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-md space-y-6">
+          <div className="lg:col-span-7 bg-[#0F2C59] text-white rounded-2xl border border-amber-400/20 p-6 sm:p-8 shadow-md space-y-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-amber-300 bg-amber-400/20 border border-amber-400/30 px-3 py-1 rounded-md">
                 03 | Your Test-Day Routine
@@ -602,7 +811,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
             </span>
             <h2 className="text-2xl sm:text-4xl font-black font-serif-heading text-white">
               DON’T JUST STUDY SOCIOLOGY. <br />
-              <span className="text-amber-300 underline decoration-amber-400 decoration-wavy decoration-2">
+              <span className="text-amber-300 font-extrabold tracking-wide">
                 LEARN TO EXPRESS IT.
               </span>
             </h2>

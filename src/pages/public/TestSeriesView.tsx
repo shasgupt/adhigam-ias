@@ -47,10 +47,13 @@ export const TestSeriesView: React.FC<{ onOpenEnquire: (title?: string) => void 
       {/* Header Banner */}
       <div className="bg-[#0F2C59] text-white p-8 sm:p-12 rounded-2xl border border-amber-400/30 shadow-xl space-y-6 text-center">
         <div className="inline-flex items-center gap-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3.5 py-1 rounded-md text-xs font-bold uppercase tracking-widest">
-          <Sparkles className="w-3.5 h-3.5" /> UPSC Civil Services Mains 2027
+          <Sparkles className="w-3.5 h-3.5" /> ADHIGAM IAS Flagship Initiative • UPSC Mains 2027
         </div>
 
         <div className="space-y-2">
+          <span className="text-xs text-amber-300 uppercase tracking-widest font-bold block">
+            Adhigam IAS Presents
+          </span>
           <h1 className="text-3xl sm:text-5xl font-black font-serif-heading text-white">
             RISE 2.0
           </h1>

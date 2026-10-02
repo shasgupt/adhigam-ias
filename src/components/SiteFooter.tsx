@@ -25,46 +25,72 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
           </div>
         </div>
 
-        {/* Col 2: RISE 2.0 Programme Elements */}
+        {/* Col 2: Academy Programmes & Offerings */}
         <div className="space-y-3">
           <h4 className="text-xs font-bold text-amber-400 uppercase tracking-widest">
-            RISE 2.0 Programme
+            Academy Programmes & Offerings
           </h4>
           <ul className="space-y-2 text-slate-400">
-            <li className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span>49 Tests | 50 Marks / Test</span>
+            <li>
+              <button
+                onClick={() => onNavigate('/courses')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                <span>Sociology Optional Division</span>
+              </button>
             </li>
-            <li className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span>Mon • Wed • Fri Schedule</span>
+            <li>
+              <button
+                onClick={() => onNavigate('/test-series')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left text-amber-300 font-semibold cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <span>RISE 2.0 (New Flagship Launch)</span>
+              </button>
             </li>
-            <li className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span>Paper I & Paper II Coverage</span>
+            <li>
+              <button
+                onClick={() => onNavigate('/courses')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                <span>GS Mains Mentorship & Ethics</span>
+              </button>
             </li>
-            <li className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span>Model Answer at 9:00 PM</span>
+            <li>
+              <button
+                onClick={() => onNavigate('/free')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                <span>Free Resources & Answer Lab</span>
+              </button>
             </li>
-            <li className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span>Evaluation within 3 days</span>
+            <li>
+              <button
+                onClick={() => onNavigate('/contact')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left cursor-pointer"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                <span>Admissions Counselling Desk</span>
+              </button>
             </li>
           </ul>
         </div>
 
-        {/* Col 3: Fee & Enrolment */}
+        {/* Col 3: RISE 2.0 Flagship & Fee */}
         <div className="space-y-3">
           <h4 className="text-xs font-bold text-amber-400 uppercase tracking-widest">
-            Fee & Enrolment
+            RISE 2.0 Flagship Series
           </h4>
           <div className="space-y-2 text-slate-400">
             <div className="p-2.5 bg-slate-900 rounded-lg border border-slate-800">
               <div className="flex justify-between items-center text-slate-300 font-semibold">
-                <span>Standard Fee</span>
+                <span>Standard 49 Tests</span>
                 <span className="text-white font-bold">₹8,900</span>
               </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">Paper I & II + Comprehensives</p>
             </div>
             <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
               <div className="flex justify-between items-center text-amber-300 font-bold">
@@ -78,7 +104,7 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
                 <span>Adhigam Students</span>
                 <span className="text-indigo-200 font-bold">₹6,675</span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">25% discount on launch price</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">25% discount privilege</p>
             </div>
           </div>
         </div>
@@ -128,7 +154,7 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
         <p>
-          © {new Date().getFullYear()} ADHIGAM IAS. All rights reserved. • RISE 2.0 Sociology Optional Test Series (UPSC CSE Mains 2027).
+          © {new Date().getFullYear()} ADHIGAM IAS — Academy for Civil Services. All rights reserved. • RISE 2.0 is the official flagship Sociology Optional test series under Adhigam IAS.
         </p>
         <div className="flex items-center gap-4">
           <a

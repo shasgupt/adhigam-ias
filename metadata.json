@@ -1,6 +1,6 @@
 {
   "name": "ADHIGAM IAS",
-  "description": "ADHIGAM IAS RISE 2.0 Sociology Optional Test Series portal with test schedules, admissions counselling CRM, and student query tracking.",
+  "description": "ADHIGAM IAS — Premier academy for UPSC Civil Services. Home of the flagship RISE 2.0 Sociology Optional Test Series, comprehensive mentorship, and student evaluation lab.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -1,0 +1,646 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-10-02T10:30:07.860Z",
+  "users": [
+    {
+      "id": "user_admin_1",
+      "email": "admin@adhigamias.com",
+      "name": "Adhigam IAS Academic Directorate",
+      "role": "admin",
+      "department": "Directorate & Academic Lead",
+      "createdAt": "2026-10-02T10:30:07.858Z"
+    },
+    {
+      "id": "user_faculty_1",
+      "email": "faculty@adhigamias.com",
+      "name": "Sociology Optional Faculty Team",
+      "role": "instructor",
+      "department": "Sociology Optional & Mains Evaluation",
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    },
+    {
+      "id": "user_aspirant_1",
+      "email": "aspirant@adhigam.com",
+      "name": "Sociology Aspirant",
+      "role": "aspirant",
+      "phone": "",
+      "targetYear": "UPSC CSE Mains 2027",
+      "optionalSubject": "Sociology",
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "ann_rise_2",
+      "title": "RISE 2.0 Sociology Optional Test Series (UPSC CSE Mains 2027) Admissions Open!",
+      "content": "A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests, 50 Marks/Test, 4 Questions Each. Starts 12 Oct 2026.",
+      "badgeText": "ADMISSIONS OPEN",
+      "type": "new_batch",
+      "link": "/test-series",
+      "published": true,
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    },
+    {
+      "id": "ann_schedule",
+      "title": "Complete 49-Test Schedule & Model Answer Routine Released",
+      "content": "Paper I (Tests 1–22), Paper II (Tests 23–47), and Comprehensive Tests (48–49). Mon • Wed • Fri routine. Copies evaluated within 3 days.",
+      "badgeText": "SCHEDULE",
+      "type": "info",
+      "link": "/test-series",
+      "published": true,
+      "createdAt": "2026-10-01T10:30:07.860Z"
+    }
+  ],
+  "courses": [],
+  "testSeries": [
+    {
+      "id": "ts_rise_2",
+      "key": "rise-2-0-sociology-optional",
+      "title": "RISE 2.0 – Sociology Optional Test Series",
+      "subtitle": "Regular Improvement & Answer Writing Programme for UPSC CSE Mains 2027",
+      "type": "mains",
+      "totalTests": 49,
+      "featured": true,
+      "published": true,
+      "fee": "₹8,900",
+      "earlyBirdFee": "₹7,650",
+      "existingStudentFee": "₹6,675",
+      "earlyBirdDeadline": "9 October 2026",
+      "startDate": "12 October 2026",
+      "endDate": "31 January 2027",
+      "mode": "online",
+      "description": "A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests (50 Marks/Test, 4 Questions Each with 10- and 20-mark mix) on Monday, Wednesday, and Friday. Complete Paper I, Paper II, and Final Comprehensive tests with model answers released at 9:00 PM and line-by-line evaluated copies returned within 3 days.",
+      "schedule": [
+        {
+          "testNumber": 1,
+          "title": "Sociology – The Discipline",
+          "date": "12 Oct 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociology – The Discipline"
+        },
+        {
+          "testNumber": 2,
+          "title": "Sociology – The Discipline",
+          "date": "14 Oct 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociology – The Discipline"
+        },
+        {
+          "testNumber": 3,
+          "title": "Sociology as Science",
+          "date": "16 Oct 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociology as Science"
+        },
+        {
+          "testNumber": 4,
+          "title": "Sociology as Science",
+          "date": "19 Oct 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociology as Science"
+        },
+        {
+          "testNumber": 5,
+          "title": "Research Methods and Analysis",
+          "date": "21 Oct 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Research Methods and Analysis"
+        },
+        {
+          "testNumber": 6,
+          "title": "Sociological Thinkers",
+          "date": "23 Oct 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociological Thinkers"
+        },
+        {
+          "testNumber": 7,
+          "title": "Sociological Thinkers",
+          "date": "26 Oct 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociological Thinkers"
+        },
+        {
+          "testNumber": 8,
+          "title": "Sociological Thinkers",
+          "date": "28 Oct 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Sociological Thinkers"
+        },
+        {
+          "testNumber": 9,
+          "title": "Stratification and Mobility",
+          "date": "30 Oct 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Stratification and Mobility"
+        },
+        {
+          "testNumber": 10,
+          "title": "Stratification and Mobility",
+          "date": "02 Nov 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Stratification and Mobility"
+        },
+        {
+          "testNumber": 11,
+          "title": "Stratification and Mobility",
+          "date": "04 Nov 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Stratification and Mobility"
+        },
+        {
+          "testNumber": 12,
+          "title": "Works and Economic Life",
+          "date": "06 Nov 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Works and Economic Life"
+        },
+        {
+          "testNumber": 13,
+          "title": "Works and Economic Life",
+          "date": "09 Nov 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Works and Economic Life"
+        },
+        {
+          "testNumber": 14,
+          "title": "Politics and Society",
+          "date": "11 Nov 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Politics and Society"
+        },
+        {
+          "testNumber": 15,
+          "title": "Politics and Society",
+          "date": "13 Nov 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Politics and Society"
+        },
+        {
+          "testNumber": 16,
+          "title": "Religion and Society",
+          "date": "16 Nov 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Religion and Society"
+        },
+        {
+          "testNumber": 17,
+          "title": "Religion and Society",
+          "date": "18 Nov 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Religion and Society"
+        },
+        {
+          "testNumber": 18,
+          "title": "Systems of Kinship",
+          "date": "20 Nov 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Systems of Kinship"
+        },
+        {
+          "testNumber": 19,
+          "title": "Systems of Kinship",
+          "date": "23 Nov 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Systems of Kinship"
+        },
+        {
+          "testNumber": 20,
+          "title": "Social Change in Modern Society",
+          "date": "25 Nov 2026",
+          "day": "Wednesday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Social Change in Modern Society"
+        },
+        {
+          "testNumber": 21,
+          "title": "Social Change in Modern Society",
+          "date": "27 Nov 2026",
+          "day": "Friday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Fundamentals",
+          "syllabus": "Paper I: Fundamentals - Social Change in Modern Society"
+        },
+        {
+          "testNumber": 22,
+          "title": "Paper I Comprehensive Test",
+          "date": "30 Nov 2026",
+          "day": "Monday",
+          "paper": "Paper I",
+          "subjectTag": "Paper I: Comprehensive",
+          "syllabus": "Paper I: Comprehensive - Paper I Comprehensive Test"
+        },
+        {
+          "testNumber": 23,
+          "title": "Introducing Indian Society",
+          "date": "02 Dec 2026",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Introducing Indian Society"
+        },
+        {
+          "testNumber": 24,
+          "title": "Introducing Indian Society",
+          "date": "04 Dec 2026",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Introducing Indian Society"
+        },
+        {
+          "testNumber": 25,
+          "title": "Impact of Colonial Rule",
+          "date": "07 Dec 2026",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Impact of Colonial Rule"
+        },
+        {
+          "testNumber": 26,
+          "title": "Impact of Colonial Rule",
+          "date": "09 Dec 2026",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Impact of Colonial Rule"
+        },
+        {
+          "testNumber": 27,
+          "title": "Rural and Agrarian Social Structure",
+          "date": "11 Dec 2026",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Rural and Agrarian Social Structure"
+        },
+        {
+          "testNumber": 28,
+          "title": "Caste System",
+          "date": "14 Dec 2026",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Caste System"
+        },
+        {
+          "testNumber": 29,
+          "title": "Tribal Communities in India",
+          "date": "16 Dec 2026",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Tribal Communities in India"
+        },
+        {
+          "testNumber": 30,
+          "title": "Social Classes in India",
+          "date": "18 Dec 2026",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Social Classes in India"
+        },
+        {
+          "testNumber": 31,
+          "title": "Systems of Kinship in India",
+          "date": "21 Dec 2026",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Systems of Kinship in India"
+        },
+        {
+          "testNumber": 32,
+          "title": "Systems of Kinship in India",
+          "date": "23 Dec 2026",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Systems of Kinship in India"
+        },
+        {
+          "testNumber": 33,
+          "title": "Religion and Society",
+          "date": "25 Dec 2026",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Religion and Society"
+        },
+        {
+          "testNumber": 34,
+          "title": "Religion and Society",
+          "date": "28 Dec 2026",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Religion and Society"
+        },
+        {
+          "testNumber": 35,
+          "title": "Visions of Social Change",
+          "date": "30 Dec 2026",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Visions of Social Change"
+        },
+        {
+          "testNumber": 36,
+          "title": "Rural and Agrarian Transformation",
+          "date": "01 Jan 2027",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Rural and Agrarian Transformation"
+        },
+        {
+          "testNumber": 37,
+          "title": "Rural and Agrarian Transformation",
+          "date": "04 Jan 2027",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Rural and Agrarian Transformation"
+        },
+        {
+          "testNumber": 38,
+          "title": "Rural and Agrarian Transformation",
+          "date": "06 Jan 2027",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Rural and Agrarian Transformation"
+        },
+        {
+          "testNumber": 39,
+          "title": "Industrialization and Urbanisation",
+          "date": "08 Jan 2027",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Industrialization and Urbanisation"
+        },
+        {
+          "testNumber": 40,
+          "title": "Industrialization and Urbanisation",
+          "date": "11 Jan 2027",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Industrialization and Urbanisation"
+        },
+        {
+          "testNumber": 41,
+          "title": "Politics and Society",
+          "date": "13 Jan 2027",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Politics and Society"
+        },
+        {
+          "testNumber": 42,
+          "title": "Social Movements in Modern India",
+          "date": "15 Jan 2027",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Social Movements in Modern India"
+        },
+        {
+          "testNumber": 43,
+          "title": "Social Movements in Modern India",
+          "date": "18 Jan 2027",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Social Movements in Modern India"
+        },
+        {
+          "testNumber": 44,
+          "title": "Population Dynamics",
+          "date": "20 Jan 2027",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Population Dynamics"
+        },
+        {
+          "testNumber": 45,
+          "title": "Challenges of Social Transformation",
+          "date": "22 Jan 2027",
+          "day": "Friday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Challenges of Social Transformation"
+        },
+        {
+          "testNumber": 46,
+          "title": "Challenges of Social Transformation",
+          "date": "25 Jan 2027",
+          "day": "Monday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Indian Society",
+          "syllabus": "Paper II: Indian Society - Challenges of Social Transformation"
+        },
+        {
+          "testNumber": 47,
+          "title": "Paper II Comprehensive Test",
+          "date": "27 Jan 2027",
+          "day": "Wednesday",
+          "paper": "Paper II",
+          "subjectTag": "Paper II: Comprehensive",
+          "syllabus": "Paper II: Comprehensive - Paper II Comprehensive Test"
+        },
+        {
+          "testNumber": 48,
+          "title": "Paper I – Final Comprehensive",
+          "date": "29 Jan 2027",
+          "day": "Friday",
+          "paper": "Comprehensive",
+          "subjectTag": "Final Comprehensive Tests",
+          "syllabus": "Final Comprehensive Tests - Paper I – Final Comprehensive"
+        },
+        {
+          "testNumber": 49,
+          "title": "Paper II – Final Comprehensive",
+          "date": "29 Jan 2027",
+          "day": "Friday",
+          "paper": "Comprehensive",
+          "subjectTag": "Final Comprehensive Tests",
+          "syllabus": "Final Comprehensive Tests - Paper II – Final Comprehensive"
+        }
+      ],
+      "image": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800",
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    }
+  ],
+  "articles": [
+    {
+      "id": "art_1",
+      "slug": "governor-role-constitutional-discretion-supreme-court-rulings",
+      "title": "The Office of the Governor: Constitutional Discretion & Supreme Court Guidelines",
+      "summary": "A detailed examination of Article 163, Article 200, landmark judgments (S.R. Bommai, Shamsher Singh), and recommendations of Sarkaria & Punchhi Commissions for GS Paper 2.",
+      "content": "## Context & Background\n\nThe role of the Governor in India's federal structure has frequently surfaced as a focal point of constitutional debates...",
+      "category": "editorial",
+      "paperTag": "GS2",
+      "syllabusTopics": [
+        "Indian Constitution",
+        "Federalism & Centre-State Relations",
+        "Executive & Judiciary"
+      ],
+      "author": "Prof. Ananya Roy",
+      "published": true,
+      "publishedAt": "2026-10-01T10:30:07.860Z",
+      "readTime": "6 min read",
+      "keyTakeaways": [
+        "Article 163 discretionary powers are subject to judicial review.",
+        "Floor test is the mandatory mechanism for determining legislative majority.",
+        "Sarkaria and Punchhi commission reports provide actionable governance reforms."
+      ],
+      "image": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800",
+      "createdAt": "2026-10-01T10:30:07.860Z"
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "quiz_1",
+      "title": "Daily Prelims Booster: Indian Polity & Constitutional Landmarks",
+      "description": "Test your understanding of Fundamental Rights, Directive Principles, and recent Supreme Court judgments.",
+      "subjectTag": "Indian Polity",
+      "paperTag": "GS1",
+      "timeLimitMinutes": 10,
+      "totalMarks": 10,
+      "published": true,
+      "questions": [
+        {
+          "id": "q1",
+          "questionText": "Under Article 21 of the Indian Constitution, the Right to Privacy was declared a fundamental right in which landmark judgment?",
+          "options": [
+            "Maneka Gandhi v. Union of India",
+            "Justice K.S. Puttaswamy (Retd.) v. Union of India",
+            "A.K. Gopalan v. State of Madras",
+            "Kesavananda Bharati v. State of Kerala"
+          ],
+          "correctOptionIndex": 1,
+          "explanation": "In Justice K.S. Puttaswamy (Retd.) v. Union of India (2017), a nine-judge bench unanimously affirmed that the Right to Privacy is an intrinsic part of the right to life and personal liberty under Article 21."
+        }
+      ],
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    }
+  ],
+  "quizAttempts": [],
+  "prompts": [
+    {
+      "id": "prompt_1",
+      "title": "Sociology Optional Paper 1: Positivism and its Critique in Sociological Inquiry",
+      "questionText": "Critically analyze the positivist approach in sociology. How do anti-positivist and interpretative methodologies counter the claim that social reality can be studied through natural science methods? Illustrate with Weberian and Phenomenological traditions. (20 Marks, 250 Words)",
+      "paperTag": "Optional",
+      "wordLimit": 250,
+      "maxMarks": 20,
+      "syllabusTag": "Paper I - Unit 2: Sociology as Science",
+      "modelAnswer": "## Model Framework\n\n1. **Introduction:** Define Positivism (Auguste Comte, Émile Durkheim)...\n2. **Core Positivist Assumptions:** Empiricism, social facts as things...\n3. **Anti-Positivist Critiques:** Max Weber (Verstehen), Phenomenology...\n4. **Conclusion:** Contemporary sociology embraces methodological triangulation.",
+      "evaluationRubric": {
+        "introductionWeight": "20% (Conceptual clarity on Comte & Durkheim)",
+        "bodyArgumentsWeight": "60% (Comparative critique: Verstehen, Hermeneutics, Reflexivity)",
+        "conclusionWeight": "20% (Synthesis of methodological pluralism)"
+      },
+      "published": true,
+      "createdAt": "2026-10-02T10:30:07.860Z"
+    }
+  ],
+  "writingAttempts": [],
+  "enquiries": [
+    {
+      "id": "enq_1",
+      "referenceId": "ADHIGAM-Q-7341",
+      "name": "Aarav Singhal",
+      "email": "aarav.singhal@gmail.com",
+      "phone": "+91 98112 34567",
+      "telegram": "@aarav_ias",
+      "category": "Early Bird Enrolment",
+      "courseKeyOrTitle": "RISE 2.0 – Sociology Optional Test Series",
+      "preferredMode": "online",
+      "message": "I want to enroll under the Early Bird offer (₹7,650) before 9th October. Could you please share the UPI / QR code payment process and confirmation steps?",
+      "status": "new",
+      "createdAt": "2026-10-02T05:30:07.860Z"
+    },
+    {
+      "id": "enq_2",
+      "referenceId": "ADHIGAM-Q-7342",
+      "name": "Meera Nambiar",
+      "email": "meera.n@yahoo.com",
+      "phone": "+91 94471 23456",
+      "telegram": "@meera_soc",
+      "category": "Existing Student Discount",
+      "courseKeyOrTitle": "RISE 2.0 – Sociology Optional Test Series",
+      "preferredMode": "online",
+      "message": "I completed the previous edition of RISE. How do I verify my existing student status to avail of the 25% discount fee of ₹6,675?",
+      "adminReply": "Verification confirmed! You can complete payment for ₹6,675. Welcome back to RISE 2.0.",
+      "repliedAt": "2026-10-02T08:30:07.860Z",
+      "status": "contacted",
+      "createdAt": "2026-10-01T10:30:07.860Z"
+    },
+    {
+      "id": "enq_3",
+      "referenceId": "ADHIGAM-Q-7343",
+      "name": "Devendra Patel",
+      "email": "dev.patel99@gmail.com",
+      "phone": "+91 98250 98765",
+      "telegram": "@dev_upsc",
+      "category": "Evaluation & Test Routine",
+      "courseKeyOrTitle": "RISE 2.0 – Sociology Optional Test Series",
+      "preferredMode": "online",
+      "message": "If I write my answers on UPSC-format ruled paper, scan and send the PDF by 9:00 PM via Telegram (@adhigamias1), will the evaluated copy be returned with line-by-line comments within 3 days?",
+      "adminReply": "Yes, exactly! Submit your single scanned PDF by 9:00 PM on test day (Mon/Wed/Fri) via Telegram or email. Evaluated copy with detailed faculty comments is returned within 3 days.",
+      "repliedAt": "2026-10-01T16:30:07.860Z",
+      "status": "resolved",
+      "createdAt": "2026-09-30T10:30:07.860Z"
+    }
+  ],
+  "bookmarks": [],
+  "follows": [],
+  "files": []
+}
