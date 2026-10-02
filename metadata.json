@@ -1,6 +1,6 @@
 {
-  "name": "Adhigam IAS",
-  "description": "Full-stack Civil Services preparation platform with public portal, aspirant portal, quiz engine, Mains answer-writing reviews, and admin CMS.",
+  "name": "ADHIGAM IAS",
+  "description": "ADHIGAM IAS RISE 2.0 Sociology Optional Test Series portal with test schedules, admissions counselling CRM, and student query tracking.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

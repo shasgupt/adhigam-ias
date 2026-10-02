@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Sparkles,
   BookOpen,
-  Award,
+  Calendar,
+  Clock,
+  Send,
+  Mail,
   CheckCircle2,
   ArrowRight,
   ChevronRight,
-  PenTool,
-  Clock,
-  Layers,
-  Users,
-  Target,
+  Search,
+  Check,
+  CreditCard,
+  MessageSquare,
   FileText,
-  Star,
+  HelpCircle,
+  Shield,
+  Layers,
 } from 'lucide-react';
-import { Course, TestSeries, Article, Quiz, Prompt } from '../../types';
-import { api } from '../../lib/api';
-import { INSTITUTE_CONFIG } from '../../data/instituteConfig';
+import { INSTITUTE_CONFIG, RISE_49_TEST_SCHEDULE, ScheduleItem } from '../../data/instituteConfig';
 import { AdhigamLogo } from '../../components/AdhigamLogo';
+import { api } from '../../lib/api';
 
 interface HomeViewProps {
   onNavigate: (path: string, tab?: 'public' | 'aspirant' | 'admin') => void;
@@ -25,411 +28,867 @@ interface HomeViewProps {
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire }) => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [testSeries, setTestSeries] = useState<TestSeries[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Test Schedule Browser States
+  const [activePaperTab, setActivePaperTab] = useState<'all' | 'paper1' | 'paper2' | 'comprehensive'>('all');
+  const [scheduleSearch, setScheduleSearch] = useState('');
+  const [scheduleExpanded, setScheduleExpanded] = useState(false);
 
-  useEffect(() => {
-    Promise.all([
-      api.get<Course[]>('/api/courses'),
-      api.get<TestSeries[]>('/api/test-series'),
-      api.get<Article[]>('/api/articles'),
-      api.get<Quiz[]>('/api/quizzes'),
-      api.get<Prompt[]>('/api/prompts'),
-    ])
-      .then(([cData, tData, aData, qData, pData]) => {
-        setCourses(cData);
-        setTestSeries(tData);
-        setArticles(aData);
-        setQuizzes(qData);
-        setPrompts(pData);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+  // Student Query States
+  const [queryName, setQueryName] = useState('');
+  const [queryEmail, setQueryEmail] = useState('');
+  const [queryPhone, setQueryPhone] = useState('');
+  const [queryTelegram, setQueryTelegram] = useState('');
+  const [queryCategory, setQueryCategory] = useState('RISE 2.0 Enrolment');
+  const [queryMessage, setQueryMessage] = useState('');
+  const [querySubmitting, setQuerySubmitting] = useState(false);
+  const [querySubmittedRef, setQuerySubmittedRef] = useState<string | null>(null);
 
-  const featuredCourses = courses.filter((c) => c.featured).slice(0, 3);
-  const featuredTestSeries = testSeries.slice(0, 2);
-  const latestArticles = articles.slice(0, 3);
-  const todaysPrompt = prompts[0];
-  const todaysQuiz = quizzes[0];
+  // Tracking tab states
+  const [trackingMode, setTrackingMode] = useState<'submit' | 'track'>('submit');
+  const [trackingInput, setTrackingInput] = useState('');
+  const [trackingLoading, setTrackingLoading] = useState(false);
+  const [trackedResults, setTrackedResults] = useState<any[] | null>(null);
+  const [trackingError, setTrackingError] = useState('');
+
+  // Filtered Schedule
+  const filteredSchedule = useMemo(() => {
+    return RISE_49_TEST_SCHEDULE.filter((item) => {
+      let matchesTab = true;
+      if (activePaperTab === 'paper1') matchesTab = item.paper === 'Paper I';
+      else if (activePaperTab === 'paper2') matchesTab = item.paper === 'Paper II';
+      else if (activePaperTab === 'comprehensive') matchesTab = item.paper === 'Comprehensive' || item.coverage.includes('Comprehensive');
+
+      const matchesSearch =
+        scheduleSearch.trim() === '' ||
+        item.coverage.toLowerCase().includes(scheduleSearch.toLowerCase()) ||
+        item.date.toLowerCase().includes(scheduleSearch.toLowerCase()) ||
+        `test ${item.testNumber}`.includes(scheduleSearch.toLowerCase());
+
+      return matchesTab && matchesSearch;
+    });
+  }, [activePaperTab, scheduleSearch]);
+
+  const displayedSchedule = scheduleExpanded ? filteredSchedule : filteredSchedule.slice(0, 12);
+
+  const handleQuerySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setQuerySubmitting(true);
+    try {
+      const res: any = await api.post('/api/enquiries', {
+        name: queryName,
+        email: queryEmail,
+        phone: queryPhone,
+        telegram: queryTelegram,
+        category: queryCategory,
+        courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
+        preferredMode: 'online',
+        message: queryMessage,
+      });
+
+      setQuerySubmittedRef(res?.referenceId || `ADHIGAM-Q-${Math.floor(1000 + Math.random() * 9000)}`);
+      setQueryName('');
+      setQueryEmail('');
+      setQueryPhone('');
+      setQueryTelegram('');
+      setQueryMessage('');
+    } catch (err: any) {
+      alert('Error submitting query: ' + (err.message || 'Please contact adhigamias@gmail.com directly.'));
+    } finally {
+      setQuerySubmitting(false);
+    }
+  };
+
+  const handleTrackQuery = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trackingInput.trim()) return;
+    setTrackingLoading(true);
+    setTrackingError('');
+    setTrackedResults(null);
+
+    try {
+      const res: any = await api.get(`/api/enquiries/track?q=${encodeURIComponent(trackingInput.trim())}`);
+      if (res && Array.isArray(res.results) && res.results.length > 0) {
+        setTrackedResults(res.results);
+      } else {
+        setTrackingError('No inquiries found for this query reference or email.');
+      }
+    } catch (err: any) {
+      setTrackingError(err.message || 'Failed to track query. Please verify reference or email.');
+    } finally {
+      setTrackingLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-16 pb-16">
-      {/* Hero Section */}
+      {/* ========================================================================= */}
+      {/* 00 | HERO SECTION: ADHIGAM IAS RISE 2.0                                   */}
+      {/* ========================================================================= */}
       <section className="relative bg-[#FDFBF7] text-slate-800 pt-10 pb-16 px-4 border-b border-amber-200/60">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
-          <div className="lg:col-span-7 space-y-6 text-left">
-            {/* Executive Badge Header */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-2 bg-[#0F2C59] text-amber-300 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> UPSC Civil Services 2026/27
-              </div>
-              <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider bg-amber-100/80 border border-amber-300/80 px-2.5 py-1 rounded-md hidden sm:inline-block">
-                Driven by Discipline, Fueled by Knowledge
-              </span>
+        <div className="max-w-7xl mx-auto space-y-10">
+          {/* Top Academy Crest & Title */}
+          <div className="flex flex-col items-center text-center space-y-4 max-w-4xl mx-auto">
+            <AdhigamLogo size="lg" showText={false} />
+
+            <div className="inline-flex items-center gap-2 bg-[#0F2C59] text-amber-300 px-3.5 py-1 rounded-md text-xs font-bold uppercase tracking-widest shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+              ADHIGAM IAS • UPSC Civil Services Mains 2027
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-sans-ui text-[#0F2C59] tracking-tight leading-tight">
-              Precision Coaching for <span className="text-[#D97706] underline decoration-amber-300 decoration-wavy decoration-2">Civil Services</span> Examination.
-            </h1>
+            <div className="space-y-2">
+              <h1 className="text-3xl sm:text-5xl font-black font-serif-heading text-[#0F2C59] tracking-tight">
+                ADHIGAM IAS <span className="text-[#D97706]">RISE 2.0</span>
+              </h1>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans-ui text-slate-800 tracking-wide uppercase">
+                {INSTITUTE_CONFIG.subtitle}
+              </h2>
+              <p className="text-sm sm:text-base font-bold text-amber-900 tracking-wider uppercase bg-amber-100/70 border border-amber-300/80 px-4 py-1.5 rounded-lg inline-block">
+                {INSTITUTE_CONFIG.secondaryTagline}
+              </p>
+            </div>
 
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl font-sans-ui">
-              Comprehensive GS Foundation, Daily Mains Answer Evaluation with line-by-line feedback, All-India Prelims Mock Series, and One-on-One Mentorship led by former Civil Servants.
+              {INSTITUTE_CONFIG.examTarget}. Regular answer-writing routine, planned coverage of Paper I & Paper II, application of thinkers & perspectives, model answers, and prompt line-by-line evaluation.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
+            {/* Quick Action CTA Bar */}
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
-                onClick={() => onOpenEnquire('GS Integrated Foundation 2026')}
-                className="bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 px-5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-amber-400/30"
+                onClick={() => onOpenEnquire('RISE 2.0 - Early Bird Enrolment (₹7,650)')}
+                className="bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all cursor-pointer border border-amber-400/40"
               >
-                Enroll in New Batch <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+                <Sparkles className="w-4 h-4 text-amber-400" /> Enrol in RISE 2.0 (Early Bird: ₹7,650)
               </button>
 
               <button
-                onClick={() => onNavigate('/free')}
-                className="px-4 py-2.5 border border-slate-300 rounded-md text-xs font-semibold text-[#0F2C59] bg-white hover:bg-amber-50/50 flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                onClick={() => {
+                  const el = document.getElementById('test-schedule');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-5 py-3 border border-slate-300 rounded-lg text-xs font-semibold text-[#0F2C59] bg-white hover:bg-amber-50/50 flex items-center gap-2 transition-all cursor-pointer shadow-xs"
               >
-                <BookOpen className="w-3.5 h-3.5 text-[#D97706]" /> Free Self-Study Portal
+                <Calendar className="w-4 h-4 text-[#D97706]" /> View 49-Test Schedule
               </button>
-            </div>
 
-            {/* System Quick Metrics Cards */}
-            <div className="pt-6 border-t border-slate-100 grid grid-cols-3 gap-4 text-left max-w-xl">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Selections</p>
-                <h3 className="text-xl font-bold mt-1 text-slate-900">{INSTITUTE_CONFIG.stats.topSelectionsCount}</h3>
-                <div className="mt-1 flex items-center text-[10px] text-emerald-600 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Verified Ranks
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Active Aspirants</p>
-                <h3 className="text-xl font-bold mt-1 text-slate-900">{INSTITUTE_CONFIG.stats.activeAspirantsCount}</h3>
-                <div className="mt-1 flex items-center text-[10px] text-indigo-600 font-medium">
-                  Active Enrollment
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Review SLA</p>
-                <h3 className="text-xl font-bold mt-1 text-slate-900">{INSTITUTE_CONFIG.stats.answerReviewSla}</h3>
-                <div className="mt-1 flex items-center text-[10px] text-slate-500 font-medium">
-                  Faculty Feedback
-                </div>
-              </div>
+              <a
+                href={INSTITUTE_CONFIG.contact.telegramLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-3 bg-sky-50 border border-sky-200 hover:bg-sky-100 text-sky-800 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all"
+              >
+                <Send className="w-4 h-4 text-sky-600" /> Telegram: {INSTITUTE_CONFIG.contact.telegram}
+              </a>
             </div>
           </div>
 
-          {/* Right Hero Interactive Cards & Seal Crest */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Official Academy Crest Badge */}
-            <div className="bg-[#0F2C59] text-white p-4 rounded-xl border border-amber-400/40 shadow-lg flex items-center gap-4">
-              <AdhigamLogo size="lg" showText={false} />
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
-                  Official Crest & Motto
-                </span>
-                <h4 className="font-serif-heading text-sm font-bold text-amber-200">
-                  Adhigam IAS Academy
-                </h4>
-                <p className="text-[11px] text-slate-300 italic">
-                  "Driven by Discipline, Fueled by Knowledge"
-                </p>
-              </div>
+          {/* 6 Key Programme Pillars from PDF Page 1 */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4 border-t border-amber-200/50">
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Total Tests</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">49 Tests</span>
+              <span className="text-[11px] text-slate-500 font-medium">12 Oct – 31 Jan</span>
             </div>
 
-            {/* Today's Mains Question Spotlight */}
-            {todaysPrompt && (
-              <div className="bg-slate-900 text-indigo-300 rounded-xl p-5 shadow-xl border border-slate-800">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-md">
-                    Mains Question of the Day
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">
-                    {todaysPrompt.paperTag} • {todaysPrompt.maxMarks} Marks
-                  </span>
-                </div>
-                <h3 className="text-sm font-bold text-white font-sans-ui line-clamp-2 mb-2">
-                  {todaysPrompt.title}
-                </h3>
-                <p className="text-xs text-slate-300 line-clamp-3 mb-4 leading-relaxed font-mono bg-slate-950 p-3 rounded-md border border-slate-800">
-                  "{todaysPrompt.questionText}"
-                </p>
-                <div className="flex items-center justify-between border-t border-slate-800 pt-3">
-                  <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-indigo-400" /> Limit: {todaysPrompt.wordLimit} Words
-                  </span>
-                  <button
-                    onClick={() => onNavigate('/free/answer-writing')}
-                    className="text-xs font-bold text-indigo-300 hover:text-white flex items-center gap-1 cursor-pointer"
-                  >
-                    Write & Review <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Marks / Test</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">50 Marks</span>
+              <span className="text-[11px] text-slate-500 font-medium">Per Session</span>
+            </div>
 
-            {/* Daily MCQ Challenge Spotlight */}
-            {todaysQuiz && (
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md">
-                    Daily Prelims Practice
-                  </span>
-                  <span className="text-xs text-slate-500 font-medium">{todaysQuiz.subjectTag}</span>
-                </div>
-                <p className="text-xs font-semibold text-slate-800 mb-3">
-                  {todaysQuiz.title}
-                </p>
-                <button
-                  onClick={() => onNavigate('/free/quizzes')}
-                  className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  Start 5-Min MCQ Test Now <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Questions</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">4 Questions</span>
+              <span className="text-[11px] text-slate-500 font-medium">10 & 20 Mark Mix</span>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Weekly Days</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">Mon • Wed • Fri</span>
+              <span className="text-[11px] text-slate-500 font-medium">Disciplined Routine</span>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Coverage</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">Paper I & II</span>
+              <span className="text-[11px] text-slate-500 font-medium">+ Comprehensive</span>
+            </div>
+
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 text-center shadow-xs">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Evaluation</span>
+              <span className="text-xl font-black text-[#0F2C59] block mt-0.5">Within 3 Days</span>
+              <span className="text-[11px] text-slate-500 font-medium">Line-by-Line Remarks</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Courses Section */}
+      {/* ========================================================================= */}
+      {/* 01 | WHY RISE 2.0? & THE RISE PRACTICE PROMISE                            */}
+      {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="text-indigo-600 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
-              <Layers className="w-4 h-4" /> Academic Offerings
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight font-sans-ui">
-              Featured Civil Services Programmes
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="border-b border-slate-100 pb-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
+              01 | Why RISE 2.0?
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59] mt-3">
+              Purposeful, Regular & Feedback-Led Sociology Practice
             </h2>
           </div>
-          <button
-            onClick={() => onNavigate('/courses')}
-            className="text-xs font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
-          >
-            View All Courses ({courses.length}) <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredCourses.map((course) => (
-            <div
-              key={course.id}
-              className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group"
-            >
-              <div className="relative h-44 overflow-hidden bg-slate-900">
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
-                />
-                <div className="absolute top-3 left-3 bg-slate-900/90 text-indigo-300 px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-widest border border-indigo-500/30">
-                  {course.mode} Batch
-                </div>
-              </div>
-
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="text-[11px] text-slate-500 font-semibold mb-1">
-                    Duration: {course.duration} • Starts {course.startDate}
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
-                    {course.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">
-                    {course.description}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest block">Fee Structure</span>
-                    <span className="text-sm font-bold text-slate-900">{course.fee}</span>
-                  </div>
-                  <button
-                    onClick={() => onOpenEnquire(course.title)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
-                  >
-                    Enquire
-                  </button>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="lg:col-span-6 space-y-4 text-sm text-slate-700 leading-relaxed font-sans-ui">
+              <p className="font-semibold text-slate-900 text-base">
+                {INSTITUTE_CONFIG.riseWhy}
+              </p>
+              <p className="bg-amber-50/60 p-4 rounded-xl border border-amber-200/80 text-amber-950 font-medium leading-relaxed">
+                "{INSTITUTE_CONFIG.riseWhySubtext}"
+              </p>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
+                <p className="font-bold text-slate-900">UPSC Civil Services Mains 2027 Focus:</p>
+                <p>Designed for aspirants targeting maximum score in Sociology Optional with structured question-answer cycles that eliminate exam hall hesitation.</p>
               </div>
             </div>
-          ))}
+
+            {/* The RISE Practice Promise Cards */}
+            <div className="lg:col-span-6 space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                THE RISE PRACTICE PROMISE:
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {INSTITUTE_CONFIG.risePracticePromise.map((promise, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 bg-slate-50 hover:bg-amber-50/50 rounded-xl border border-slate-200 hover:border-amber-300 transition-all flex items-start gap-2.5"
+                  >
+                    <div className="w-5 h-5 rounded-full bg-[#0F2C59] text-amber-300 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
+                      {idx + 1}
+                    </div>
+                    <p className="text-xs font-semibold text-slate-800 leading-snug">
+                      {promise}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Featured Test Series Section */}
-      <section className="bg-slate-900 text-white py-14 px-4 border-y border-slate-800">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      {/* ========================================================================= */}
+      {/* 02 | PROGRAMME SNAPSHOT & 03 | YOUR TEST-DAY ROUTINE                      */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Programme Snapshot */}
+          <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div>
-              <div className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Target className="w-4 h-4 text-indigo-400" /> Exam Simulation
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold font-sans-ui text-white tracking-tight">
-                All-India Mock Test Series 2026
-              </h2>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
+                02 | Programme Snapshot
+              </span>
+              <h3 className="text-xl font-bold font-serif-heading text-[#0F2C59] mt-3">
+                Key Architectural Elements
+              </h3>
             </div>
-            <button
-              onClick={() => onNavigate('/test-series')}
-              className="text-xs font-bold uppercase tracking-wider text-indigo-300 hover:text-white flex items-center gap-1 cursor-pointer"
-            >
-              Explore Test Schedules <ChevronRight className="w-4 h-4" />
-            </button>
+
+            <div className="divide-y divide-slate-100 text-xs">
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Duration</span>
+                <span className="font-semibold text-slate-900">{INSTITUTE_CONFIG.duration}</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Total Tests</span>
+                <span className="font-bold text-[#0F2C59]">{INSTITUTE_CONFIG.totalTests} Tests</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Schedule</span>
+                <span className="font-semibold text-slate-900">{INSTITUTE_CONFIG.schedulePattern}</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Test Value</span>
+                <span className="font-semibold text-slate-900">{INSTITUTE_CONFIG.marksPerTest} marks | 4 questions</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Question Pattern</span>
+                <span className="font-semibold text-slate-900">{INSTITUTE_CONFIG.questionPattern}</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Submission</span>
+                <span className="font-semibold text-slate-900 text-right max-w-xs">{INSTITUTE_CONFIG.submissionMethod}</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Model Answer</span>
+                <span className="font-semibold text-emerald-700">{INSTITUTE_CONFIG.modelAnswerTime}</span>
+              </div>
+              <div className="py-2.5 flex justify-between items-center">
+                <span className="font-bold text-slate-500 uppercase tracking-wider">Evaluation</span>
+                <span className="font-semibold text-indigo-700">{INSTITUTE_CONFIG.evaluationTurnaround}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {featuredTestSeries.map((ts) => (
-              <div
-                key={ts.id}
-                className="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition-all shadow-md"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-500/30">
-                      {ts.totalTests} Full Tests
-                    </span>
-                    <span className="text-xs font-mono text-slate-400">{ts.startDate}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    {ts.title}
-                  </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    {ts.description}
-                  </p>
+          {/* Test-Day Routine */}
+          <div className="lg:col-span-6 bg-slate-900 text-white rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-md space-y-6">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-300 bg-amber-400/20 border border-amber-400/30 px-3 py-1 rounded-md">
+                03 | Your Test-Day Routine
+              </span>
+              <h3 className="text-xl font-bold font-serif-heading text-white mt-3">
+                Disciplined Exam Day Cycle
+              </h3>
+            </div>
 
-                  <div className="space-y-2 mb-6">
-                    {ts.schedule.slice(0, 3).map((item) => (
-                      <div key={item.testNumber} className="flex items-center justify-between text-xs bg-slate-900/80 p-2.5 rounded-md border border-slate-800 font-mono">
-                        <span className="text-slate-200">Test #{item.testNumber}: {item.title}</span>
-                        <span className="text-indigo-400 font-bold text-[11px]">{item.date}</span>
-                      </div>
-                    ))}
+            <div className="space-y-4">
+              {INSTITUTE_CONFIG.testDayRoutine.map((step, idx) => (
+                <div key={idx} className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-start gap-3.5">
+                  <div className="px-2.5 py-1 bg-amber-400/20 text-amber-300 border border-amber-400/40 rounded-md font-mono text-xs font-bold shrink-0">
+                    {step.time}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      {step.action}
+                    </h4>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      {step.detail}
+                    </p>
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
-                  <span className="text-sm font-bold text-indigo-300">{ts.fee}</span>
-                  <button
-                    onClick={() => onOpenEnquire(ts.title)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold text-xs uppercase tracking-wider transition-colors cursor-pointer"
-                  >
-                    Join Test Series
-                  </button>
-                </div>
-              </div>
-            ))}
+            {/* Routine Rule Callout Box from PDF */}
+            <div className="p-4 bg-amber-400/10 border border-amber-400/30 rounded-xl text-center">
+              <p className="text-xs font-bold text-amber-200 leading-relaxed font-sans-ui">
+                {INSTITUTE_CONFIG.routineRule}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Free Daily Current Affairs & Editorials */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-          <div>
-            <div className="text-indigo-600 text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
-              <FileText className="w-4 h-4" /> Editorial Gists
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold font-sans-ui text-slate-900 tracking-tight">
-              Daily Current Affairs & Syllabus Breakdown
-            </h2>
-          </div>
-          <button
-            onClick={() => onNavigate('/free/current-affairs')}
-            className="text-xs font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
-          >
-            Browse All Articles <ChevronRight className="w-4 h-4" />
-          </button>
+      {/* ========================================================================= */}
+      {/* 04 | FEE & ENROLMENT TIERS                                                */}
+      {/* ========================================================================= */}
+      <section id="fees-enrolment" className="max-w-7xl mx-auto px-4 scroll-mt-20">
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
+            05 | Fee & Enrolment
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59]">
+            Choose Your Eligible Fee
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Transparent pricing for the complete 49-test cycle, model answers, and individual evaluations.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {latestArticles.map((art) => (
+          {INSTITUTE_CONFIG.pricingTiers.map((tier) => (
             <div
-              key={art.id}
-              onClick={() => onNavigate('/free/current-affairs')}
-              className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col justify-between hover:border-indigo-400 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+              key={tier.id}
+              className={`rounded-2xl border p-6 flex flex-col justify-between transition-all shadow-sm ${
+                tier.popular
+                  ? 'bg-amber-50/70 border-amber-400 ring-2 ring-amber-400/30 shadow-md relative'
+                  : 'bg-white border-slate-200'
+              }`}
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="bg-slate-100 text-slate-800 font-bold text-[10px] px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-widest">
-                    {art.paperTag}
-                  </span>
-                  <span className="text-[11px] font-mono text-slate-400">{art.readTime}</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    {tier.title}
+                  </h3>
+                  {tier.badge && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded shadow-xs">
+                      {tier.badge}
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-2">
-                  {art.title}
-                </h3>
-                <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed mb-4">
-                  {art.summary}
+
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-[#0F2C59]">
+                    {tier.formattedAmount}
+                  </div>
+                  {tier.discountNote && (
+                    <span className="text-xs font-semibold text-emerald-700 block mt-1">
+                      {tier.discountNote}
+                    </span>
+                  )}
+                  {tier.validityNote && (
+                    <span className="text-xs font-medium text-amber-800 block mt-1">
+                      {tier.validityNote}
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed pt-3 border-t border-slate-100">
+                  {tier.note}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
-                <span>By {art.author}</span>
-                <span className="text-indigo-600 font-semibold group-hover:underline">Read Article →</span>
+              <div className="pt-6">
+                <button
+                  onClick={() => onOpenEnquire(`${tier.title} (${tier.formattedAmount})`)}
+                  className={`w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+                    tier.popular
+                      ? 'bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 border border-amber-400/40'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white'
+                  }`}
+                >
+                  Enquire & Enrol <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="mt-4 p-3 bg-slate-100 rounded-xl text-center text-xs text-slate-600 font-medium">
+          Note: Early bird and existing-student fees are separate categories. The existing-student fee is calculated as a 25% discount on the launch price.
+        </div>
       </section>
 
-      {/* Testimonial / Toppers Section */}
-      <section className="bg-slate-100 border-y border-slate-200 py-14 px-4 text-slate-900">
-        <div className="max-w-7xl mx-auto text-center space-y-8">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-md">
-              Verified Student Feedback
+      {/* ========================================================================= */}
+      {/* 04 | COMPLETE 49-TEST SCHEDULE BROWSER                                    */}
+      {/* ========================================================================= */}
+      <section id="test-schedule" className="max-w-7xl mx-auto px-4 scroll-mt-20">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-100 pb-5">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
+                04 | Complete Test Schedule
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59] mt-3">
+                Full 49-Test Curriculum & Coverage
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Paper I (Fundamentals), Paper II (Indian Society), and Final Comprehensive Tests.
+              </p>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-72">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                placeholder="Search topic or date (e.g. Thinkers, Caste)..."
+                value={scheduleSearch}
+                onChange={(e) => setScheduleSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:border-[#0F2C59]"
+              />
+            </div>
+          </div>
+
+          {/* Paper Tabs */}
+          <div className="flex flex-wrap gap-2 text-xs font-bold">
+            <button
+              onClick={() => setActivePaperTab('all')}
+              className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activePaperTab === 'all'
+                  ? 'bg-[#0F2C59] text-amber-300 font-bold'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              All 49 Tests
+            </button>
+            <button
+              onClick={() => setActivePaperTab('paper1')}
+              className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activePaperTab === 'paper1'
+                  ? 'bg-[#0F2C59] text-amber-300 font-bold'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Paper I: Fundamentals (Tests 1–22)
+            </button>
+            <button
+              onClick={() => setActivePaperTab('paper2')}
+              className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activePaperTab === 'paper2'
+                  ? 'bg-[#0F2C59] text-amber-300 font-bold'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Paper II: Indian Society (Tests 23–47)
+            </button>
+            <button
+              onClick={() => setActivePaperTab('comprehensive')}
+              className={`px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                activePaperTab === 'comprehensive'
+                  ? 'bg-[#0F2C59] text-amber-300 font-bold'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Comprehensives (Tests 22, 47, 48, 49)
+            </button>
+          </div>
+
+          {/* Schedule Table */}
+          <div className="overflow-x-auto border border-slate-200 rounded-xl">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#0F2C59] text-amber-200 uppercase font-bold text-[10px] tracking-wider">
+                <tr>
+                  <th className="py-3 px-4">Test #</th>
+                  <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Day</th>
+                  <th className="py-3 px-4">Paper</th>
+                  <th className="py-3 px-4">Test Coverage</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {displayedSchedule.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-slate-400">
+                      No tests match your filter or search query.
+                    </td>
+                  </tr>
+                ) : (
+                  displayedSchedule.map((test) => (
+                    <tr key={test.testNumber} className="hover:bg-amber-50/40 transition-colors">
+                      <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                        #{test.testNumber}
+                      </td>
+                      <td className="py-3 px-4 font-semibold text-slate-800 whitespace-nowrap">
+                        {test.date}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 whitespace-nowrap">
+                        {test.day}
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            test.paper === 'Paper I'
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : test.paper === 'Paper II'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-purple-50 text-purple-700 border border-purple-200'
+                          }`}
+                        >
+                          {test.paper}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-medium text-slate-900">
+                        {test.coverage}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Show More / Show Less Button */}
+          {filteredSchedule.length > 12 && (
+            <div className="text-center pt-2">
+              <button
+                onClick={() => setScheduleExpanded(!scheduleExpanded)}
+                className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                {scheduleExpanded
+                  ? `Show Less (Showing all ${filteredSchedule.length})`
+                  : `View All ${filteredSchedule.length} Tests in Schedule ↓`}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 06 | MAKE YOUR PRACTICE COUNT & OFFICIAL CONNECT                          */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-[#0F2C59] text-white rounded-2xl p-8 sm:p-12 text-center space-y-6 shadow-xl border border-amber-400/30">
+          <div className="space-y-2">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-md">
+              06 | Make Your Practice Count
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-sans-ui text-slate-900 mt-3">
-              What Civil Services Aspirants Say About Adhigam IAS
+            <h2 className="text-2xl sm:text-4xl font-black font-serif-heading text-white">
+              DON’T JUST STUDY SOCIOLOGY. <br />
+              <span className="text-amber-300 underline decoration-amber-400 decoration-wavy decoration-2">
+                LEARN TO EXPRESS IT.
+              </span>
             </h2>
+            <p className="text-slate-300 text-sm max-w-xl mx-auto font-sans-ui pt-1">
+              Join RISE 2.0 and make disciplined answer writing a meaningful part of your preparation journey.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex text-amber-500 gap-1">
-                <Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" />
-              </div>
-              <p className="text-xs text-slate-700 leading-relaxed italic">
-                "The 24-hour answer evaluation turnaround and line-by-line faculty feedback transformed my Mains GS-2 and GS-4 presentation. Highly disciplined environment!"
-              </p>
-              <div>
-                <p className="text-xs font-bold text-slate-900">Ananya Mehta</p>
-                <p className="text-[10px] text-slate-500 font-mono">UPSC CSE 2024 Ranker Candidate</p>
-              </div>
+          {/* Official Academy Contacts from PDF */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left pt-4">
+            <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-xl space-y-1">
+              <span className="text-[10px] text-amber-400 font-bold uppercase tracking-widest block">Official Email</span>
+              <a href={`mailto:${INSTITUTE_CONFIG.contact.email}`} className="text-xs font-bold text-white hover:underline truncate block">
+                {INSTITUTE_CONFIG.contact.email}
+              </a>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex text-amber-500 gap-1">
-                <Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" />
-              </div>
-              <p className="text-xs text-slate-700 leading-relaxed italic">
-                "Daily Prelims Quizzes and the Sponge City & Constitutional Discretion gists kept my preparation sharp even during my job hours."
-              </p>
-              <div>
-                <p className="text-xs font-bold text-slate-900">Vikramaditya Singh</p>
-                <p className="text-[10px] text-slate-500 font-mono">Working Professional Aspirant</p>
-              </div>
+            <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-xl space-y-1">
+              <span className="text-[10px] text-sky-400 font-bold uppercase tracking-widest block">Official Telegram</span>
+              <a href={INSTITUTE_CONFIG.contact.telegramLink} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-white hover:underline truncate block">
+                {INSTITUTE_CONFIG.contact.telegram}
+              </a>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex text-amber-500 gap-1">
-                <Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" /><Star className="w-3.5 h-3.5 fill-amber-400" />
-              </div>
-              <p className="text-xs text-slate-700 leading-relaxed italic">
-                "Prof. Ananya Roy's Public Administration optional guidance is unmatched. The thinker interlinkages helped me score 290+ in optionals."
-              </p>
-              <div>
-                <p className="text-xs font-bold text-slate-900">Kavya Nair</p>
-                <p className="text-[10px] text-slate-500 font-mono">Pub-Ad Optional Student</p>
-              </div>
+            <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-xl space-y-1">
+              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest block">Official Portal</span>
+              <a href={INSTITUTE_CONFIG.contact.website} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-white hover:underline truncate block">
+                adhigamiasacademy.com
+              </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* STUDENT QUERY DESK & REAL-TIME TRACKING WORKBENCH                         */}
+      {/* ========================================================================= */}
+      <section id="student-query-desk" className="max-w-7xl mx-auto px-4 scroll-mt-20">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
+                Interactive Student Query Feature
+              </span>
+              <h2 className="text-2xl font-bold font-serif-heading text-[#0F2C59] mt-2">
+                Student Query & Academic Desk
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Submit an inquiry or track your submitted query status directly with ADHIGAM IAS.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+              <button
+                onClick={() => setTrackingMode('submit')}
+                className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  trackingMode === 'submit' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Submit New Query
+              </button>
+              <button
+                onClick={() => setTrackingMode('track')}
+                className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  trackingMode === 'track' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Track Query Status
+              </button>
+            </div>
+          </div>
+
+          {/* MODE 1: SUBMIT NEW QUERY */}
+          {trackingMode === 'submit' && (
+            <div>
+              {querySubmittedRef ? (
+                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+                  <h3 className="text-base font-bold text-slate-900">
+                    Your Query Has Been Submitted Successfully!
+                  </h3>
+                  <p className="text-xs text-slate-600 max-w-md mx-auto">
+                    Your inquiry tracking reference is: <strong className="font-mono text-[#0F2C59] text-sm">{querySubmittedRef}</strong>.
+                    Our academic team will respond directly via email and Telegram.
+                  </p>
+                  <div className="pt-2 flex justify-center gap-3">
+                    <button
+                      onClick={() => setQuerySubmittedRef(null)}
+                      className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold"
+                    >
+                      Submit Another Query
+                    </button>
+                    <a
+                      href={INSTITUTE_CONFIG.contact.telegramLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-sky-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5"
+                    >
+                      <Send className="w-3.5 h-3.5" /> Message on Telegram
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleQuerySubmit} className="space-y-4 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Your Name *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Aditi Sharma"
+                        value={queryName}
+                        onChange={(e) => setQueryName(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Email Address *</label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="aspirant@gmail.com"
+                        value={queryEmail}
+                        onChange={(e) => setQueryEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Phone / WhatsApp</label>
+                      <input
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={queryPhone}
+                        onChange={(e) => setQueryPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Telegram Handle</label>
+                      <input
+                        type="text"
+                        placeholder="@username"
+                        value={queryTelegram}
+                        onChange={(e) => setQueryTelegram(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-1">
+                      <label className="block font-bold text-slate-700 mb-1">Query Topic</label>
+                      <select
+                        value={queryCategory}
+                        onChange={(e) => setQueryCategory(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59] bg-white font-medium"
+                      >
+                        <option value="RISE 2.0 Enrolment">RISE 2.0 Enrolment</option>
+                        <option value="Early Bird Offer (₹7,650)">Early Bird Offer (₹7,650)</option>
+                        <option value="Existing Student Discount (₹6,675)">Existing Student Discount (₹6,675)</option>
+                        <option value="Schedule & Syllabus">Schedule & Syllabus</option>
+                        <option value="Submission via Telegram">Submission via Telegram / Email</option>
+                        <option value="Evaluation Process">3-Day Evaluation Turnaround</option>
+                        <option value="Payment / Bank Transfer">Payment / UPI Transfer</option>
+                      </select>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block font-bold text-slate-700 mb-1">Message / Question *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Write your specific question regarding RISE 2.0..."
+                        value={queryMessage}
+                        onChange={(e) => setQueryMessage(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-[#0F2C59]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <button
+                      type="submit"
+                      disabled={querySubmitting}
+                      className="px-6 py-2.5 bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      {querySubmitting ? 'Sending Query...' : 'Submit Student Query'}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* MODE 2: TRACK STATUS */}
+          {trackingMode === 'track' && (
+            <div className="space-y-4">
+              <form onSubmit={handleTrackQuery} className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter your email (e.g. aarav.singhal@gmail.com) or Reference ID (e.g. ADHIGAM-Q-7341)..."
+                  value={trackingInput}
+                  onChange={(e) => setTrackingInput(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:border-[#0F2C59]"
+                />
+                <button
+                  type="submit"
+                  disabled={trackingLoading}
+                  className="px-5 py-2 bg-[#0F2C59] text-amber-300 font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <Search className="w-3.5 h-3.5" />
+                  {trackingLoading ? 'Searching...' : 'Track'}
+                </button>
+              </form>
+
+              {trackingError && (
+                <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-lg">
+                  {trackingError}
+                </div>
+              )}
+
+              {trackedResults && (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Found {trackedResults.length} Inquir{trackedResults.length === 1 ? 'y' : 'ies'}:
+                  </h4>
+                  {trackedResults.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5 text-xs"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
+                            {item.referenceId || item.id}
+                          </span>
+                          <span className="font-semibold text-slate-700">
+                            {item.category || item.courseKeyOrTitle}
+                          </span>
+                        </div>
+                        <span
+                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                            item.status === 'resolved'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : item.status === 'contacted'
+                              ? 'bg-sky-100 text-sky-800'
+                              : 'bg-amber-100 text-amber-800'
+                          }`}
+                        >
+                          Status: {item.status}
+                        </span>
+                      </div>
+
+                      <div className="bg-white p-3 rounded-lg border border-slate-200">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase block mb-0.5">Your Question</span>
+                        <p className="text-slate-800">{item.message}</p>
+                      </div>
+
+                      {item.adminReply ? (
+                        <div className="bg-emerald-50/80 p-3 rounded-lg border border-emerald-200">
+                          <span className="text-[10px] text-emerald-800 font-bold uppercase block mb-0.5 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Official Response from ADHIGAM IAS Faculty
+                          </span>
+                          <p className="text-emerald-950 font-medium">{item.adminReply}</p>
+                          {item.repliedAt && (
+                            <span className="text-[10px] text-emerald-700 block mt-1 font-mono">
+                              Replied: {new Date(item.repliedAt).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="p-2.5 bg-slate-100 rounded-lg text-slate-500 text-[11px] italic">
+                          Our academic directorate is reviewing your inquiry. Response will be posted here and sent to your email.
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
     </div>

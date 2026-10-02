@@ -296,20 +296,20 @@ export const AspirantWorkbench: React.FC<{ onNavigate: (path: string) => void }>
                       <div className="bg-white p-4 rounded-lg border border-emerald-200 text-xs space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-emerald-900 font-serif-heading">
-                            Marks Awarded: {wa.review.scoreAwarded} / {wa.review.maxMarks}
+                            Marks Awarded: {wa.review.scoreAwarded ?? wa.review.marksObtained ?? 0} / {wa.review.maxMarks}
                           </span>
                           <span className="text-[11px] text-slate-500">
-                            Reviewed by: {wa.review.reviewerName || 'Faculty'}
+                            Reviewed by: {wa.review.reviewerName || wa.review.facultyName || 'Faculty'}
                           </span>
                         </div>
-                        <p className="text-slate-700 font-medium">{wa.review.generalComments}</p>
+                        <p className="text-slate-700 font-medium">{wa.review.generalComments || wa.review.overallComments}</p>
 
                         <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                           <div className="bg-emerald-50 p-2 rounded text-emerald-900">
-                            <strong>Key Strengths:</strong> {wa.review.strengths.join(', ')}
+                            <strong>Key Strengths:</strong> {(wa.review.strengths || [wa.review.structureFeedback || 'Structured approach']).join(', ')}
                           </div>
                           <div className="bg-rose-50 p-2 rounded text-rose-900">
-                            <strong>Improvements:</strong> {wa.review.improvements.join(', ')}
+                            <strong>Improvements:</strong> {(wa.review.improvements || [wa.review.contentFeedback || 'Add more data points']).join(', ')}
                           </div>
                         </div>
                       </div>
@@ -494,7 +494,7 @@ export const AspirantWorkbench: React.FC<{ onNavigate: (path: string) => void }>
                 <div key={qa.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                   <div>
                     <span className="font-bold text-slate-900 block">Quiz ID: {qa.quizId}</span>
-                    <span className="text-slate-500 text-[11px]">Taken on {new Date(qa.createdAt).toLocaleDateString()}</span>
+                    <span className="text-slate-500 text-[11px]">Taken on {new Date(qa.completedAt || qa.createdAt || Date.now()).toLocaleDateString()}</span>
                   </div>
 
                   <div className="text-right">

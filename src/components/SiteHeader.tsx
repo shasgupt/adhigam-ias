@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import {
   BookOpen,
-  Award,
-  FileText,
-  HelpCircle,
-  PhoneCall,
   UserCheck,
   ShieldCheck,
   Menu,
   X,
-  ChevronDown,
+  Mail,
+  Send,
+  Calendar,
+  CreditCard,
+  MessageSquare,
   Sparkles,
-  Search,
-  PenTool,
-  CheckCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useAspirantAuth } from '../context/AspirantAuthContext';
@@ -36,37 +33,49 @@ export const SiteHeader: React.FC<HeaderProps> = ({
   const { user: staffUser, logout: staffLogout } = useAuth();
   const { user: aspirantUser, logout: aspirantLogout } = useAspirantAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [freeResourcesOpen, setFreeResourcesOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 text-slate-800 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 text-slate-800 shadow-xs">
       {/* Top Utility Portal Switcher Bar */}
-      <div className="bg-slate-50 px-4 py-1.5 border-b border-slate-200 text-xs">
+      <div className="bg-[#0F2C59] text-slate-200 px-4 py-1.5 text-xs border-b border-[#0c2347]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          {/* Academy Contact Quick Info */}
-          <div className="hidden md:flex items-center gap-4 text-slate-500 text-[11px]">
-            <span className="flex items-center gap-1 font-medium">
-              <PhoneCall className="w-3 h-3 text-indigo-600" />
-              Delhi Campus: {INSTITUTE_CONFIG.contact.primaryHelpline}
-            </span>
-            <span className="text-slate-300">|</span>
-            <span className="text-slate-600 font-medium">
-              {INSTITUTE_CONFIG.campuses.map((c) => c.shortName).join(' & ')}
+          {/* Official Academy Contact Info */}
+          <div className="flex items-center gap-4 text-xs">
+            <a
+              href={`mailto:${INSTITUTE_CONFIG.contact.email}`}
+              className="flex items-center gap-1.5 text-amber-200 hover:text-white transition-colors"
+            >
+              <Mail className="w-3.5 h-3.5 text-amber-400" />
+              <span>{INSTITUTE_CONFIG.contact.email}</span>
+            </a>
+            <span className="text-slate-500">|</span>
+            <a
+              href={INSTITUTE_CONFIG.contact.telegramLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-amber-300 hover:text-white transition-colors font-medium"
+            >
+              <Send className="w-3 h-3 text-sky-400" />
+              <span>Telegram: {INSTITUTE_CONFIG.contact.telegram}</span>
+            </a>
+            <span className="text-slate-500 hidden md:inline">|</span>
+            <span className="text-slate-300 hidden md:inline font-serif italic text-[11px]">
+              "{INSTITUTE_CONFIG.tagline}"
             </span>
           </div>
 
           {/* Portal Switcher Tabs */}
           <div className="flex items-center gap-1.5 ml-auto text-xs">
             <span className="text-slate-400 font-bold uppercase tracking-widest mr-1 text-[10px] hidden sm:inline">
-              Workspace Mode:
+              Portal:
             </span>
 
             <button
               onClick={() => onNavigate('/', 'public')}
-              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${
+              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
                 activeTab === 'public'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
+                  : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
               }`}
             >
               <BookOpen className="w-3 h-3" />
@@ -75,31 +84,31 @@ export const SiteHeader: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => onNavigate(aspirantUser ? '/me' : '/login', 'aspirant')}
-              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${
+              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
                 activeTab === 'aspirant'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
+                  : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
               }`}
             >
               <UserCheck className="w-3 h-3" />
               Aspirant Portal
               {aspirantUser && (
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse ml-0.5" />
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse ml-0.5" />
               )}
             </button>
 
             <button
               onClick={() => onNavigate(staffUser ? '/admin' : '/admin/login', 'admin')}
-              className={`px-3 py-1 rounded-md transition-all font-semibold text-xs flex items-center gap-1.5 ${
+              className={`px-2.5 py-0.5 rounded-md transition-all font-semibold text-xs flex items-center gap-1 ${
                 activeTab === 'admin'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs font-bold'
+                  : 'bg-white/10 text-slate-200 hover:text-white hover:bg-white/20'
               }`}
             >
-              <ShieldCheck className="w-3 h-3 text-indigo-400" />
-              Faculty CMS
+              <ShieldCheck className="w-3 h-3 text-amber-300" />
+              Admin / Faculty CMS
               {staffUser && (
-                <span className="w-2 h-2 bg-indigo-400 rounded-full ml-0.5" />
+                <span className="w-1.5 h-1.5 bg-sky-400 rounded-full ml-0.5" />
               )}
             </button>
           </div>
@@ -111,9 +120,17 @@ export const SiteHeader: React.FC<HeaderProps> = ({
         {/* Brand Logo */}
         <div
           onClick={() => onNavigate('/', 'public')}
-          className="cursor-pointer group"
+          className="cursor-pointer group flex items-center gap-3"
         >
           <AdhigamLogo size="md" showText={true} showMotto={false} />
+          <div className="hidden sm:block pl-3 border-l border-slate-200">
+            <span className="text-[11px] font-bold text-[#D97706] uppercase tracking-wider block">
+              RISE 2.0
+            </span>
+            <span className="text-[10px] text-slate-500 font-medium">
+              Sociology Optional Test Series
+            </span>
+          </div>
         </div>
 
         {/* Desktop Links (When in Public Mode) */}
@@ -121,90 +138,58 @@ export const SiteHeader: React.FC<HeaderProps> = ({
           <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold uppercase tracking-wider">
             <button
               onClick={() => onNavigate('/')}
-              className={`hover:text-indigo-600 transition-colors ${
-                currentPath === '/' ? 'text-indigo-600 border-b-2 border-indigo-600 py-1' : 'text-slate-600'
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer ${
+                currentPath === '/' ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
               }`}
             >
               Home
             </button>
 
             <button
-              onClick={() => onNavigate('/courses')}
-              className={`hover:text-indigo-600 transition-colors ${
-                currentPath.startsWith('/courses') ? 'text-indigo-600 border-b-2 border-indigo-600 py-1' : 'text-slate-600'
+              onClick={() => onNavigate('/test-series')}
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1 ${
+                currentPath.startsWith('/test-series') ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
               }`}
             >
-              Courses
+              <Calendar className="w-3.5 h-3.5 text-[#D97706]" />
+              RISE 2.0 (49 Tests)
             </button>
 
             <button
-              onClick={() => onNavigate('/test-series')}
-              className={`hover:text-indigo-600 transition-colors ${
-                currentPath.startsWith('/test-series') ? 'text-indigo-600 border-b-2 border-indigo-600 py-1' : 'text-slate-600'
-              }`}
+              onClick={() => {
+                onNavigate('/test-series');
+                setTimeout(() => {
+                  const el = document.getElementById('test-schedule');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="text-slate-600 hover:text-[#0F2C59] transition-colors py-1 cursor-pointer"
             >
-              Test Series
+              Schedule
             </button>
 
-            {/* Free Resources Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setFreeResourcesOpen(!freeResourcesOpen)}
-                onMouseEnter={() => setFreeResourcesOpen(true)}
-                className={`flex items-center gap-1 hover:text-indigo-600 transition-colors ${
-                  currentPath.startsWith('/free') ? 'text-indigo-600 border-b-2 border-indigo-600 py-1' : 'text-slate-600'
-                }`}
-              >
-                Free Resources
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-
-              {freeResourcesOpen && (
-                <div
-                  onMouseLeave={() => setFreeResourcesOpen(false)}
-                  className="absolute top-full left-0 mt-2 w-60 bg-white border border-slate-200 rounded-xl shadow-lg p-2 z-50 text-xs animate-in fade-in duration-150"
-                >
-                  <button
-                    onClick={() => {
-                      onNavigate('/free/current-affairs');
-                      setFreeResourcesOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-indigo-600 flex items-center gap-2 font-medium"
-                  >
-                    <FileText className="w-4 h-4 text-indigo-600" />
-                    Current Affairs & Editorials
-                  </button>
-                  <button
-                    onClick={() => {
-                      onNavigate('/free/quizzes');
-                      setFreeResourcesOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-indigo-600 flex items-center gap-2 font-medium"
-                  >
-                    <CheckCircle className="w-4 h-4 text-emerald-500" />
-                    Daily Prelims Quizzes
-                  </button>
-                  <button
-                    onClick={() => {
-                      onNavigate('/free/answer-writing');
-                      setFreeResourcesOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-indigo-600 flex items-center gap-2 font-medium"
-                  >
-                    <PenTool className="w-4 h-4 text-indigo-600" />
-                    Daily Mains Answer Writing
-                  </button>
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => {
+                onNavigate('/test-series');
+                setTimeout(() => {
+                  const el = document.getElementById('fees-enrolment');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="text-slate-600 hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1"
+            >
+              <CreditCard className="w-3.5 h-3.5 text-emerald-600" />
+              Fee & Enrolment
+            </button>
 
             <button
               onClick={() => onNavigate('/contact')}
-              className={`hover:text-indigo-600 transition-colors ${
-                currentPath === '/contact' ? 'text-indigo-600 border-b-2 border-indigo-600 py-1' : 'text-slate-600'
+              className={`hover:text-[#0F2C59] transition-colors py-1 cursor-pointer flex items-center gap-1 ${
+                currentPath === '/contact' ? 'text-[#0F2C59] border-b-2 border-[#0F2C59] font-bold' : 'text-slate-600'
               }`}
             >
-              Contact & Centres
+              <MessageSquare className="w-3.5 h-3.5 text-indigo-600" />
+              Student Queries & Track
             </button>
           </nav>
         )}
@@ -213,9 +198,9 @@ export const SiteHeader: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenEnquire}
-            className="hidden sm:inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-1.5 rounded-md font-medium text-xs transition-colors shadow-sm cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 px-4 py-2 rounded-md font-bold text-xs uppercase tracking-wider transition-colors shadow-xs cursor-pointer border border-amber-400/30"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-300" /> Enquire Now
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Enquire / Enrol Now
           </button>
 
           {/* User status badge / Login shortcut */}
@@ -224,7 +209,7 @@ export const SiteHeader: React.FC<HeaderProps> = ({
               <span className="font-semibold text-slate-900">{aspirantUser.name}</span>
               <button
                 onClick={aspirantLogout}
-                className="text-slate-500 hover:text-rose-600 ml-1 underline"
+                className="text-slate-500 hover:text-rose-600 ml-1 underline cursor-pointer"
               >
                 Logout
               </button>
@@ -234,81 +219,94 @@ export const SiteHeader: React.FC<HeaderProps> = ({
               <span className="font-semibold text-slate-900">{staffUser.name}</span>
               <button
                 onClick={staffLogout}
-                className="text-slate-500 hover:text-rose-600 ml-1 underline"
+                className="text-slate-500 hover:text-rose-600 ml-1 underline cursor-pointer"
               >
                 Logout
               </button>
             </div>
           ) : null}
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-md border border-slate-200"
+            className="lg:hidden p-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 py-4 space-y-3 text-sm animate-in slide-in-from-top-2">
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 pt-3 pb-6 space-y-3 text-sm shadow-md animate-in slide-in-from-top duration-150">
+          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 mb-2">
+            <span className="font-bold">RISE 2.0 Sociology Optional</span>
+            <p className="text-[11px] text-amber-800 mt-0.5">49 Tests • Starts 12 Oct 2026 • Early Bird: ₹7,650</p>
+          </div>
+
           <button
             onClick={() => {
-              onNavigate('/', 'public');
+              onNavigate('/');
               setMobileMenuOpen(false);
             }}
-            className="block w-full text-left py-2 px-3 rounded hover:bg-slate-800 text-slate-200"
+            className="w-full text-left font-semibold text-slate-800 py-1.5"
           >
             Home
           </button>
+
           <button
             onClick={() => {
-              onNavigate('/courses', 'public');
+              onNavigate('/test-series');
               setMobileMenuOpen(false);
             }}
-            className="block w-full text-left py-2 px-3 rounded hover:bg-slate-800 text-slate-200"
+            className="w-full text-left font-semibold text-slate-800 py-1.5 flex items-center justify-between"
           >
-            Courses
+            <span>RISE 2.0 Test Series</span>
+            <span className="text-[10px] bg-[#0F2C59] text-amber-300 font-bold px-2 py-0.5 rounded">49 Tests</span>
           </button>
+
           <button
             onClick={() => {
-              onNavigate('/test-series', 'public');
+              onNavigate('/test-series');
               setMobileMenuOpen(false);
+              setTimeout(() => {
+                const el = document.getElementById('fees-enrolment');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
             }}
-            className="block w-full text-left py-2 px-3 rounded hover:bg-slate-800 text-slate-200"
+            className="w-full text-left font-semibold text-slate-800 py-1.5"
           >
-            Test Series
+            Fee Structure & Early Bird
           </button>
+
           <button
             onClick={() => {
-              onNavigate('/free', 'public');
+              onNavigate('/contact');
               setMobileMenuOpen(false);
             }}
-            className="block w-full text-left py-2 px-3 rounded hover:bg-slate-800 text-slate-200"
+            className="w-full text-left font-semibold text-slate-800 py-1.5"
           >
-            Free Resources (Editorials, Quizzes, Writing)
+            Student Query Desk & Status Track
           </button>
-          <button
-            onClick={() => {
-              onNavigate('/contact', 'public');
-              setMobileMenuOpen(false);
-            }}
-            className="block w-full text-left py-2 px-3 rounded hover:bg-slate-800 text-slate-200"
-          >
-            Contact & Centres
-          </button>
-          <div className="pt-2 border-t border-slate-800">
+
+          <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
             <button
               onClick={() => {
                 onOpenEnquire();
                 setMobileMenuOpen(false);
               }}
-              className="w-full bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg text-center"
+              className="w-full py-2.5 bg-[#0F2C59] text-amber-300 rounded-md font-bold text-center text-xs uppercase tracking-wider"
             >
-              Quick Enquiry
+              Submit Query / Enrol Now
             </button>
+            <a
+              href={INSTITUTE_CONFIG.contact.telegramLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2 bg-sky-50 text-sky-800 border border-sky-200 rounded-md font-bold text-center text-xs flex items-center justify-center gap-1.5"
+            >
+              <Send className="w-3.5 h-3.5 text-sky-600" /> Connect on Telegram (@adhigamias1)
+            </a>
           </div>
         </div>
       )}

@@ -1,225 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { Course } from '../../types';
-import { api } from '../../lib/api';
-import { CheckCircle2, Calendar, Clock, GraduationCap, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import React from 'react';
+import { Calendar, Sparkles, CheckCircle2, ArrowRight, Send, Mail } from 'lucide-react';
+import { INSTITUTE_CONFIG } from '../../data/instituteConfig';
 
 export const CoursesView: React.FC<{ onOpenEnquire: (title?: string) => void }> = ({ onOpenEnquire }) => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [filterCategory, setFilterCategory] = useState<string>('all');
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [openModuleIdx, setOpenModuleIdx] = useState<number | null>(0);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.get<Course[]>('/api/courses')
-      .then(setCourses)
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filtered = filterCategory === 'all'
-    ? courses
-    : courses.filter((c) => c.category === filterCategory);
-
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 py-12 space-y-12">
       {/* Page Heading */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <span className="text-indigo-700 text-xs font-bold uppercase tracking-widest bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-md">
-          UPSC Civil Services Curriculum
+        <span className="text-[#0F2C59] text-xs font-bold uppercase tracking-widest bg-amber-100 border border-amber-300 px-3 py-1 rounded-md">
+          Academic Offerings & Programmes
         </span>
-        <h1 className="text-3xl sm:text-4xl font-bold font-sans-ui text-slate-900 tracking-tight">
-          Academic Programmes & Foundation Batches
+        <h1 className="text-3xl sm:text-4xl font-black font-serif-heading text-[#0F2C59]">
+          UPSC Civil Services Programmes
         </h1>
         <p className="text-slate-600 text-sm leading-relaxed">
-          Structured 10-Month Foundation Courses, Mains Mastery, CSAT, and Optional Masterclasses led by experienced Civil Services Mentors.
+          ADHIGAM IAS is currently enrolling for our flagship <strong className="text-slate-900">RISE 2.0 Sociology Optional Test Series</strong> for UPSC CSE Mains 2027.
         </p>
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2 border-b border-slate-200 pb-4 text-xs font-semibold">
-        {[
-          { id: 'all', label: 'All Programmes' },
-          { id: 'gs_foundation', label: 'GS Integrated Foundation' },
-          { id: 'mains_special', label: 'Mains Answer Writing' },
-          { id: 'optional', label: 'Optional Subjects' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setFilterCategory(tab.id)}
-            className={`px-3.5 py-1.5 rounded-md transition-all cursor-pointer font-bold uppercase tracking-wider text-[11px] ${
-              filterCategory === tab.id
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Flagship Test Series Showcase Card */}
+      <div className="bg-white rounded-2xl border border-amber-300 shadow-lg overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        <div className="lg:col-span-8 p-6 sm:p-10 space-y-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="bg-[#0F2C59] text-amber-300 px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider">
+              Flagship Programme
+            </span>
+            <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded text-[11px] font-bold">
+              Admissions Open • 49 Tests
+            </span>
+          </div>
 
-      {/* Course Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((course) => (
-          <div
-            key={course.id}
-            className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-          >
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59]">
+              RISE 2.0 – Sociology Optional Test Series
+            </h2>
+            <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mt-1">
+              {INSTITUTE_CONFIG.subtitle}
+            </p>
+            <p className="text-xs text-slate-600 mt-3 leading-relaxed">
+              A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests, 50 Marks/Test, 4 Questions Each (10- and 20-mark mix) on Monday, Wednesday, and Friday. Complete Paper I & Paper II coverage with model answers and evaluated copies returned within 3 days.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {INSTITUTE_CONFIG.risePracticePromise.slice(0, 4).map((p, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>{p}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => onOpenEnquire('RISE 2.0 - Early Bird (₹7,650)')}
+              className="bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-xs border border-amber-400/40"
+            >
+              Enrol Now (Early Bird: ₹7,650)
+            </button>
+            <a
+              href="/test-series"
+              className="px-4 py-2.5 border border-slate-300 hover:bg-slate-50 text-[#0F2C59] rounded-lg font-semibold text-xs transition-colors flex items-center gap-1.5"
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#D97706]" /> View 49-Test Schedule
+            </a>
+          </div>
+        </div>
+
+        {/* Right Info Box */}
+        <div className="lg:col-span-4 bg-[#0F2C59] text-white p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div className="space-y-4">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30 block w-fit">
+              Fee Structure
+            </span>
+
             <div>
-              <div className="relative h-44 bg-slate-900">
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-full object-cover opacity-90"
-                />
-                <div className="absolute top-3 left-3 bg-slate-900/90 text-indigo-300 px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-widest border border-indigo-500/30">
-                  {course.mode} Batch
-                </div>
-              </div>
-
-              <div className="p-5 space-y-4">
-                <div>
-                  <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 font-medium mb-1">
-                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-indigo-600" /> {course.duration}</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-indigo-600" /> {course.startDate}</span>
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 hover:text-indigo-600 transition-colors">
-                    {course.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-2 line-clamp-3 leading-relaxed">
-                    {course.description}
-                  </p>
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Key Highlights:</span>
-                  {course.overview.slice(0, 3).map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-slate-600">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="line-clamp-1">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <span className="text-xs text-slate-400 uppercase font-medium block">Standard Fee</span>
+              <span className="text-2xl font-bold text-white">₹8,900</span>
             </div>
 
-            <div className="p-5 pt-0 space-y-3">
-              <div className="flex items-center justify-between text-xs pt-3 border-t border-slate-100">
-                <span className="text-slate-400 font-medium text-[11px]">Faculty:</span>
-                <span className="font-semibold text-slate-800 text-[11px]">{course.facultyNames.join(', ')}</span>
-              </div>
+            <div className="p-3 bg-amber-400/10 border border-amber-400/30 rounded-xl">
+              <span className="text-[10px] text-amber-300 uppercase font-bold block">Early Bird Offer</span>
+              <span className="text-2xl font-black text-amber-300">₹7,650</span>
+              <span className="text-[10px] text-amber-200 block mt-0.5">Valid through 9 October 2026</span>
+            </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <div>
-                  <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-widest">Course Fee</span>
-                  <span className="text-sm font-bold text-slate-900">{course.fee}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setSelectedCourse(course)}
-                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-md transition-colors cursor-pointer"
-                  >
-                    Syllabus
-                  </button>
-                  <button
-                    onClick={() => onOpenEnquire(course.title)}
-                    className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold uppercase tracking-wider rounded-md transition-colors shadow-xs cursor-pointer"
-                  >
-                    Enquire
-                  </button>
-                </div>
-              </div>
+            <div>
+              <span className="text-xs text-slate-400 uppercase font-medium block">Existing Adhigam Students</span>
+              <span className="text-xl font-bold text-slate-200">₹6,675</span>
+              <span className="text-[10px] text-slate-400 block">25% Discount (-₹2,225)</span>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Course Detail Modal */}
-      {selectedCourse && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-lg border border-slate-200">
-            <div className="bg-slate-900 text-white p-6 relative">
-              <button
-                onClick={() => setSelectedCourse(null)}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white text-base font-bold p-1 rounded-md"
-              >
-                ✕
-              </button>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/20 px-2.5 py-1 rounded-md border border-indigo-500/30">
-                {selectedCourse.category.replace('_', ' ')}
-              </span>
-              <h2 className="text-xl font-bold font-sans-ui text-white mt-2">
-                {selectedCourse.title}
-              </h2>
-              <p className="text-xs text-slate-300 mt-1">{selectedCourse.subtitle}</p>
+          <div className="pt-4 border-t border-slate-800 text-xs text-slate-300 space-y-2">
+            <div className="flex items-center gap-2">
+              <Mail className="w-3.5 h-3.5 text-amber-400" />
+              <span>{INSTITUTE_CONFIG.contact.email}</span>
             </div>
-
-            <div className="p-6 space-y-6">
-              <div>
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-2">
-                  Program Overview & Objectives
-                </h4>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  {selectedCourse.overview.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Syllabus Breakdown Accordion */}
-              <div>
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-3">
-                  Syllabus & Module Architecture
-                </h4>
-                <div className="space-y-2">
-                  {selectedCourse.syllabusModules.map((mod, idx) => (
-                    <div key={idx} className="border border-slate-200 rounded-lg overflow-hidden">
-                      <button
-                        onClick={() => setOpenModuleIdx(openModuleIdx === idx ? null : idx)}
-                        className="w-full text-left p-3 bg-slate-50 hover:bg-slate-100 flex items-center justify-between font-semibold text-xs text-slate-900 cursor-pointer"
-                      >
-                        <span>{mod.title}</span>
-                        {openModuleIdx === idx ? <ChevronUp className="w-4 h-4 text-indigo-600" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-                      </button>
-                      {openModuleIdx === idx && (
-                        <div className="p-4 bg-white border-t border-slate-200 text-xs space-y-1.5">
-                          {mod.topics.map((t, tidx) => (
-                            <p key={tidx} className="text-slate-600 flex items-center gap-2 font-mono text-[11px]">
-                              <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
-                              {t}
-                            </p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest block">Total Course Fee</span>
-                  <span className="text-base font-bold text-slate-900">{selectedCourse.fee}</span>
-                </div>
-                <button
-                  onClick={() => {
-                    const title = selectedCourse.title;
-                    setSelectedCourse(null);
-                    onOpenEnquire(title);
-                  }}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-colors shadow-xs cursor-pointer"
-                >
-                  Proceed to Enquiry
-                </button>
-              </div>
+            <div className="flex items-center gap-2">
+              <Send className="w-3.5 h-3.5 text-sky-400" />
+              <span>Telegram: {INSTITUTE_CONFIG.contact.telegram}</span>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

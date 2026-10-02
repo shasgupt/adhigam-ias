@@ -54,7 +54,7 @@ function MainAppContent() {
   };
 
   const handleOpenEnquire = (courseTitle?: string) => {
-    setSelectedCourseTitle(courseTitle || 'GS Foundation 2026');
+    setSelectedCourseTitle(courseTitle || 'RISE 2.0 – Sociology Optional Test Series');
     setEnquireModalOpen(true);
   };
 

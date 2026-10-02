@@ -16,10 +16,12 @@ export interface User {
 export interface Announcement {
   id: string;
   title: string;
-  content: string;
+  content?: string;
+  message?: string;
   badgeText?: string;
-  type: 'info' | 'urgent' | 'event' | 'new_batch';
+  type?: 'info' | 'urgent' | 'event' | 'new_batch';
   link?: string;
+  linkUrl?: string;
   published: boolean;
   createdAt: string;
 }
@@ -28,47 +30,56 @@ export interface Course {
   id: string;
   key: string;
   title: string;
-  subtitle: string;
-  category: 'gs_foundation' | 'mains_special' | 'csat' | 'optional' | 'interview';
+  subtitle?: string;
+  category: 'gs_foundation' | 'mains_special' | 'csat' | 'optional' | 'interview' | 'prelims_booster';
   mode: 'offline' | 'online' | 'hybrid';
-  duration: string;
-  startDate: string;
+  duration?: string;
+  startDate?: string;
   fee: string;
-  featured: boolean;
-  published: boolean;
+  featured?: boolean;
+  published?: boolean;
   description: string;
-  overview: string[];
-  features: string[];
-  syllabusModules: {
+  overview?: string[];
+  features?: string[];
+  syllabusModules?: {
     title: string;
     topics: string[];
   }[];
-  facultyNames: string[];
-  image: string;
-  createdAt: string;
+  facultyNames?: string[];
+  image?: string;
+  createdAt?: string;
+}
+
+export interface TestSeriesScheduleItem {
+  testNumber: number;
+  title: string;
+  date: string;
+  day?: string;
+  paper?: 'Paper I' | 'Paper II' | 'Comprehensive';
+  subjectTag?: string;
+  syllabus?: string;
 }
 
 export interface TestSeries {
   id: string;
   key: string;
   title: string;
-  subtitle: string;
-  type: 'prelims' | 'mains' | 'integrated';
+  subtitle?: string;
+  type: 'prelims' | 'mains' | 'integrated' | 'optional';
   totalTests: number;
-  featured: boolean;
-  published: boolean;
+  featured?: boolean;
+  published?: boolean;
   fee: string;
-  startDate: string;
+  earlyBirdFee?: string;
+  existingStudentFee?: string;
+  earlyBirdDeadline?: string;
+  startDate?: string;
+  endDate?: string;
   mode: 'online' | 'offline' | 'hybrid';
   description: string;
-  schedule: {
-    testNumber: number;
-    title: string;
-    date: string;
-    subjectTag: string;
-  }[];
-  image: string;
-  createdAt: string;
+  schedule?: TestSeriesScheduleItem[];
+  image?: string;
+  createdAt?: string;
 }
 
 export interface Article {
@@ -77,16 +88,16 @@ export interface Article {
   title: string;
   summary: string;
   content: string;
-  category: 'editorial' | 'pib_summary' | 'current_affairs' | 'yojana_gist';
+  category: 'editorial' | 'pib_summary' | 'current_affairs' | 'yojana_gist' | 'strategy' | 'syllabus_breakdown';
   paperTag: 'GS1' | 'GS2' | 'GS3' | 'GS4' | 'Essay';
-  syllabusTopics: string[];
-  author: string;
-  published: boolean;
-  publishedAt: string;
-  readTime: string;
+  syllabusTopics?: string[];
+  author?: string;
+  published?: boolean;
+  publishedAt?: string;
+  readTime?: string;
   image?: string;
-  keyTakeaways: string[];
-  createdAt: string;
+  keyTakeaways?: string[];
+  createdAt?: string;
 }
 
 export interface QuizQuestion {
@@ -98,33 +109,37 @@ export interface QuizQuestion {
   subTopic?: string;
 }
 
+export type Question = QuizQuestion;
+
 export interface Quiz {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   subjectTag: string;
-  paperTag: 'GS1' | 'GS2' | 'GS3' | 'CSAT';
+  paperTag?: 'GS1' | 'GS2' | 'GS3' | 'CSAT';
   timeLimitMinutes: number;
-  totalMarks: number;
-  questions: QuizQuestion[];
-  published: boolean;
-  createdAt: string;
+  totalMarks?: number;
+  totalQuestions?: number;
+  questions?: QuizQuestion[];
+  published?: boolean;
+  createdAt?: string;
 }
 
 export interface QuizAttempt {
   id: string;
   quizId: string;
-  quizTitle: string;
-  aspirantId: string;
-  aspirantName: string;
-  userAnswers: Record<string, number>; // questionId -> optionIndex
+  quizTitle?: string;
+  aspirantId?: string;
+  aspirantName?: string;
+  userAnswers?: Record<string, number>; // questionId -> optionIndex
   score: number;
   totalQuestions: number;
   correctCount: number;
   incorrectCount: number;
-  unattemptedCount: number;
-  timeTakenSeconds: number;
-  completedAt: string;
+  unattemptedCount?: number;
+  timeTakenSeconds?: number;
+  completedAt?: string;
+  createdAt?: string;
 }
 
 export interface Prompt {
@@ -161,14 +176,19 @@ export interface WritingAttempt {
   review?: {
     facultyId?: string;
     facultyName?: string;
+    reviewerName?: string;
     reviewedAt: string;
-    marksObtained: number;
+    marksObtained?: number;
+    scoreAwarded?: number;
     maxMarks: number;
-    structureFeedback: string;
-    contentFeedback: string;
-    languageFeedback: string;
-    overallComments: string;
-    modelComparisonNotes: string;
+    structureFeedback?: string;
+    contentFeedback?: string;
+    languageFeedback?: string;
+    overallComments?: string;
+    generalComments?: string;
+    modelComparisonNotes?: string;
+    strengths?: string[];
+    improvements?: string[];
     isAiEvaluated?: boolean;
   };
   aiEvaluation?: {
@@ -184,14 +204,19 @@ export interface WritingAttempt {
 
 export interface Enquiry {
   id: string;
+  referenceId?: string;
   name: string;
   email: string;
   phone: string;
+  telegram?: string;
+  category?: string;
   courseKeyOrTitle?: string;
   preferredMode?: 'online' | 'offline' | 'hybrid';
   message: string;
-  status: 'new' | 'contacted' | 'enrolled' | 'closed';
+  status: 'new' | 'contacted' | 'in_review' | 'resolved' | 'enrolled' | 'closed';
   notes?: string;
+  adminReply?: string;
+  repliedAt?: string;
   createdAt: string;
 }
 

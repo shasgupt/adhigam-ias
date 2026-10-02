@@ -20,6 +20,7 @@ import {
   FileRecord,
   AdminStats,
 } from './src/types';
+import { RISE_49_TEST_SCHEDULE, INSTITUTE_CONFIG } from './src/data/instituteConfig';
 
 dotenv.config();
 
@@ -122,35 +123,27 @@ const dbUsers: User[] = [
   {
     id: 'user_admin_1',
     email: 'admin@adhigamias.com',
-    name: 'Dr. Virendra Sharma (Director)',
+    name: 'Adhigam IAS Academic Directorate',
     role: 'admin',
-    department: 'Platform Director & Academic Head',
+    department: 'Directorate & Academic Lead',
     createdAt: new Date().toISOString(),
   },
   {
     id: 'user_faculty_1',
-    email: 'faculty@adhigam.com',
-    name: 'Prof. Ananya Roy (Ex-Civil Servant)',
+    email: 'faculty@adhigamias.com',
+    name: 'Sociology Optional Faculty Team',
     role: 'instructor',
-    department: 'GS Paper 2 & Public Administration',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'user_faculty_2',
-    email: 'dr.sharma@adhigamias.com',
-    name: 'Dr. Rajesh Sharma',
-    role: 'instructor',
-    department: 'GS Paper 3 & Economics',
+    department: 'Sociology Optional & Mains Evaluation',
     createdAt: new Date().toISOString(),
   },
   {
     id: 'user_aspirant_1',
     email: 'aspirant@adhigam.com',
-    name: 'Siddharth Mukherjee',
+    name: 'Sociology Aspirant',
     role: 'aspirant',
-    phone: '+91 9876543210',
-    targetYear: 'UPSC CSE 2026',
-    optionalSubject: 'Public Administration',
+    phone: '',
+    targetYear: 'UPSC CSE Mains 2027',
+    optionalSubject: 'Sociology',
     createdAt: new Date().toISOString(),
   },
 ];
@@ -158,203 +151,65 @@ const dbUsers: User[] = [
 // Pre-create initial active sessions for seamless demo testing
 const adminSessionToken = createSession(dbUsers[0]);
 const facultySessionToken = createSession(dbUsers[1]);
-const aspirantSessionToken = createSession(dbUsers[3]);
+const aspirantSessionToken = createSession(dbUsers[2]);
 
 const dbAnnouncements: Announcement[] = [
   {
-    id: 'ann_1',
-    title: 'UPSC CSE 2026 GS Foundation Batch-IV Admissions Open!',
-    content: 'Comprehensive Coverage of Prelims & Mains GS 1-4 with Weekly Mains Answer Writing. Offline at Old Rajinder Nagar & Live Interactive Online.',
-    badgeText: 'New Batch',
+    id: 'ann_rise_2',
+    title: 'RISE 2.0 Sociology Optional Test Series (UPSC CSE Mains 2027) Admissions Open!',
+    content: 'A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests, 50 Marks/Test, 4 Questions Each. Starts 12 Oct 2026.',
+    badgeText: 'New Launch',
     type: 'new_batch',
-    link: '/courses/gs-foundation-2026',
+    link: '/test-series',
     published: true,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
-    id: 'ann_2',
-    title: 'All-India Prelims Mock Test Series (AIPMTS) 2026 Schedule Released',
-    content: '32 Comprehensive Mock Tests with All-India Ranking, detailed video solutions, and AI performance diagnosis.',
-    badgeText: 'Test Series',
-    type: 'event',
-    link: '/test-series/prelims-aipmts-2026',
+    id: 'ann_early_bird',
+    title: 'Early Bird Offer: Enrol in RISE 2.0 for ₹7,650 (Valid through 9 October 2026)',
+    content: 'Special early bird discount before the programme commences on 12 October 2026. Standard fee ₹8,900. Existing Adhigam students get 25% discount (₹6,675).',
+    badgeText: 'Early Bird',
+    type: 'urgent',
+    link: '/test-series',
     published: true,
-    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
   },
 ];
 
-const dbCourses: Course[] = [
-  {
-    id: 'course_1',
-    key: 'gs-foundation-2026',
-    title: 'GS Integrated Foundation Program (Prelims-cum-Mains) 2026',
-    subtitle: '10-Month Rigorous Classroom & Online Training for UPSC CSE 2026',
-    category: 'gs_foundation',
-    mode: 'hybrid',
-    duration: '10 Months (800+ Hours)',
-    startDate: '15th August 2026',
-    fee: '₹1,15,000 + GST',
-    featured: true,
-    published: true,
-    description: 'Adhigam IAS flagship foundation program designed to build conceptual clarity from NCERT fundamentals up to advanced UPSC Mains analytical synthesis.',
-    overview: [
-      'Comprehensive coverage of GS Papers I, II, III, IV and Essay Writing.',
-      'Daily Current Affairs integration with The Hindu, Indian Express, and Yojana.',
-      'Weekly Prelims Practice Quizzes and Mains Answer Writing with Faculty Review.',
-      'Personalized 1-on-1 Mentorship by experienced IAS/IPS interview candidates.',
-    ],
-    features: [
-      'Printed Reference Workbooks & Class Notes shipped to your home.',
-      '24/7 Access to Recorded High-Definition Lectures.',
-      'Dedicated Doubt Clearance Cells and Weekly Live Interactive QA Sessions.',
-      'Complimentary access to All India Prelims & Mains Test Series.',
-    ],
-    syllabusModules: [
-      {
-        title: 'Module 1: Modern Indian History & World History',
-        topics: ['Freedom Struggle & Socio-Religious Movements', 'Post-Independence Consolidation', 'World Wars & Decolonization'],
-      },
-      {
-        title: 'Module 2: Indian Polity, Governance & Constitution',
-        topics: ['Preamble, Fundamental Rights & Duties', 'Executive, Legislature & Judiciary', 'Federalism & Local Self Government'],
-      },
-      {
-        title: 'Module 3: Indian Economy & Sustainable Development',
-        topics: ['Macroeconomic Trends & Fiscal Policy', 'Agriculture, Land Reforms & Food Processing', 'Infrastructure, Energy & Trade'],
-      },
-      {
-        title: 'Module 4: Environment, Ecology & Science Tech',
-        topics: ['Biodiversity Conservation & Climate Change', 'Space, Biotech, Nanotech & AI', 'Disaster Management Frameworks'],
-      },
-    ],
-    facultyNames: ['Dr. Virendra Sharma', 'Prof. Ananya Roy', 'Dr. Rajesh Sharma'],
-    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
-  },
-  {
-    id: 'course_2',
-    key: 'mains-masterclass-2026',
-    title: 'Mains Answer Writing & Enrichment Program (MAWP) 2026',
-    subtitle: 'Master GS 1, 2, 3, 4 & Essay through 500+ Model Questions and Instant AI + Faculty Feedback',
-    category: 'mains_special',
-    mode: 'online',
-    duration: '4 Months Intensive',
-    startDate: '1st September 2026',
-    fee: '₹28,500 + GST',
-    featured: true,
-    published: true,
-    description: 'Specialized Mains scoring acceleration course focused on answer structuring, diagramming, value addition, case studies, and faculty evaluations.',
-    overview: [
-      'Structure-first approach: Intro framing, body arguments with statistics/maps, crisp conclusion.',
-      'Ethics GS-4 Case Study workshop with ethical frameworks and quote integration.',
-      'Essay writing module covering Philosophy, Social Issues, and Science-Tech prompts.',
-      'Dual Feedback: Instant Gemini AI evaluation followed by detailed faculty annotations within 48 hours.',
-    ],
-    features: [
-      '500+ Mains Practice Questions with High-Yield Model Answers.',
-      'Syllabus-wise Value Addition Material (Data Bank, Supreme Court Judgments, Committee Recommendations).',
-      'Individual Answer Evaluation Workbench with line-by-line faculty remarks.',
-    ],
-    syllabusModules: [
-      {
-        title: 'GS Paper 1 Strategy & Map/Chart Integration',
-        topics: ['Art & Architecture Articulation', 'Geography Diagrams & Spatial Analysis', 'Indian Society Dimensions'],
-      },
-      {
-        title: 'GS Paper 2 Polity & International Relations',
-        topics: ['Constitutional Articles & Landmark Cases', 'Governance & Administrative Reforms', 'Geopolitics & Bilateral Alliances'],
-      },
-      {
-        title: 'GS Paper 3 Economics & Security',
-        topics: ['Budget & Economic Survey Analysis', 'Internal Security Threat Matrix', 'Tech & Environmental Impact'],
-      },
-      {
-        title: 'GS Paper 4 Ethics, Integrity & Aptitude',
-        topics: ['Ethical Dilemmas in Governance', 'Case Studies Frameworks', 'Philosophical Quotes Analysis'],
-      },
-    ],
-    facultyNames: ['Prof. Ananya Roy', 'Dr. Rajesh Sharma'],
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
-  },
-  {
-    id: 'course_3',
-    key: 'pub-ad-optional-2026',
-    title: 'Public Administration Optional Masterclass',
-    subtitle: 'Comprehensive Coverage of Paper 1 & Paper 2 with Interlinkages & Thinkers',
-    category: 'optional',
-    mode: 'hybrid',
-    duration: '5 Months',
-    startDate: '20th August 2026',
-    fee: '₹48,000 + GST',
-    featured: false,
-    published: true,
-    description: 'Conquer Public Administration optional with in-depth analysis of Administrative Thinkers, Public Policy, Indian Administration, and current administrative reforms.',
-    overview: [
-      'Complete coverage of Administrative Theory and Indian Administration.',
-      'Special focus on 2nd ARC recommendations, NITI Aayog reports, and contemporary governance cases.',
-      'Sectional and Full-Length Test Series included.',
-    ],
-    features: [
-      'Diagrammatic notes and flowcharts for thinkers like Fayol, Weber, Simon, and Waldo.',
-      'Paper 1 and Paper 2 interlinkage frameworks for 300+ marks scoring strategy.',
-    ],
-    syllabusModules: [
-      { title: 'Paper 1: Administrative Theory', topics: ['Introduction & Basic Concepts', 'Administrative Thought', 'Public Policy & Organizations'] },
-      { title: 'Paper 2: Indian Administration', topics: ['Evolution of Indian Admin', 'Union Government & Executive', 'District Admin & Rural Governance'] },
-    ],
-    facultyNames: ['Prof. Ananya Roy'],
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 15).toISOString(),
-  },
-];
+// Dummy academic offerings removed per user instruction
+const dbCourses: Course[] = [];
 
+// Official RISE 2.0 Sociology Optional Test Series (49 Tests)
 const dbTestSeries: TestSeries[] = [
   {
-    id: 'test_1',
-    key: 'prelims-aipmts-2026',
-    title: 'All-India Prelims Mock Test Series (AIPMTS) 2026',
-    subtitle: '32 Full-Length & Sectional Mock Tests strictly based on the latest UPSC pattern',
-    type: 'prelims',
-    totalTests: 32,
+    id: 'ts_rise_2',
+    key: 'rise-2-0-sociology-optional',
+    title: 'RISE 2.0 – Sociology Optional Test Series',
+    subtitle: 'Regular Improvement in Sociology Expression | UPSC Civil Services Mains 2027',
+    type: 'optional',
+    totalTests: 49,
     featured: true,
     published: true,
-    fee: '₹12,500 + GST',
-    startDate: '10th September 2026',
-    mode: 'hybrid',
-    description: 'Benchmark your preparation against thousands of Civil Services aspirants across India with simulated exam hall environment, negative marking algorithms, and detailed analytical scorecards.',
-    schedule: [
-      { testNumber: 1, title: 'Indian Polity & Constitution Fundamentals', date: '10 Sep 2026', subjectTag: 'Polity' },
-      { testNumber: 2, title: 'Ancient & Medieval History of India', date: '17 Sep 2026', subjectTag: 'History' },
-      { testNumber: 3, title: 'Indian Economy & Financial System', date: '24 Sep 2026', subjectTag: 'Economy' },
-      { testNumber: 4, title: 'Physical & Human Geography', date: '01 Oct 2026', subjectTag: 'Geography' },
-      { testNumber: 5, title: 'Environment & Ecology Advanced', date: '08 Oct 2026', subjectTag: 'Environment' },
-      { testNumber: 6, title: 'Full Length Simulator Test - GS Paper 1', date: '15 Oct 2026', subjectTag: 'Full Mock' },
-    ],
-    image: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 25).toISOString(),
-  },
-  {
-    id: 'test_2',
-    key: 'mains-test-series-2026',
-    title: 'Mains Guidance & Test Series (MGTS) 2026',
-    subtitle: '16 Tests (12 Sectional + 4 Full Mock) with Faculty Review & AI Line-by-Line Feedback',
-    type: 'mains',
-    totalTests: 16,
-    featured: true,
-    published: true,
-    fee: '₹22,000 + GST',
-    startDate: '25th September 2026',
+    fee: '₹8,900',
+    earlyBirdFee: '₹7,650',
+    existingStudentFee: '₹6,675',
+    earlyBirdDeadline: '9 October 2026',
+    startDate: '12 October 2026',
+    endDate: '31 January 2027',
     mode: 'online',
-    description: 'Rigorous Mains examination simulation designed to build speed, answer presentation skills, and high-scoring value addition.',
-    schedule: [
-      { testNumber: 1, title: 'GS-1: Indian Heritage, Culture & History', date: '25 Sep 2026', subjectTag: 'GS1' },
-      { testNumber: 2, title: 'GS-2: Constitution, Governance & Social Justice', date: '02 Oct 2026', subjectTag: 'GS2' },
-      { testNumber: 3, title: 'GS-3: Economy, Biodiversity, Tech & Security', date: '09 Oct 2026', subjectTag: 'GS3' },
-      { testNumber: 4, title: 'GS-4: Ethics, Integrity & Case Studies', date: '16 Oct 2026', subjectTag: 'GS4' },
-    ],
-    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 18).toISOString(),
+    description:
+      'A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests (50 Marks/Test, 4 Questions Each with 10- and 20-mark mix) on Monday, Wednesday, and Friday. Complete Paper I, Paper II, and Final Comprehensive tests with model answers released at 9:00 PM and line-by-line evaluated copies returned within 3 days.',
+    schedule: RISE_49_TEST_SCHEDULE.map((s) => ({
+      testNumber: s.testNumber,
+      title: s.coverage,
+      date: s.date,
+      day: s.day,
+      paper: s.paper,
+      subjectTag: s.section,
+      syllabus: `${s.section} - ${s.coverage}`,
+    })),
+    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800',
+    createdAt: new Date().toISOString(),
   },
 ];
 
@@ -644,25 +499,50 @@ A shift from emergency disaster relief to eco-centric climate-resilient spatial 
 const dbEnquiries: Enquiry[] = [
   {
     id: 'enq_1',
-    name: 'Rohan Verma',
-    email: 'rohan.v@gmail.com',
-    phone: '+91 9811223344',
-    courseKeyOrTitle: 'GS Integrated Foundation Program 2026',
-    preferredMode: 'hybrid',
-    message: 'Interested in joining the August batch at Old Rajinder Nagar centre. Kindly share fee installment details.',
+    referenceId: 'ADHIGAM-Q-7341',
+    name: 'Aarav Singhal',
+    email: 'aarav.singhal@gmail.com',
+    phone: '+91 98112 34567',
+    telegram: '@aarav_ias',
+    category: 'Early Bird Enrolment',
+    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
+    preferredMode: 'online',
+    message: 'I want to enroll under the Early Bird offer (₹7,650) before 9th October. Could you please share the UPI / QR code payment process and confirmation steps?',
     status: 'new',
     createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
   },
   {
     id: 'enq_2',
-    name: 'Priyanka Das',
-    email: 'priyanka.d@yahoo.com',
-    phone: '+91 9955443322',
-    courseKeyOrTitle: 'Mains Answer Writing & Enrichment Program (MAWP)',
+    referenceId: 'ADHIGAM-Q-7342',
+    name: 'Meera Nambiar',
+    email: 'meera.nambiar@yahoo.com',
+    phone: '+91 98450 12345',
+    telegram: '@meera_soc',
+    category: 'Existing Student Discount',
+    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
     preferredMode: 'online',
-    message: 'Can I upload answer sheets via PDF and get feedback within 48 hours?',
+    message: 'I completed the previous edition of RISE. How do I verify my existing student status to avail of the 25% discount fee of ₹6,675?',
     status: 'contacted',
-    notes: 'Counselor called on 30th July. Confirmed 48hr evaluation turnaround.',
+    notes: 'Counselor confirmed prior registration ID. Sent verification instructions.',
+    adminReply: 'Verification confirmed! You can complete payment for ₹6,675. Welcome back to RISE 2.0.',
+    repliedAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: 'enq_3',
+    referenceId: 'ADHIGAM-Q-7343',
+    name: 'Devendra Patel',
+    email: 'dev.patel@outlook.com',
+    phone: '+91 99240 88776',
+    telegram: '@dev_aspirant',
+    category: 'Evaluation & Test Routine',
+    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
+    preferredMode: 'online',
+    message: 'If I write my answers on UPSC-format ruled paper, scan and send the PDF by 9:00 PM via Telegram (@adhigamias1), will the evaluated copy be returned with line-by-line comments within 3 days?',
+    status: 'resolved',
+    notes: 'Clarified evaluation routine: Question paper at 6:00 PM, submit single PDF by 9:00 PM, model answer at 9:00 PM, evaluated copy within 3 days.',
+    adminReply: 'Yes, exactly! Submit your single scanned PDF by 9:00 PM on test day (Mon/Wed/Fri) via Telegram or email. Evaluated copy with detailed faculty comments is returned within 3 days.',
+    repliedAt: new Date(Date.now() - 86400000 * 1.5).toISOString(),
     createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
   },
 ];
@@ -942,46 +822,99 @@ app.get('/api/prompts/:id', (req: Request, res: Response) => {
 });
 
 app.post('/api/enquiries', (req: Request, res: Response) => {
-  const { name, email, phone, courseKeyOrTitle, preferredMode, message } = req.body;
+  const { name, email, phone, telegram, category, courseKeyOrTitle, preferredMode, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
   }
+
+  const randomDigits = Math.floor(1000 + Math.random() * 9000);
+  const referenceId = `ADHIGAM-Q-${randomDigits}`;
 
   const enq: Enquiry = {
     id: `enq_${Date.now()}`,
-    name,
-    email,
-    phone: phone || '',
-    courseKeyOrTitle: courseKeyOrTitle || 'General Course Enquiry',
+    referenceId,
+    name: name.trim(),
+    email: email.trim(),
+    phone: phone?.trim() || '',
+    telegram: telegram?.trim() || '',
+    category: category || 'RISE 2.0 Enrolment',
+    courseKeyOrTitle: courseKeyOrTitle || 'RISE 2.0 – Sociology Optional Test Series',
     preferredMode: preferredMode || 'online',
-    message,
+    message: message.trim(),
     status: 'new',
     createdAt: new Date().toISOString(),
   };
 
   dbEnquiries.unshift(enq);
-  res.json({ success: true, enquiry: enq });
+  res.json({
+    success: true,
+    enquiry: enq,
+    referenceId,
+    message: 'Your query has been submitted successfully to ADHIGAM IAS.',
+  });
+});
+
+// Student Query Public Tracking Endpoint
+app.get('/api/enquiries/track', (req: Request, res: Response) => {
+  const query = ((req.query.q as string) || '').trim().toLowerCase();
+  if (!query) {
+    return res.status(400).json({ error: 'Please provide an email or query reference number.' });
+  }
+
+  const matches = dbEnquiries.filter(
+    (e) =>
+      e.email.toLowerCase() === query ||
+      (e.referenceId && e.referenceId.toLowerCase() === query) ||
+      (e.phone && e.phone.replace(/[^0-9]/g, '').includes(query.replace(/[^0-9]/g, '')))
+  );
+
+  res.json({
+    query,
+    count: matches.length,
+    results: matches.map((m) => ({
+      id: m.id,
+      referenceId: m.referenceId,
+      name: m.name,
+      category: m.category,
+      courseKeyOrTitle: m.courseKeyOrTitle,
+      status: m.status,
+      message: m.message,
+      adminReply: m.adminReply,
+      repliedAt: m.repliedAt,
+      createdAt: m.createdAt,
+    })),
+  });
 });
 
 app.post('/api/contact', (req: Request, res: Response) => {
-  const { name, email, phone, message } = req.body;
+  const { name, email, phone, telegram, category, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
   }
 
+  const randomDigits = Math.floor(1000 + Math.random() * 9000);
+  const referenceId = `ADHIGAM-Q-${randomDigits}`;
+
   const enq: Enquiry = {
     id: `contact_${Date.now()}`,
-    name,
-    email,
-    phone: phone || '',
-    courseKeyOrTitle: 'Website Contact Page',
-    message,
+    referenceId,
+    name: name.trim(),
+    email: email.trim(),
+    phone: phone?.trim() || '',
+    telegram: telegram?.trim() || '',
+    category: category || 'General Academic Inquiry',
+    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
+    message: message.trim(),
     status: 'new',
     createdAt: new Date().toISOString(),
   };
 
   dbEnquiries.unshift(enq);
-  res.json({ success: true, message: 'Message submitted successfully. Our team will contact you shortly.' });
+  res.json({
+    success: true,
+    referenceId,
+    message: 'Your inquiry has been submitted. Reference code: ' + referenceId,
+  });
 });
 
 // -------------------------------------------------------------
@@ -1265,6 +1198,10 @@ app.get('/api/reviews', requireStaff, (req: Request, res: Response) => {
   res.json(dbWritingAttempts);
 });
 
+app.get('/api/admin/writing-attempts', requireStaff, (req: Request, res: Response) => {
+  res.json(dbWritingAttempts);
+});
+
 app.get('/api/reviews/:attempt_id', requireStaff, (req: Request, res: Response) => {
   const attempt = dbWritingAttempts.find((w) => w.id === req.params.attempt_id);
   if (!attempt) return res.status(404).json({ error: 'Attempt not found.' });
@@ -1281,20 +1218,45 @@ app.post('/api/reviews/:attempt_id', requireStaff, (req: Request, res: Response)
   const attempt = dbWritingAttempts.find((w) => w.id === req.params.attempt_id);
   if (!attempt) return res.status(404).json({ error: 'Attempt not found.' });
 
-  const { marksObtained, maxMarks, structureFeedback, contentFeedback, languageFeedback, overallComments, modelComparisonNotes } = req.body;
+  const { marksObtained, maxMarks, structureFeedback, contentFeedback, languageFeedback, overallComments, modelComparisonNotes, scoreAwarded, generalComments, strengths, improvements } = req.body;
 
   attempt.status = 'reviewed';
   attempt.review = {
     facultyId: staff.id,
     facultyName: staff.name,
     reviewedAt: new Date().toISOString(),
-    marksObtained: Number(marksObtained || 0),
-    maxMarks: Number(maxMarks || 15),
-    structureFeedback: structureFeedback || '',
+    marksObtained: Number(marksObtained ?? scoreAwarded ?? 0),
+    maxMarks: Number(maxMarks ?? 15),
+    structureFeedback: structureFeedback || (strengths ? strengths.join(', ') : ''),
     contentFeedback: contentFeedback || '',
     languageFeedback: languageFeedback || '',
-    overallComments: overallComments || '',
-    modelComparisonNotes: modelComparisonNotes || '',
+    overallComments: overallComments || generalComments || '',
+    modelComparisonNotes: modelComparisonNotes || (improvements ? improvements.join(', ') : ''),
+    isAiEvaluated: false,
+  };
+
+  res.json(attempt);
+});
+
+app.put('/api/writing-attempts/:attempt_id/review', requireStaff, (req: Request, res: Response) => {
+  const staff = (req as any).user as User;
+  const attempt = dbWritingAttempts.find((w) => w.id === req.params.attempt_id);
+  if (!attempt) return res.status(404).json({ error: 'Attempt not found.' });
+
+  const { marksObtained, maxMarks, structureFeedback, contentFeedback, languageFeedback, overallComments, modelComparisonNotes, scoreAwarded, generalComments, strengths, improvements } = req.body;
+
+  attempt.status = 'reviewed';
+  attempt.review = {
+    facultyId: staff.id,
+    facultyName: staff.name,
+    reviewedAt: new Date().toISOString(),
+    marksObtained: Number(marksObtained ?? scoreAwarded ?? 0),
+    maxMarks: Number(maxMarks ?? 15),
+    structureFeedback: structureFeedback || (strengths ? (Array.isArray(strengths) ? strengths.join(', ') : strengths) : ''),
+    contentFeedback: contentFeedback || '',
+    languageFeedback: languageFeedback || '',
+    overallComments: overallComments || generalComments || '',
+    modelComparisonNotes: modelComparisonNotes || (improvements ? (Array.isArray(improvements) ? improvements.join(', ') : improvements) : ''),
     isAiEvaluated: false,
   };
 
@@ -1534,18 +1496,49 @@ app.get('/api/enquiries', requireStaff, (req: Request, res: Response) => {
   res.json(dbEnquiries);
 });
 
+app.get('/api/admin/enquiries', requireStaff, (req: Request, res: Response) => {
+  res.json(dbEnquiries);
+});
+
 app.put('/api/enquiries/:id', requireStaff, (req: Request, res: Response) => {
   const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Enquiry not found.' });
 
+  const updateData = { ...req.body };
+  if (updateData.adminReply && !updateData.repliedAt) {
+    updateData.repliedAt = new Date().toISOString();
+  }
+
   dbEnquiries[idx] = {
     ...dbEnquiries[idx],
-    ...req.body,
+    ...updateData,
+  };
+  res.json(dbEnquiries[idx]);
+});
+
+app.put('/api/admin/enquiries/:id', requireStaff, (req: Request, res: Response) => {
+  const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Enquiry not found.' });
+
+  const updateData = { ...req.body };
+  if (updateData.adminReply && !updateData.repliedAt) {
+    updateData.repliedAt = new Date().toISOString();
+  }
+
+  dbEnquiries[idx] = {
+    ...dbEnquiries[idx],
+    ...updateData,
   };
   res.json(dbEnquiries[idx]);
 });
 
 app.delete('/api/enquiries/:id', requireStaff, (req: Request, res: Response) => {
+  const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
+  if (idx !== -1) dbEnquiries.splice(idx, 1);
+  res.json({ success: true });
+});
+
+app.delete('/api/admin/enquiries/:id', requireStaff, (req: Request, res: Response) => {
   const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
   if (idx !== -1) dbEnquiries.splice(idx, 1);
   res.json({ success: true });

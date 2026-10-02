@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, PhoneCall, Mail, GraduationCap, Award, Shield, Compass } from 'lucide-react';
+import { Mail, Send, ExternalLink, Calendar, CheckCircle2, Shield, MessageSquare, ArrowRight } from 'lucide-react';
 import { INSTITUTE_CONFIG } from '../data/instituteConfig';
 import { AdhigamLogo } from './AdhigamLogo';
 
@@ -7,7 +7,7 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
   return (
     <footer className="bg-slate-950 text-slate-300 pt-12 pb-8 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-        {/* Col 1: About */}
+        {/* Col 1: About & Motto */}
         <div className="space-y-4">
           <div className="p-2 bg-white/5 rounded-xl border border-white/10 inline-block">
             <AdhigamLogo size="md" showText={true} showMotto={false} />
@@ -15,101 +15,131 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
           <p className="text-slate-400 leading-relaxed text-xs">
             {INSTITUTE_CONFIG.aboutText}
           </p>
-          <p className="text-[11px] text-amber-400 font-bold uppercase tracking-wider italic">
-            "Driven by Discipline, Fueled by Knowledge"
-          </p>
-          <div className="flex items-center gap-2 text-indigo-400 font-semibold text-xs">
-            <GraduationCap className="w-4 h-4" /> {INSTITUTE_CONFIG.stats.topSelectionsCount} Selections in UPSC CSE
+          <div className="space-y-1">
+            <p className="text-[11px] text-amber-400 font-bold uppercase tracking-wider italic">
+              "{INSTITUTE_CONFIG.tagline}"
+            </p>
+            <p className="text-[10px] text-slate-400 font-medium">
+              {INSTITUTE_CONFIG.motto}
+            </p>
           </div>
         </div>
 
-        {/* Col 2: Programs */}
+        {/* Col 2: RISE 2.0 Programme Elements */}
         <div className="space-y-3">
-          <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
-            Academic Programmes
+          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+            RISE 2.0 Programme
           </h4>
           <ul className="space-y-2 text-slate-400">
-            <li>
-              <button onClick={() => onNavigate('/courses/gs-foundation-2026')} className="hover:text-indigo-400 transition-colors">
-                GS Integrated Foundation 2026
-              </button>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>49 Tests | 50 Marks / Test</span>
             </li>
-            <li>
-              <button onClick={() => onNavigate('/courses/mains-masterclass-2026')} className="hover:text-indigo-400 transition-colors">
-                Mains Answer Writing (MAWP)
-              </button>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>Mon • Wed • Fri Schedule</span>
             </li>
-            <li>
-              <button onClick={() => onNavigate('/test-series/prelims-aipmts-2026')} className="hover:text-indigo-400 transition-colors">
-                All India Prelims Test Series
-              </button>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>Paper I & Paper II Coverage</span>
             </li>
-            <li>
-              <button onClick={() => onNavigate('/courses/pub-ad-optional-2026')} className="hover:text-indigo-400 transition-colors">
-                Public Administration Optional
-              </button>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>Model Answer at 9:00 PM</span>
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>Evaluation within 3 days</span>
             </li>
           </ul>
         </div>
 
-        {/* Col 3: Free Student Zone */}
+        {/* Col 3: Fee & Enrolment */}
         <div className="space-y-3">
-          <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
-            Free Aspirant Zone
-          </h4>
-          <ul className="space-y-2 text-slate-400">
-            <li>
-              <button onClick={() => onNavigate('/free/current-affairs')} className="hover:text-indigo-400 transition-colors">
-                The Hindu & PIB Editorial Gists
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onNavigate('/free/quizzes')} className="hover:text-indigo-400 transition-colors">
-                Daily Prelims MCQ Practice
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onNavigate('/free/answer-writing')} className="hover:text-indigo-400 transition-colors">
-                Daily Mains Question of the Day
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onNavigate('/me')} className="hover:text-indigo-300 transition-colors font-medium text-indigo-400">
-                Aspirant Self-Study Portal
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Col 4: Regional Centres */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
-            Academy Campuses
+          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+            Fee & Enrolment
           </h4>
           <div className="space-y-2 text-slate-400">
-            {INSTITUTE_CONFIG.campuses.map((campus) => (
-              <p key={campus.id} className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                <span>
-                  <strong className="text-slate-200">{campus.shortName}:</strong> {campus.address}
-                </span>
-              </p>
-            ))}
-            <p className="flex items-center gap-2 text-slate-300 pt-1">
-              <PhoneCall className="w-3.5 h-3.5 text-indigo-500" /> {INSTITUTE_CONFIG.contact.primaryHelpline} / {INSTITUTE_CONFIG.contact.alternateHelpline}
-            </p>
+            <div className="p-2.5 bg-slate-900 rounded-lg border border-slate-800">
+              <div className="flex justify-between items-center text-slate-300 font-semibold">
+                <span>Standard Fee</span>
+                <span className="text-white font-bold">₹8,900</span>
+              </div>
+            </div>
+            <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+              <div className="flex justify-between items-center text-amber-300 font-bold">
+                <span>Early Bird Offer</span>
+                <span>₹7,650</span>
+              </div>
+              <p className="text-[10px] text-amber-200/80 mt-0.5">Valid through 9 October 2026</p>
+            </div>
+            <div className="p-2.5 bg-slate-900 rounded-lg border border-slate-800">
+              <div className="flex justify-between items-center text-indigo-300 font-semibold">
+                <span>Adhigam Students</span>
+                <span className="text-indigo-200 font-bold">₹6,675</span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">25% discount on launch price</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Col 4: Official Communication */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+            Official Desk
+          </h4>
+          <div className="space-y-3 text-slate-300">
+            <a
+              href={`mailto:${INSTITUTE_CONFIG.contact.email}`}
+              className="flex items-start gap-2 hover:text-amber-300 transition-colors"
+            >
+              <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="block text-[11px] text-slate-400">Official Email</span>
+                <span className="font-semibold text-white">{INSTITUTE_CONFIG.contact.email}</span>
+              </div>
+            </a>
+
+            <a
+              href={INSTITUTE_CONFIG.contact.telegramLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-2 hover:text-sky-300 transition-colors"
+            >
+              <Send className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+              <div>
+                <span className="block text-[11px] text-slate-400">Telegram Channel & Query</span>
+                <span className="font-semibold text-white">{INSTITUTE_CONFIG.contact.telegram}</span>
+              </div>
+            </a>
+
+            <div className="pt-2 border-t border-slate-800">
+              <button
+                onClick={() => onNavigate('/contact')}
+                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-amber-300 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-amber-400/20"
+              >
+                <MessageSquare className="w-3.5 h-3.5" /> Student Query Desk & Status Track
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between text-slate-500 gap-4">
-        <p>© {new Date().getFullYear()} {INSTITUTE_CONFIG.name} Academy. All rights reserved.</p>
+      {/* Bottom Bar */}
+      <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
+        <p>
+          © {new Date().getFullYear()} ADHIGAM IAS. All rights reserved. • RISE 2.0 Sociology Optional Test Series (UPSC CSE Mains 2027).
+        </p>
         <div className="flex items-center gap-4">
-          <span className="hover:text-slate-400 cursor-pointer">Privacy Policy</span>
-          <span>•</span>
-          <span className="hover:text-slate-400 cursor-pointer">Terms of Admission</span>
-          <span>•</span>
-          <span className="hover:text-slate-400 cursor-pointer">Syllabus Disclaimer</span>
+          <a
+            href={INSTITUTE_CONFIG.contact.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-slate-300 transition-colors flex items-center gap-1"
+          >
+            {INSTITUTE_CONFIG.contact.website.replace('https://', '').replace('/', '')}
+            <ExternalLink className="w-3 h-3" />
+          </a>
         </div>
       </div>
     </footer>
