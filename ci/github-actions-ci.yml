@@ -1,3 +1,8 @@
+# Adhigam IAS CI Pipeline Workflow
+# To enable automated GitHub Actions CI:
+# 1. Copy this file to .github/workflows/ci.yml in your repository via GitHub web UI
+# 2. Or enable the 'workflow' scope on your Personal Access Token.
+
 name: CI Pipeline
 
 on:
