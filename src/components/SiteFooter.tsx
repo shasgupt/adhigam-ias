@@ -1,20 +1,9 @@
-import React, { useState } from 'react';
-import { Mail, Send, ExternalLink, Calendar, CheckCircle2, Shield, MessageSquare, ArrowRight, Download, Loader2 } from 'lucide-react';
+import React from 'react';
+import { Mail, Send, ExternalLink, Calendar, CheckCircle2, Shield, MessageSquare, ArrowRight, Code } from 'lucide-react';
 import { INSTITUTE_CONFIG } from '../data/instituteConfig';
 import { AdhigamLogo } from './AdhigamLogo';
-import { downloadSourceArchive } from '../lib/downloadHelper';
 
 export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
-  const [downloading, setDownloading] = useState(false);
-
-  const handleDownload = async () => {
-    setDownloading(true);
-    try {
-      await downloadSourceArchive('zip');
-    } finally {
-      setDownloading(false);
-    }
-  };
   return (
     <footer className="bg-slate-950 text-slate-300 pt-12 pb-8 border-t border-slate-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
@@ -167,19 +156,11 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
         <p>
           © {new Date().getFullYear()} ADHIGAM IAS — Academy for Civil Services. All rights reserved. • RISE 2.0 is the official flagship Sociology Optional test series under Adhigam IAS.
         </p>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 font-medium disabled:opacity-50 cursor-pointer"
-          >
-            {downloading ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Download className="w-3.5 h-3.5" />
-            )}
-            <span>Download Source Code (.ZIP)</span>
-          </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] text-amber-300/90 font-mono font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            {INSTITUTE_CONFIG.version || 'v2.4.0'} • Release
+          </span>
           <span className="text-slate-700">|</span>
           <a
             href={INSTITUTE_CONFIG.contact.website}

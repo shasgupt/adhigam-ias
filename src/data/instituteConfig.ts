@@ -42,6 +42,7 @@ export interface InstituteConfig {
   programmeName: string;
   examTarget: string;
   duration: string;
+  version?: string;
   totalTests: number;
   marksPerTest: number;
   questionsPerTest: string;
@@ -84,6 +85,7 @@ export const INSTITUTE_CONFIG: InstituteConfig = {
   programmeName: "RISE 2.0 - SOCIOLOGY OPTIONAL TEST SERIES",
   examTarget: "A structured answer-writing programme for UPSC Civil Services Mains 2027",
   duration: "12 October 2026 – 31 January 2027",
+  version: "v2.4.0",
   totalTests: 49,
   marksPerTest: 50,
   questionsPerTest: "4 Questions Each",
