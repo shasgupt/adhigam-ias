@@ -1,179 +1,166 @@
 # Adhigam IAS — Official Web Portal & Learning Management System
 
 > **Premier Civil Services Examination Academy**  
-> *"Driven by Discipline, Fueled by Knowledge"*
+> *"Driven by Discipline, Fueled by Knowledge"* • *Version v2.4.0*
 
-Welcome to the **Adhigam IAS** official web application and administration portal codebase. This platform is custom-built for UPSC Civil Services Examination (CSE) aspirants, offering a unified, high-performance web portal, student self-service LMS, and an intuitive no-code Faculty CMS dashboard.
+Welcome to the **ADHIGAM IAS** official web application and administration portal. This platform is custom-engineered for UPSC Civil Services Examination (CSE) aspirants, featuring a high-performance web portal, student self-service workbench, test series browser, and an intuitive no-code Faculty CMS dashboard.
 
 ---
 
 ## 🏛️ Executive Summary
 
-**Adhigam IAS** is designed with a **Modern Executive Officer** aesthetic, combining authoritative deep navy (`#0F2C59`), warm gold/amber (`#D97706`), and soft parchment (`#FDFBF7`) color palettes. The web application serves three primary user personas:
+**ADHIGAM IAS** is built with a **Modern Executive Officer** design language, combining authoritative deep navy (`#0F2C59`), warm gold/amber (`#D97706`), and soft parchment (`#FDFBF7`) visual tokens.
 
-1. **Public Aspirants / Visitors**: Browse courses, test series, syllabus outlines, daily current affairs, prelims quizzes, daily Mains answer writing prompts, and campus details.
-2. **Enrolled Students (Aspirant LMS)**: Access enrolled courses, submit daily Mains answers for faculty evaluation, review feedback, and attempt mock test series.
-3. **Faculty & Institute Management (Admin CMS)**: Manage content, publish daily current affairs, create and edit courses/test series, review student answer submissions, edit site announcements, and track student registration leads without requiring technical code knowledge.
+The application serves three primary user personas:
+1. **Public Aspirants / Visitors**: Explore the academy's test series catalog (**RISE 2.0 – 49 Tests** and **Advanced FLT Series – 12 Tests**), browse detailed syllabus schedules, submit questions to the Student Query Desk, and track their admission/mentorship queries in real time.
+2. **Enrolled Students (Aspirant LMS Workbench)**: Access test schedules, download question papers, upload answer PDFs for line-by-line faculty evaluation, and review evaluated copies with feedback scores.
+3. **Faculty & Directorate Management (Admin CMS)**: Manage course offerings, customize test series schedules, evaluate submitted answer copies within the 3-day turnaround SLA, manage student inquiries, and publish official academic updates.
 
 ---
 
-## 🎯 Key Portal Features
+## 🎯 Key Portal Modules & Capabilities
 
 ### 1. Public Portal
 - **Home View (`/src/pages/public/HomeView.tsx`)**:
-  - Official Adhigam IAS SVG Seal Badge & Brand Identity.
-  - UPSC Civil Services Examination Syllabus breakdown (Prelims GS & CSAT, Mains GS 1-4 & Optional, Personality Test / Interview).
-  - Important Announcements ticker & modal drawer.
-  - Spotlight on today's Mains Answer Writing prompt and featured courses.
-  - Verified selection metrics and institutional offerings.
-- **Paid Courses (`/src/pages/public/CoursesView.tsx`)**:
-  - Categorized under **Prelims**, **Mains**, and **Optional Subjects**.
-  - Detailed modal drawer for every course (curriculum, fee, duration, batch timings, batch mode: Offline/Online/Hybrid).
-  - Direct enrollment & callback inquiry modal.
-- **Free Initiatives (`/src/pages/public/FreeResourcesView.tsx`)**:
-  - **Daily Current Affairs & Editorials**: Filterable by GS Paper (GS-1, GS-2, GS-3, GS-4) with download options.
-  - **Prelims Daily Quizzes**: Interactive quiz interface with timer, immediate score evaluation, and detailed explanations.
-  - **Mains Answer Writing**: Daily UPSC Mains question prompts with structured model answers, key approach points, and direct submission triggers.
-- **Test Series (`/src/pages/public/TestSeriesView.tsx`)**:
-  - Prelims Full Length & Sectional Tests, Mains Evaluation Series, and Optional Test Series.
-  - Test schedule timelines, question paper links, and model answer keys.
-- **Admissions & Campus Contact (`/src/pages/public/JoinContactView.tsx`)**:
-  - Admissions registration form capturing Name, Phone, Email, City, Course Interested In, and Message.
-  - Campus addresses for **Old Rajinder Nagar Central Campus** and **Mukherjee Nagar North Campus**.
-  - Direct helpline contacts and operating hours.
+  - Official Adhigam IAS Emblem & Seal typography.
+  - **Flagship Spotlight**: RISE 2.0 Sociology Optional Test Series (49 Tests, Mon/Wed/Fri discipline, 50 Marks per session, 3-day evaluation SLA).
+  - **Test Series Catalog**: Side-by-side comparison of **RISE 2.0 (49 Tests)** and **Advanced FLT Series (12 Full-Length 250-Mark Mock Exams)**.
+  - **Programme Snapshot & Routine**: Test-day schedule (8:00 AM question release, 9:00 PM submission deadline, model answers).
+  - **Transparent Fee Structure**: Standard Launch Fee, Early Bird Discount tiers, and Existing Student concessions.
+  - **Interactive 49-Test Schedule Browser**: Filter by Paper I, Paper II, and Final Comprehensives with live keyword search.
+  - **Real-Time Student Query Desk**: Instant query reference generation (`ADHIGAM-Q-XXXX`) and status tracking.
 
-### 2. Aspirant Self-Service LMS (`/src/pages/aspirant/`)
-- Personalized student portal with authentication context.
-- Daily Mains answer upload interface (text or image/PDF attachment submission).
-- Faculty evaluation tracking (score out of 25, feedback comments, evaluated copy download).
-- Enrolled courses and test series schedule viewer.
+- **Test Series Explorer (`/src/pages/public/TestSeriesView.tsx`)**:
+  - Interactive multi-series toggle (**RISE 2.0** vs **Sociology Optional Advanced FLT Series**).
+  - Complete syllabus coverage breakdowns, test dates, and paper distribution.
+  - One-click print schedule utility and direct enrolment booking.
 
-### 3. Faculty CMS & Admin Dashboard (`/src/pages/admin/FacultyCMSDashboard.tsx`)
-- **Dashboard Overview**: Summary metrics of total active leads, pending answer reviews, published articles, and active courses.
-- **Content Management**:
-  - Publish Daily Current Affairs articles & GS editorials.
-  - Create, update, or archive Paid Courses and Test Series.
-  - Post and broadcast Important Announcements on the site header ticker.
-- **Lead & Enquiry Management**:
-  - Filter and export student registration enquiries by course interest, city, or date.
-- **Mains Answer Evaluation Workspace**:
-  - Review student answer submissions, assign marks, type structured feedback, and upload marked PDF copies.
+- **Academic Umbrella Courses (`/src/pages/public/CoursesView.tsx`)**:
+  - Live institute courses managed by faculty with zero dummy data.
+  - Categories: Optional, GS Foundation, Mains Special, Prelims Booster.
+
+- **Student Query Desk & Contact (`/src/pages/public/JoinContactView.tsx`)**:
+  - Direct inquiry form, official telegram channel (`@adhigamias_official`), and official email (`adhigamias@gmail.com`).
+
+### 2. Aspirant Self-Service Workbench (`/src/pages/aspirant/`)
+- Student authentication context (`AspirantAuthContext`).
+- Answer submission workflow (PDF upload / link).
+- Real-time evaluation tracker with faculty feedback and marked score sheets.
+
+### 3. Faculty CMS & Admin Directorate (`/src/pages/admin/FacultyCMSDashboard.tsx`)
+- Secure faculty credentials authentication (`AuthContext`).
+- **Test Series & Schedule Manager**: Update test dates, syllabus topics, and model answer releases.
+- **Enquiries CRM**: Review, respond, and log internal counseling notes for all prospective student queries.
+- **Evaluation Desk**: Grade answer submissions, write line-by-line feedback, and return marked copies.
 
 ---
 
 ## 📌 Single Source of Truth (SSOT)
 
-To prevent fragmented data and inconsistent contact information across header, footer, modals, and contact pages, all institute metadata is strictly centralized in:
+All institutional contact details, fee structures, schedules, and branding parameters are strictly centralized in:
 
 📂 `src/data/instituteConfig.ts`
 
-This configuration defines:
-- **Institute Metadata**: Name, Tagline, Subtitle, Motto, Founded Year, Accreditation.
-- **Helplines & Support**: Primary helpline (`+91 11 4500 8899`), alternate number, admissions email, support email, director grievance email.
-- **Campuses**:
-  - **Old Rajinder Nagar**: 22-B, Pusa Road, Near Karol Bagh Metro Gate 2, New Delhi - 110005.
-  - **Mukherjee Nagar**: 104, Kingsway Camp, Near GTB Nagar Metro Gate 3, Delhi - 110009.
-- **Verified Statistics**: Top selections count (`100+`), active aspirants (`5,000+`), review SLA (`24 Hours`), total evaluations (`25,000+`).
-- **Leadership & Senior Faculty**: Profiles for Dr. Vikramaditya Sharma, Prof. Ananya Roy, Dr. Rajeshwar Prasad.
+- **Academy Name**: ADHIGAM IAS
+- **Official Email**: `adhigamias@gmail.com`
+- **Official Telegram**: `@adhigamias_official` ([https://t.me/adhigamias_official](https://t.me/adhigamias_official))
+- **Official Website**: `https://adhigamiasacademy.com`
+- **Flagship Programme**: RISE 2.0 (49 Tests | 12 Oct 2026 – 31 Jan 2027)
+- **Secondary Series**: Sociology Optional Advanced FLT Series (12 Full-Length Mock Exams)
+- **Schedule**: Complete 49-test calendar (`RISE_49_TEST_SCHEDULE`)
 
 ---
 
-## 🛠️ Tech Stack & Directory Overview
+## 🛠️ Tech Stack & Architecture
 
-- **Framework**: React 18 + Vite + TypeScript
-- **Styling**: Tailwind CSS (`@import "tailwindcss";` in `src/index.css`)
-- **Icons**: `lucide-react`
-- **Animations**: `motion` (`motion/react`)
-- **Persistence Engine**: `src/lib/api.ts` (LocalStorage persistent state engine with pre-seeded mock data)
+- **Frontend**: React 19, Vite 8, TypeScript, Tailwind CSS v4
+- **Icons & Animations**: `lucide-react`, `motion`
+- **Backend / API**: Express 4 full-stack server mounted via Vite dev middleware and standalone production entry (`server.ts`)
+- **Persistence**: JSON-backed local storage engine (`data/adhigam_db.json`) & LocalStorage fallback
+- **Packaging Utility**: Node.js ESM script (`scripts/package-versioned.mjs`) with `jszip`
 
 ```
 adhigam-ias/
-├── README.md                   # Main repository guide and overview (this file)
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # Automated Git branch CI/CD pipeline (develop vs main)
+├── README.md                           # Main repository guide (this file)
+├── BLUEHOST_DEPLOYMENT_STEPS.md        # Comprehensive Bluehost cPanel & Apache guide
+├── metadata.json                       # AI Studio Applet configuration
+├── package.json                        # Node.js dependencies & versioned build scripts
+├── server.ts                           # Full-stack Express backend & API endpoints
+├── scripts/
+│   ├── package-versioned.mjs           # Automated cross-platform ZIP packaging script
+│   ├── set-build-type.mjs              # Build marker utility (release vs debug)
+│   └── package-dist.ps1                # PowerShell packaging utility
 ├── doc/
-│   ├── architecture.md         # Full technical architecture & AI Agent directives
-│   ├── bluehost_deployment.md  # Step-by-step Bluehost deployment guide (.htaccess, cPanel, Node)
-│   └── bluehost_branch_workflow.md # Git branch CI/CD pipeline guide (develop debug vs main prod)
+│   ├── architecture.md                 # Technical architecture and domain models
+│   ├── ADMIN_MANUAL_COURSES_AND_TEST_SERIES.md # Admin & faculty operations manual
+│   └── bluehost_branch_workflow.md     # Branch CI/CD deployment guide
 ├── public/
-│   └── .htaccess               # Apache SPA rewrite rules & HTTPS headers for Bluehost
-├── src/
-│   ├── components/
-│   │   ├── AdhigamLogo.tsx     # Vector SVG Seal Emblem & Brand Typo
-│   │   ├── AnnouncementBanner.tsx
-│   │   ├── QuickEnquireModal.tsx
-│   │   ├── SiteFooter.tsx
-│   │   └── SiteHeader.tsx
-│   ├── context/
-│   │   ├── AspirantAuthContext.tsx
-│   │   └── AuthContext.tsx
-│   ├── data/
-│   │   └── instituteConfig.ts  # CENTRAL SINGLE SOURCE OF TRUTH (SSOT)
-│   ├── lib/
-│   │   └── api.ts              # Data access & LocalStorage mock API client
-│   ├── pages/
-│   │   ├── admin/
-│   │   │   └── FacultyCMSDashboard.tsx
-│   │   ├── aspirant/
-│   │   │   └── AspirantPortalView.tsx
-│   │   └── public/
-│   │       ├── CoursesView.tsx
-│   │       ├── FreeResourcesView.tsx
-│   │       ├── HomeView.tsx
-│   │       ├── JoinContactView.tsx
-│   │       └── TestSeriesView.tsx
-│   ├── App.tsx
-│   ├── index.css
-│   ├── main.tsx
-│   └── types.ts                # Master TypeScript Interfaces & Types
-├── metadata.json
-├── package.json
-├── server.ts
-└── tsconfig.json
+│   └── .htaccess                       # Apache SPA rewrite rules & security headers
+├── data/
+│   └── adhigam_db.json                 # Persistent database state (courses, tests, enquiries)
+└── src/
+    ├── App.tsx                         # Master routing and layout switcher
+    ├── types.ts                        # Master TypeScript type definitions
+    ├── components/                     # Reusable UI components (SiteHeader, SiteFooter, etc.)
+    ├── context/                        # Authentication & state providers
+    ├── data/
+    │   ├── instituteConfig.ts          # Central Single Source of Truth (SSOT)
+    │   └── fallbackData.ts             # Default test series & fallback data
+    ├── lib/
+    │   └── api.ts                      # Universal API client
+    └── pages/
+        ├── admin/                      # Faculty CMS & Evaluation Dashboard
+        ├── aspirant/                   # Student LMS Workbench
+        └── public/                     # Public views (Home, TestSeries, Courses, Contact)
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Build, Package & Deployment Commands
 
-### Local Development
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-2. **Start Dev Server**:
-   ```bash
-   npm run dev
-   ```
-   *The application will boot on `http://localhost:3000`.*
+### 1. Local Development
+```bash
+npm install
+npm run dev
+# Starts dev server on http://localhost:3000
+```
 
-3. **Build for Debug / Staging (`develop` branch)**:
-   ```bash
-   npm run build:debug
-   ```
-   *Generates sourcemaps, unminified output, and enables debug logging for testing.*
+### 2. Build Commands
+```bash
+# Standard Production Build (Minified & Optimized)
+npm run build
 
-4. **Build for Production (`main` / `master` branch)**:
-   ```bash
-   npm run build
-   ```
-   *Generates optimized, minified bundles ready for live production deployment.*
+# Debug Build (With source maps and unminified assets)
+npm run build:debug
+```
+
+### 3. Automated ZIP Packaging
+```bash
+# Build & Package for Release:
+npm run package:release
+# Output: adhigam-ias-v0.3.0-release.zip
+
+# Build & Package for Debug:
+npm run package:debug
+# Output: adhigam-ias-v0.3.0-debug.zip
+
+# Package complete Source Code + Assets:
+npm run package:source
+# Output: adhigam-ias-source-v0.3.0-release.zip
+```
 
 ---
 
-## 🌐 Bluehost Hosting & Branch Pipeline Documentation
-- 📄 [Bluehost Hosting & cPanel Setup Guide](./doc/bluehost_deployment.md)
-- 📄 [Git Branch CI/CD Deployment Workflow Guide (`develop` debug vs `main` prod)](./doc/bluehost_branch_workflow.md)
+## 🌐 Deploying to Bluehost
+For full deployment instructions, see [BLUEHOST_DEPLOYMENT_STEPS.md](./BLUEHOST_DEPLOYMENT_STEPS.md).
+1. Run `npm run package:release` to generate the release ZIP archive.
+2. Upload the ZIP to Bluehost cPanel File Manager under `/public_html`.
+3. Extract files into `/public_html` (including `index.html`, `assets/`, and `.htaccess`).
 
 ---
 
-## 🤖 Directives for Future AI Agents
+## 🤖 Directives for Future AI Agents & Developers
 
-When working on or extending this repository, AI agents must strictly observe the following rules:
-
-1. **Maintain Single Source of Truth**: Never hardcode phone numbers, campus addresses, emails, or faculty names inside components or views. Always import and reference `INSTITUTE_CONFIG` from `src/data/instituteConfig.ts`.
-2. **Brand Visual Identity**: Use the official Executive Navy (`#0F2C59`), Gold/Amber (`#D97706`), and Warm Parchment (`#FDFBF7`) visual tokens. Do not introduce generic neon, purple-blue SaaS gradients, or unstyled cards.
-3. **Typography**: Headings use `font-sans-ui` / `font-serif-heading` with clean tracking and contrast.
-4. **Icons**: Exclusively import icons from `lucide-react`. Never generate inline non-standard SVGs unless constructing custom brand logos like `AdhigamLogo.tsx`.
-5. **Data Layer**: All CRUD operations must go through `src/lib/api.ts` to ensure LocalStorage state remains synced across Public views, Aspirant Portal, and the Faculty CMS.
+1. **Strict SSOT Adherence**: Always import and reference `INSTITUTE_CONFIG` from `src/data/instituteConfig.ts`. Never hardcode emails, telegram links, or phone numbers in components.
+2. **Design Tokens**: Maintain authoritative Executive Navy (`#0F2C59`), Amber/Gold (`#D97706`), and Parchment (`#FDFBF7`) styling.
+3. **Data Integrity**: CRUD operations on test series, courses, and inquiries must use `src/lib/api.ts` to keep the database synced.
