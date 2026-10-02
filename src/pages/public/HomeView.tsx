@@ -581,7 +581,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
       <section id="fees-enrolment" className="max-w-7xl mx-auto px-4 scroll-mt-20">
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
           <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
-            05 | Fee & Enrolment
+            04 | Fee & Enrolment
           </span>
           <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59]">
             Choose Your Eligible Fee
@@ -656,14 +656,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
       </section>
 
       {/* ========================================================================= */}
-      {/* 04 | COMPLETE 49-TEST SCHEDULE BROWSER                                    */}
+      {/* 05 | COMPLETE 49-TEST SCHEDULE BROWSER                                    */}
       {/* ========================================================================= */}
       <section id="test-schedule" className="max-w-7xl mx-auto px-4 scroll-mt-20">
         <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-50 border border-amber-200 px-3 py-1 rounded-md">
-                04 | Complete Test Schedule
+                05 | Complete Test Schedule
               </span>
               <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59] mt-3">
                 Full 49-Test Curriculum & Coverage
