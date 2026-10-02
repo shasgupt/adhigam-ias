@@ -5,6 +5,7 @@ import { SiteHeader } from './components/SiteHeader';
 import { SiteFooter } from './components/SiteFooter';
 import { AnnouncementBanner } from './components/AnnouncementBanner';
 import { QuickEnquireModal } from './components/QuickEnquireModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 import { HomeView } from './pages/public/HomeView';
 import { CoursesView } from './pages/public/CoursesView';
@@ -19,8 +20,13 @@ import { AdminLoginView } from './pages/admin/AdminLoginView';
 import { FacultyCMSDashboard } from './pages/admin/FacultyCMSDashboard';
 
 function MainAppContent() {
-  const [currentPath, setCurrentPath] = useState<string>(window.location.pathname || '/');
-  const [activeTab, setActiveTab] = useState<'public' | 'aspirant' | 'admin'>('public');
+  const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
+  const [activeTab, setActiveTab] = useState<'public' | 'aspirant' | 'admin'>(() => {
+    const path = window.location.pathname || '/';
+    if (path.startsWith('/admin')) return 'admin';
+    if (path.startsWith('/me') || path.startsWith('/login')) return 'aspirant';
+    return 'public';
+  });
 
   // Enquire Modal State
   const [enquireModalOpen, setEnquireModalOpen] = useState(false);
@@ -31,7 +37,15 @@ function MainAppContent() {
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
+      const path = window.location.pathname || '/';
+      setCurrentPath(path);
+      if (path.startsWith('/admin')) {
+        setActiveTab('admin');
+      } else if (path.startsWith('/me') || path.startsWith('/login')) {
+        setActiveTab('aspirant');
+      } else {
+        setActiveTab('public');
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -41,12 +55,12 @@ function MainAppContent() {
     window.history.pushState({}, '', path);
     setCurrentPath(path);
 
-    if (tab) {
-      setActiveTab(tab);
-    } else if (path.startsWith('/admin')) {
+    if (path.startsWith('/admin')) {
       setActiveTab('admin');
     } else if (path.startsWith('/me') || path.startsWith('/login')) {
       setActiveTab('aspirant');
+    } else if (tab) {
+      setActiveTab(tab);
     } else {
       setActiveTab('public');
     }
@@ -57,6 +71,9 @@ function MainAppContent() {
     setSelectedCourseTitle(courseTitle || 'RISE 2.0 – Sociology Optional Test Series');
     setEnquireModalOpen(true);
   };
+
+  const isAdminRoute = currentPath.startsWith('/admin') || activeTab === 'admin';
+  const isAspirantRoute = currentPath.startsWith('/me') || currentPath.startsWith('/login') || activeTab === 'aspirant';
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans-ui selection:bg-amber-500 selection:text-slate-950">
@@ -73,59 +90,61 @@ function MainAppContent() {
 
       {/* Main View Router */}
       <main className="flex-1">
-        {/* PUBLIC AREA */}
-        {activeTab === 'public' && (
-          <>
-            {currentPath === '/' && (
-              <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />
-            )}
-            {currentPath.startsWith('/courses') && (
-              <CoursesView onOpenEnquire={handleOpenEnquire} onNavigate={handleNavigate} />
-            )}
-            {currentPath.startsWith('/test-series') && (
-              <TestSeriesView onOpenEnquire={handleOpenEnquire} />
-            )}
-            {currentPath.startsWith('/free') && (
-              <FreeResourcesView
-                initialSubTab={
-                  currentPath.includes('quizzes')
-                    ? 'quizzes'
-                    : currentPath.includes('answer-writing')
-                    ? 'answer-writing'
-                    : 'current-affairs'
-                }
-                onNavigate={handleNavigate}
-              />
-            )}
-            {currentPath === '/contact' && <JoinContactView />}
-          </>
-        )}
-
-        {/* ASPIRANT PORTAL AREA */}
-        {activeTab === 'aspirant' && (
-          <div>
-            {aspirantUser ? (
-              <AspirantWorkbench onNavigate={handleNavigate} />
-            ) : (
-              <AspirantLoginView onSuccess={() => handleNavigate('/me', 'aspirant')} />
-            )}
-          </div>
-        )}
-
-        {/* FACULTY / ADMIN CMS AREA */}
-        {activeTab === 'admin' && (
-          <div>
-            {staffUser ? (
-              <FacultyCMSDashboard onNavigate={handleNavigate} />
-            ) : (
-              <AdminLoginView onSuccess={() => handleNavigate('/admin', 'admin')} />
-            )}
-          </div>
-        )}
+        <ErrorBoundary>
+          {isAdminRoute ? (
+            <div>
+              {staffUser ? (
+                <FacultyCMSDashboard onNavigate={handleNavigate} />
+              ) : (
+                <AdminLoginView onSuccess={() => handleNavigate('/admin', 'admin')} />
+              )}
+            </div>
+          ) : isAspirantRoute ? (
+            <div>
+              {aspirantUser ? (
+                <AspirantWorkbench onNavigate={handleNavigate} />
+              ) : (
+                <AspirantLoginView onSuccess={() => handleNavigate('/me', 'aspirant')} />
+              )}
+            </div>
+          ) : (
+            <>
+              {currentPath === '/' && (
+                <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />
+              )}
+              {currentPath.startsWith('/courses') && (
+                <CoursesView onOpenEnquire={handleOpenEnquire} onNavigate={handleNavigate} />
+              )}
+              {currentPath.startsWith('/test-series') && (
+                <TestSeriesView onOpenEnquire={handleOpenEnquire} />
+              )}
+              {currentPath.startsWith('/free') && (
+                <FreeResourcesView
+                  initialSubTab={
+                    currentPath.includes('quizzes')
+                      ? 'quizzes'
+                      : currentPath.includes('answer-writing')
+                      ? 'answer-writing'
+                      : 'current-affairs'
+                  }
+                  onNavigate={handleNavigate}
+                />
+              )}
+              {currentPath === '/contact' && <JoinContactView />}
+              {/* Fallback for unmapped public paths */}
+              {!['/', '/contact'].includes(currentPath) &&
+                !currentPath.startsWith('/courses') &&
+                !currentPath.startsWith('/test-series') &&
+                !currentPath.startsWith('/free') && (
+                  <HomeView onNavigate={handleNavigate} onOpenEnquire={handleOpenEnquire} />
+                )}
+            </>
+          )}
+        </ErrorBoundary>
       </main>
 
       {/* Site Footer */}
-      <SiteFooter onNavigate={(p) => handleNavigate(p, 'public')} />
+      <SiteFooter onNavigate={(p) => handleNavigate(p)} />
 
       {/* Quick Admissions Lead Modal */}
       <QuickEnquireModal
@@ -139,10 +158,12 @@ function MainAppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AspirantAuthProvider>
-        <MainAppContent />
-      </AspirantAuthProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AspirantAuthProvider>
+          <MainAppContent />
+        </AspirantAuthProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
