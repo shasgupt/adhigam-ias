@@ -1,0 +1,38 @@
+# Adhigam IAS CI Pipeline Workflow
+# To enable automated GitHub Actions CI:
+# 1. Copy this file to .github/workflows/ci.yml in your repository via GitHub web UI
+# 2. Or enable the 'workflow' scope on your Personal Access Token.
+
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run TypeScript typecheck / lint
+        run: npm run lint
+
+      - name: Run Automated Test Suite
+        run: npm test
+
+      - name: Run Production Build
+        run: npm run build
