@@ -80,6 +80,15 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
                 <span>Admissions Counselling Desk</span>
               </button>
             </li>
+            <li className="pt-1.5 border-t border-slate-850">
+              <button
+                onClick={() => onNavigate('/admin')}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-left text-slate-400 hover:text-amber-200 cursor-pointer text-xs"
+              >
+                <Shield className="w-3.5 h-3.5 text-amber-400/80" />
+                <span>Faculty & Admin CMS Portal</span>
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -165,6 +174,14 @@ export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ o
             <span className={`w-1.5 h-1.5 rounded-full ${buildType === 'Debug' ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
             v{currentVersion.replace(/^v/, '')} • {buildType}
           </span>
+          <span className="text-slate-700">|</span>
+          <button
+            onClick={() => onNavigate('/admin')}
+            className="hover:text-amber-300 text-slate-400 transition-colors flex items-center gap-1 cursor-pointer"
+          >
+            <Shield className="w-3 h-3 text-amber-400" />
+            <span>Staff Portal</span>
+          </button>
           <span className="text-slate-700">|</span>
           <a
             href={INSTITUTE_CONFIG.contact.website}
