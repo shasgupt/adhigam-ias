@@ -191,30 +191,33 @@ console.log(`• Build Tag:   ${buildTag.toUpperCase()}`);
 console.log(`• Engine:      Node.js Built-in Zero-Dependency Archiver`);
 console.log(`-----------------------------------------------\n`);
 
+// Cross-platform npm command resolver
+const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
 // Ensure all critical build plugins and dependencies are installed
 const nodeModulesDir = join(projectRoot, 'node_modules');
 const criticalPackages = [
-  'vite',
-  '@tailwindcss/vite',
-  '@vitejs/plugin-react',
-  'react',
-  'react-dom',
+  join('vite', 'bin', 'vite.js'),
+  join('@tailwindcss', 'vite', 'package.json'),
+  join('@vitejs', 'plugin-react', 'package.json'),
+  join('tailwindcss', 'package.json'),
+  join('react', 'package.json'),
+  join('react-dom', 'package.json'),
 ];
 
-const missingPackage = criticalPackages.find((pkgName) => {
-  const pkgDir = join(nodeModulesDir, ...pkgName.split('/'));
-  return !existsSync(pkgDir);
+const hasMissingPackages = criticalPackages.some((subPath) => {
+  return !existsSync(join(nodeModulesDir, subPath));
 });
 
-if (!existsSync(nodeModulesDir) || missingPackage) {
-  console.log(`⚠️  Local dependencies appear incomplete (missing: ${missingPackage || 'node_modules'}).`);
-  console.log(`📥 Running "npm install" to ensure all Vite plugins and packages are ready...\n`);
+if (!existsSync(nodeModulesDir) || hasMissingPackages) {
+  console.log(`⚠️  Local dependencies are missing or incomplete.`);
+  console.log(`📥 Running "${npmCmd} install" to ensure all Vite plugins and packages are installed...\n`);
   try {
-    execSync('npm install', { cwd: projectRoot, stdio: 'inherit' });
+    execSync(`${npmCmd} install`, { cwd: projectRoot, stdio: 'inherit', shell: true });
     console.log(`\n✅ Dependencies installed successfully.\n`);
   } catch (installErr) {
-    console.error(`\n❌ Failed to run 'npm install':`, installErr.message);
-    console.error(`👉 Please run 'npm install' manually in your project directory first.\n`);
+    console.error(`\n❌ Failed to run '${npmCmd} install':`, installErr.message);
+    console.error(`👉 Please run 'npm install' in your terminal first.\n`);
     process.exit(1);
   }
 }
@@ -225,29 +228,43 @@ if (!skipBuild) {
   const runBuildProcess = () => {
     // 1. Clear build marker
     const markerScript = join(projectRoot, 'scripts', 'set-build-type.mjs');
-    execSync(`"${process.execPath}" "${markerScript}" clear`, { cwd: projectRoot, stdio: 'inherit' });
+    execSync(`"${process.execPath}" "${markerScript}" clear`, { cwd: projectRoot, stdio: 'inherit', shell: true });
 
-    // 2. Run Vite build directly with Node.js to bypass Windows shell/PATH issues
+    // 2. Run Vite build directly with Node.js to bypass Windows shell/PATH/npx issues
     const viteJsPath = join(projectRoot, 'node_modules', 'vite', 'bin', 'vite.js');
+    const modeFlag = isDebug ? '--mode debug' : '';
+    const buildEnv = {
+      ...process.env,
+      NODE_PATH: nodeModulesDir,
+    };
+
     if (existsSync(viteJsPath)) {
-      const modeFlag = isDebug ? '--mode debug' : '';
-      execSync(`"${process.execPath}" "${viteJsPath}" build ${modeFlag}`.trim(), { cwd: projectRoot, stdio: 'inherit' });
+      execSync(`"${process.execPath}" "${viteJsPath}" build ${modeFlag}`.trim(), {
+        cwd: projectRoot,
+        stdio: 'inherit',
+        env: buildEnv,
+        shell: true,
+      });
     } else {
-      const fallbackCmd = isDebug ? 'npx vite build --mode debug' : 'npx vite build';
-      execSync(fallbackCmd, { cwd: projectRoot, stdio: 'inherit' });
+      execSync(`${npmCmd} run ${isDebug ? 'build:debug' : 'build'}`, {
+        cwd: projectRoot,
+        stdio: 'inherit',
+        env: buildEnv,
+        shell: true,
+      });
     }
 
     // 3. Set build marker
-    execSync(`"${process.execPath}" "${markerScript}" ${buildTag}`, { cwd: projectRoot, stdio: 'inherit' });
+    execSync(`"${process.execPath}" "${markerScript}" ${buildTag}`, { cwd: projectRoot, stdio: 'inherit', shell: true });
   };
 
   try {
     runBuildProcess();
     console.log(`\n✅ Build completed successfully.\n`);
   } catch (error) {
-    console.log(`\n⚠️  Build failed on initial attempt. Attempting 'npm install' repair...`);
+    console.log(`\n⚠️  Build encountered an issue. Attempting '${npmCmd} install' repair...`);
     try {
-      execSync('npm install', { cwd: projectRoot, stdio: 'inherit' });
+      execSync(`${npmCmd} install`, { cwd: projectRoot, stdio: 'inherit', shell: true });
       runBuildProcess();
       console.log(`\n✅ Build completed successfully after dependency repair.\n`);
     } catch (retryError) {
