@@ -1,18 +1,20 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "node scripts/set-build-type.mjs clear && vite build --mode production && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/server.cjs && node scripts/set-build-type.mjs release",
-    "build:debug": "node scripts/set-build-type.mjs clear && vite build --mode debug && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && node scripts/set-build-type.mjs debug",
-    "start": "node dist/server.cjs",
-    "clean": "rm -rf dist server.cjs",
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "build": "node scripts/set-build-type.mjs clear && vite build && node scripts/set-build-type.mjs release",
+    "build:debug": "node scripts/set-build-type.mjs clear && vite build --mode debug && node scripts/set-build-type.mjs debug",
+    "preview": "vite preview",
+    "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
-    "version:major": "npm version major --no-git-tag-version"
+    "version:major": "npm version major --no-git-tag-version",
+    "package:dist": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-dist.ps1",
+    "package:versioned": "node scripts/package-versioned.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
