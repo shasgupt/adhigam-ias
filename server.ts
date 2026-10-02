@@ -1319,21 +1319,26 @@ app.get('/api/admin/test-series', requireStaff, (req: Request, res: Response) =>
 
 app.post('/api/admin/test-series', requireStaff, (req: Request, res: Response) => {
   const data = req.body;
+  const scheduleItems = data.schedule || [];
   const ts: TestSeries = {
     id: `test_${Date.now()}`,
     key: data.key || `test-${Date.now()}`,
     title: data.title,
     subtitle: data.subtitle || '',
-    type: data.type || 'prelims',
-    totalTests: Number(data.totalTests || 10),
+    type: data.type || 'mains',
+    totalTests: Number(data.totalTests || (scheduleItems.length > 0 ? scheduleItems.length : 10)),
     featured: Boolean(data.featured),
     published: Boolean(data.published ?? true),
-    fee: data.fee || '₹10,000',
+    fee: data.fee || '₹8,900',
+    earlyBirdFee: data.earlyBirdFee || '',
+    existingStudentFee: data.existingStudentFee || '',
+    earlyBirdDeadline: data.earlyBirdDeadline || '',
     startDate: data.startDate || 'Immediate',
+    endDate: data.endDate || '',
     mode: data.mode || 'online',
     description: data.description || '',
-    schedule: data.schedule || [],
-    image: data.image || 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&q=80&w=800',
+    schedule: scheduleItems,
+    image: data.image || 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800',
     createdAt: new Date().toISOString(),
   };
 

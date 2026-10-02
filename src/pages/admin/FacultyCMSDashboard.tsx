@@ -67,7 +67,7 @@ export const FacultyCMSDashboard: React.FC<{ onNavigate: (path: string) => void 
         api.get<WritingAttempt[]>('/api/admin/writing-attempts'),
         api.get<Enquiry[]>('/api/admin/enquiries'),
         api.get<Course[]>('/api/courses'),
-        api.get<TestSeries[]>('/api/test-series'),
+        api.get<TestSeries[]>('/api/admin/test-series').catch(() => api.get<TestSeries[]>('/api/test-series')),
         api.get<Article[]>('/api/articles'),
         api.get<Quiz[]>('/api/quizzes'),
         api.get<Prompt[]>('/api/prompts'),
@@ -117,7 +117,15 @@ export const FacultyCMSDashboard: React.FC<{ onNavigate: (path: string) => void 
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-end md:self-center">
+        <div className="flex items-center gap-2.5 self-end md:self-center flex-wrap">
+          <button
+            onClick={() => setActiveTab('test_series')}
+            className="px-3.5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>Manage Test Series ({testSeries.length})</span>
+          </button>
+
           <button
             onClick={fetchAllAdminData}
             title="Refresh CMS Data"
@@ -333,6 +341,18 @@ export const FacultyCMSDashboard: React.FC<{ onNavigate: (path: string) => void 
         </button>
 
         <button
+          onClick={() => setActiveTab('test_series')}
+          className={`px-4 py-2.5 rounded-xl whitespace-nowrap transition-all cursor-pointer flex items-center gap-2 ${
+            activeTab === 'test_series'
+              ? 'bg-slate-900 text-amber-400 shadow-md'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <FileSpreadsheet className="w-4 h-4 text-amber-500" />
+          <span>Test Series Packages ({testSeries.length})</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('courses')}
           className={`px-4 py-2.5 rounded-xl whitespace-nowrap transition-all cursor-pointer flex items-center gap-2 ${
             activeTab === 'courses'
@@ -342,18 +362,6 @@ export const FacultyCMSDashboard: React.FC<{ onNavigate: (path: string) => void 
         >
           <Layers className="w-4 h-4" />
           <span>Courses & Batches ({courses.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('test_series')}
-          className={`px-4 py-2.5 rounded-xl whitespace-nowrap transition-all cursor-pointer flex items-center gap-2 ${
-            activeTab === 'test_series'
-              ? 'bg-slate-900 text-amber-400 shadow-md'
-              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-          }`}
-        >
-          <FileSpreadsheet className="w-4 h-4" />
-          <span>Test Series ({testSeries.length})</span>
         </button>
 
         <button
