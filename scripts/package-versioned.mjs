@@ -191,6 +191,23 @@ console.log(`• Build Tag:   ${buildTag.toUpperCase()}`);
 console.log(`• Engine:      Node.js Built-in Zero-Dependency Archiver`);
 console.log(`-----------------------------------------------\n`);
 
+// Ensure dependencies are installed before building
+const nodeModulesDir = join(projectRoot, 'node_modules');
+const viteBinExists = existsSync(join(nodeModulesDir, 'vite')) || existsSync(join(nodeModulesDir, '.bin', 'vite')) || existsSync(join(nodeModulesDir, '.bin', 'vite.cmd'));
+
+if (!existsSync(nodeModulesDir) || !viteBinExists) {
+  console.log(`⚠️  Local 'node_modules' or 'vite' binary was not found.`);
+  console.log(`📥 Automatically running "npm install" to populate project dependencies...\n`);
+  try {
+    execSync('npm install', { cwd: projectRoot, stdio: 'inherit' });
+    console.log(`\n✅ Dependencies installed successfully.\n`);
+  } catch (installErr) {
+    console.error(`\n❌ Failed to run 'npm install':`, installErr.message);
+    console.error(`👉 Please run 'npm install' manually in your project directory first.\n`);
+    process.exit(1);
+  }
+}
+
 // Run build if not skipped
 if (!skipBuild) {
   const buildScript = isDebug ? 'npm run build:debug' : 'npm run build';
@@ -199,7 +216,8 @@ if (!skipBuild) {
     execSync(buildScript, { cwd: projectRoot, stdio: 'inherit' });
     console.log(`✅ Build completed successfully.\n`);
   } catch (error) {
-    console.error(`❌ Build failed:`, error.message);
+    console.error(`\n❌ Build failed with error:`, error.message);
+    console.error(`💡 Tip: Ensure you ran 'npm install' and that Vite is available.`);
     process.exit(1);
   }
 } else {
