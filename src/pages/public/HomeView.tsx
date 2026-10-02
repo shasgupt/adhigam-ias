@@ -19,8 +19,10 @@ import {
   Layers,
 } from 'lucide-react';
 import { INSTITUTE_CONFIG, RISE_49_TEST_SCHEDULE, ScheduleItem } from '../../data/instituteConfig';
+import { fallbackTestSeries } from '../../data/fallbackData';
 import { AdhigamLogo } from '../../components/AdhigamLogo';
 import { api } from '../../lib/api';
+import { TestSeries } from '../../types';
 
 interface HomeViewProps {
   onNavigate: (path: string, tab?: 'public' | 'aspirant' | 'admin') => void;
@@ -50,10 +52,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
   const [trackedResults, setTrackedResults] = useState<any[] | null>(null);
   const [trackingError, setTrackingError] = useState('');
 
-  // Dynamic Umbrella Courses (Zero Dummy Data, Admin Managed)
+  // Dynamic Test Series & Courses
+  const [allTestSeries, setAllTestSeries] = useState<TestSeries[]>(fallbackTestSeries);
   const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
+    api.get<TestSeries[]>('/api/test-series')
+      .then((data) => {
+        if (data && data.length > 0) setAllTestSeries(data);
+      })
+      .catch(() => setAllTestSeries(fallbackTestSeries));
+
     api.get<any[]>('/api/courses')
       .then((data) => setCourses(data.filter((c: any) => c.published)))
       .catch(() => setCourses([]));
@@ -311,6 +320,112 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenEnquire })
               <span className="text-xl font-black text-[#0F2C59] block mt-0.5">Within 3 Days</span>
               <span className="text-[11px] text-slate-500 font-medium">Line-by-Line Remarks</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* ADHIGAM IAS TEST SERIES PROGRAMMES (FLAGSHIP & SPECIALIZED COHORTS)       */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-[#FDFBF7] rounded-2xl border border-amber-200 p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="border-b border-amber-200/80 pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#D97706] bg-amber-100 border border-amber-300 px-3 py-1 rounded-md inline-block">
+                Adhigam Mains Test Series Cohorts
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black font-serif-heading text-[#0F2C59]">
+                Our Test Series Programmes for UPSC Mains 2027
+              </h2>
+              <p className="text-sm text-slate-600 max-w-2xl font-sans-ui leading-relaxed">
+                Choose the test series format aligned with your preparation stage — whether daily answer-writing discipline or full-length 3-hour examination simulations.
+              </p>
+            </div>
+
+            <button
+              onClick={() => onNavigate('/test-series')}
+              className="text-xs font-bold text-[#0F2C59] hover:text-[#D97706] flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+            >
+              Explore Full Schedules & Syllabus <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {allTestSeries.map((series) => (
+              <div
+                key={series.id}
+                className={`rounded-2xl border p-6 flex flex-col justify-between transition-all bg-white shadow-sm ${
+                  series.featured
+                    ? 'border-amber-400 ring-2 ring-amber-400/30'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">
+                        {series.totalTests} Tests
+                      </span>
+                      {series.featured ? (
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded">
+                          Flagship Series
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded border border-indigo-200">
+                          Full-Length Mock Series
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      Starts: {series.startDate}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-black font-serif-heading text-[#0F2C59]">
+                      {series.title}
+                    </h3>
+                    <p className="text-xs font-semibold text-amber-800 uppercase tracking-wide mt-1">
+                      {series.subtitle}
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                    {series.description}
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center text-xs">
+                    <div className="p-2 bg-slate-50 rounded-lg">
+                      <span className="text-[10px] text-slate-400 uppercase block">Launch Fee</span>
+                      <span className="font-bold text-slate-900">{series.fee}</span>
+                    </div>
+                    <div className="p-2 bg-amber-50 rounded-lg border border-amber-200/60">
+                      <span className="text-[10px] text-amber-700 uppercase block font-bold">Early Bird</span>
+                      <span className="font-extrabold text-[#0F2C59]">{series.earlyBirdFee || series.fee}</span>
+                    </div>
+                    <div className="p-2 bg-emerald-50 rounded-lg">
+                      <span className="text-[10px] text-emerald-700 uppercase block font-bold">Existing Std</span>
+                      <span className="font-bold text-emerald-800">{series.existingStudentFee || '25% Off'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => onOpenEnquire(`${series.title} (Early Bird: ${series.earlyBirdFee || series.fee})`)}
+                    className="flex-1 py-2.5 bg-[#0F2C59] hover:bg-[#0c2347] text-amber-300 font-bold rounded-lg text-xs uppercase tracking-wider transition-colors cursor-pointer text-center"
+                  >
+                    Enrol Now
+                  </button>
+                  <button
+                    onClick={() => onNavigate('/test-series')}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    View Schedule <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
