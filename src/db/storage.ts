@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {
+import type {
   User,
   Announcement,
   Course,
@@ -14,8 +14,8 @@ import {
   Bookmark,
   Follow,
   FileRecord,
-} from '../types';
-import { RISE_49_TEST_SCHEDULE } from '../data/instituteConfig';
+} from '../types.ts';
+import { RISE_49_TEST_SCHEDULE } from '../data/instituteConfig.ts';
 
 export interface DatabaseSchema {
   version: number;

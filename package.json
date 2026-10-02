@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "start": "node server.ts",
     "build": "node scripts/set-build-type.mjs clear && vite build && node scripts/set-build-type.mjs release",
     "build:debug": "node scripts/set-build-type.mjs clear && vite build --mode debug && node scripts/set-build-type.mjs debug",
     "preview": "vite preview",

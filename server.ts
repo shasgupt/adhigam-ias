@@ -1,11 +1,12 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
-import {
+import type {
   User,
   Announcement,
   Course,
@@ -20,9 +21,9 @@ import {
   Follow,
   FileRecord,
   AdminStats,
-} from './src/types';
-import { RISE_49_TEST_SCHEDULE, INSTITUTE_CONFIG } from './src/data/instituteConfig';
-import { db } from './src/db/storage';
+} from './src/types.ts';
+import { RISE_49_TEST_SCHEDULE, INSTITUTE_CONFIG } from './src/data/instituteConfig.ts';
+import { db } from './src/db/storage.ts';
 
 dotenv.config();
 

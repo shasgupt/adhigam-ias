@@ -2,7 +2,7 @@ import React from 'react';
 import { Mail, Send, ExternalLink, Calendar, CheckCircle2, Shield, MessageSquare, ArrowRight, Code } from 'lucide-react';
 import { INSTITUTE_CONFIG } from '../data/instituteConfig';
 import { AdhigamLogo } from './AdhigamLogo';
-import packageJson from '../../package.json';
+import packageJson from '../../package.json' with { type: 'json' };
 
 export const SiteFooter: React.FC<{ onNavigate: (path: string) => void }> = ({ onNavigate }) => {
   const currentVersion = import.meta.env.VITE_APP_VERSION || packageJson.version || '0.4.2';
