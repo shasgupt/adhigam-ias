@@ -46,24 +46,21 @@ export const AdminLoginView: React.FC<{ onSuccess: () => void }> = ({ onSuccess 
       {/* Demo Credentials Quick Switcher */}
       <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 text-xs">
         <span className="text-[10px] uppercase font-bold text-amber-400 block">
-          One-Click Demo Staff Accounts:
+          One-Click Demo Admin Account:
         </span>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setDemoAccount('sharma@adhigam.com')}
-            className="p-2 bg-slate-900 hover:bg-slate-800 rounded border border-slate-800 text-left cursor-pointer"
-          >
-            <p className="font-bold text-amber-200">Dr. R.K. Sharma</p>
-            <p className="text-[10px] text-slate-400">Senior Faculty</p>
-          </button>
+        <div>
           <button
             type="button"
             onClick={() => setDemoAccount('admin@adhigam.com')}
-            className="p-2 bg-slate-900 hover:bg-slate-800 rounded border border-slate-800 text-left cursor-pointer"
+            className="w-full p-2.5 bg-slate-900 hover:bg-slate-800 rounded-lg border border-slate-800 text-left cursor-pointer transition-colors flex items-center justify-between"
           >
-            <p className="font-bold text-amber-200">System Admin</p>
-            <p className="text-[10px] text-slate-400">Full CMS Control</p>
+            <div>
+              <p className="font-bold text-amber-200">System Admin</p>
+              <p className="text-[10px] text-slate-400">Full CMS & CRM Directorate Control</p>
+            </div>
+            <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-mono">
+              admin@adhigam.com
+            </span>
           </button>
         </div>
       </div>
