@@ -21,6 +21,7 @@ import {
   AdminStats,
 } from './src/types';
 import { RISE_49_TEST_SCHEDULE, INSTITUTE_CONFIG } from './src/data/instituteConfig';
+import { db } from './src/db/storage';
 
 dotenv.config();
 
@@ -117,460 +118,26 @@ if (process.env.GEMINI_API_KEY) {
 }
 
 // -------------------------------------------------------------
-// In-Memory Database & Seed Data
+// Persistent Database (Bluehost-compatible disk persistence)
 // -------------------------------------------------------------
-const dbUsers: User[] = [
-  {
-    id: 'user_admin_1',
-    email: 'admin@adhigamias.com',
-    name: 'Adhigam IAS Academic Directorate',
-    role: 'admin',
-    department: 'Directorate & Academic Lead',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'user_faculty_1',
-    email: 'faculty@adhigamias.com',
-    name: 'Sociology Optional Faculty Team',
-    role: 'instructor',
-    department: 'Sociology Optional & Mains Evaluation',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'user_aspirant_1',
-    email: 'aspirant@adhigam.com',
-    name: 'Sociology Aspirant',
-    role: 'aspirant',
-    phone: '',
-    targetYear: 'UPSC CSE Mains 2027',
-    optionalSubject: 'Sociology',
-    createdAt: new Date().toISOString(),
-  },
-];
+const dbUsers = db.users;
+const dbAnnouncements = db.announcements;
+const dbCourses = db.courses;
+const dbTestSeries = db.testSeries;
+const dbArticles = db.articles;
+const dbQuizzes = db.quizzes;
+const dbQuizAttempts = db.quizAttempts;
+const dbPrompts = db.prompts;
+const dbWritingAttempts = db.writingAttempts;
+const dbEnquiries = db.enquiries;
+const dbBookmarks = db.bookmarks;
+const dbFollows = db.follows;
+const dbFiles = db.files;
 
-// Pre-create initial active sessions for seamless demo testing
-const adminSessionToken = createSession(dbUsers[0]);
-const facultySessionToken = createSession(dbUsers[1]);
-const aspirantSessionToken = createSession(dbUsers[2]);
-
-const dbAnnouncements: Announcement[] = [
-  {
-    id: 'ann_rise_2',
-    title: 'RISE 2.0 Sociology Optional Test Series (UPSC CSE Mains 2027) Admissions Open!',
-    content: 'A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests, 50 Marks/Test, 4 Questions Each. Starts 12 Oct 2026.',
-    badgeText: 'New Launch',
-    type: 'new_batch',
-    link: '/test-series',
-    published: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'ann_early_bird',
-    title: 'Early Bird Offer: Enrol in RISE 2.0 for ₹7,650 (Valid through 9 October 2026)',
-    content: 'Special early bird discount before the programme commences on 12 October 2026. Standard fee ₹8,900. Existing Adhigam students get 25% discount (₹6,675).',
-    badgeText: 'Early Bird',
-    type: 'urgent',
-    link: '/test-series',
-    published: true,
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-];
-
-// Dummy academic offerings removed per user instruction
-const dbCourses: Course[] = [];
-
-// Official RISE 2.0 Sociology Optional Test Series (49 Tests)
-const dbTestSeries: TestSeries[] = [
-  {
-    id: 'ts_rise_2',
-    key: 'rise-2-0-sociology-optional',
-    title: 'RISE 2.0 – Sociology Optional Test Series',
-    subtitle: 'Regular Improvement in Sociology Expression | UPSC Civil Services Mains 2027',
-    type: 'optional',
-    totalTests: 49,
-    featured: true,
-    published: true,
-    fee: '₹8,900',
-    earlyBirdFee: '₹7,650',
-    existingStudentFee: '₹6,675',
-    earlyBirdDeadline: '9 October 2026',
-    startDate: '12 October 2026',
-    endDate: '31 January 2027',
-    mode: 'online',
-    description:
-      'A structured answer-writing programme for UPSC Civil Services Mains 2027. 49 Tests (50 Marks/Test, 4 Questions Each with 10- and 20-mark mix) on Monday, Wednesday, and Friday. Complete Paper I, Paper II, and Final Comprehensive tests with model answers released at 9:00 PM and line-by-line evaluated copies returned within 3 days.',
-    schedule: RISE_49_TEST_SCHEDULE.map((s) => ({
-      testNumber: s.testNumber,
-      title: s.coverage,
-      date: s.date,
-      day: s.day,
-      paper: s.paper,
-      subjectTag: s.section,
-      syllabus: `${s.section} - ${s.coverage}`,
-    })),
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-const dbArticles: Article[] = [
-  {
-    id: 'art_1',
-    slug: 'governor-role-constitutional-discretion-supreme-court-rulings',
-    title: 'The Office of the Governor: Constitutional Discretion & Supreme Court Guidelines',
-    summary: 'A detailed examination of Article 163, Article 200, landmark judgments (S.R. Bommai, Shamsher Singh), and recommendations of Sarkaria & Punchhi Commissions for GS Paper 2.',
-    content: `## Context & Background
-
-The role of the Governor in India's federal structure has frequently surfaced as a focal point of constitutional debates. Recent issues concerning assent to bills, reservation of legislation for the President, and the exercise of discretionary powers under Article 163 have drawn scrutiny from both judicial benches and academic scholars.
-
-### Key Constitutional Provisions
-
-1. **Article 153:** Mandates a Governor for each State.
-2. **Article 163:** Discretionary powers of the Governor, stipulating that except in matters where the Governor is by or under the Constitution required to act in discretion, the Governor acts on the aid and advice of the Council of Ministers with the Chief Minister at the head.
-3. **Article 200:** Assent to Bills passed by the State Legislature (Assent, Withhold, Return for reconsideration, or Reserve for Presidential consideration).
-
-### Landmark Judicial Precedents
-
-- **Shamsher Singh v. State of Punjab (1974):** The Supreme Court held that the Governor must exercise constitutional powers on the aid and advice of ministers, save in exceptional discretionary situations.
-- **S.R. Bommai v. Union of India (1994):** Floor test was declared the sole legitimate test for determining majority confidence of a Ministry.
-- **Nabam Rebia Case (2016):** Reaffirmed that the discretionary power of the Governor under Article 163 is restricted and limited.
-
-### Recommendations of Commissions
-
-- **Sarkaria Commission (1988):** Recommended that Governors should be eminent persons from outside the state, unaffiliated with local politics, and appointed in consultation with the Chief Minister.
-- **Punchhi Commission (2010):** Proposed that Governors should be granted a fixed five-year tenure and removed only through a procedure analogous to impeachment.
-
-### Conclusion & Mains Answer Approach
-
-For GS Paper 2 answers, emphasize that the Governor is a vital constitutional bridge between the Centre and States. Discretionary powers must be exercised to preserve the constitutional fabric rather than impede legislative mandate.`,
-    category: 'editorial',
-    paperTag: 'GS2',
-    syllabusTopics: ['Indian Constitution', 'Federalism & Centre-State Relations', 'Executive & Judiciary'],
-    author: 'Prof. Ananya Roy',
-    published: true,
-    publishedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-    readTime: '6 min read',
-    keyTakeaways: [
-      'Article 163 discretionary powers are subject to judicial review.',
-      'Floor test is the mandatory mechanism for determining legislative majority.',
-      'Sarkaria and Punchhi commission reports provide actionable governance reforms.',
-    ],
-    image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-  },
-  {
-    id: 'art_2',
-    slug: 'india-semiconductor-mission-supply-chain-resilience-gs3',
-    title: 'India Semiconductor Mission: Geopolitics, Supply Chain Resilience & Economic Growth',
-    summary: 'Analyzing the $10 Billion ISM initiative, fab fabrication ecosystems, rare earth mineral diplomacy, and technological self-reliance under GS Paper 3.',
-    content: `## Executive Overview
-
-The semiconductor industry forms the backbone of modern electronics, AI chips, automotive systems, and defense technologies. Under the **India Semiconductor Mission (ISM)**, India aims to build a robust electronics manufacturing ecosystem.
-
-### Key Pillars of ISM
-
-1. **Financial Support:** 50% fiscal support for semiconductor fabs and display fabs across all technology nodes.
-2. **Design-Linked Incentive (DLI) Scheme:** Financial incentives and infrastructure support for domestic IC design startups.
-3. **Talent & R&D:** Partnerships with top IITs, NITs, and international research consortiums.
-
-### Strategic Imperatives for India
-
-- **Reducing Import Vulnerability:** Overcoming reliance on East Asian supply hubs.
-- **Geopolitical Alliances:** Minerals Security Partnership (MSP) and India-US iCET (Initiative on Critical and Emerging Technology).
-- **Challenges:** High capital intensity, ultra-pure water requirements, uninterrupted power grids, and skilled talent retention.
-
-### Way Forward for Mains Answer
-
-Integrate points on domestic manufacturing incentives (PLI), intellectual property development, and public-private partnerships.`,
-    category: 'pib_summary',
-    paperTag: 'GS3',
-    syllabusTopics: ['Indian Economy & Industrial Growth', 'Science & Tech - Domestic Technology', 'Infrastructure'],
-    author: 'Dr. Rajesh Sharma',
-    published: true,
-    publishedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-    readTime: '5 min read',
-    keyTakeaways: [
-      'ISM offers 50% fiscal support for semiconductor fabs.',
-      'Critical supply chain resilience depends on rare earth minerals & MSP alliance.',
-      'Overcoming infrastructure and clean-water bottlenecks is vital.',
-    ],
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  },
-];
-
-const dbQuizzes: Quiz[] = [
-  {
-    id: 'quiz_1',
-    title: 'Daily Prelims Practice Quiz: Indian Polity & Governance',
-    description: 'Test your understanding of Constitutional Bodies, Preamble, and Parliamentary Procedures with 5 high-yield MCQs.',
-    subjectTag: 'Polity',
-    paperTag: 'GS1',
-    timeLimitMinutes: 10,
-    totalMarks: 10,
-    published: true,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    questions: [
-      {
-        id: 'q1_1',
-        questionText: 'Which of the following statements regarding the Election Commission of India (ECI) is/are correct?\n1. The Chief Election Commissioner and Election Commissioners enjoy equal powers.\n2. The Constitution specifies the qualifications of the members of the Election Commission.\nSelect the correct answer using the code given below:',
-        options: ['1 only', '2 only', 'Both 1 and 2', 'Neither 1 nor 2'],
-        correctOptionIndex: 0,
-        explanation: 'Statement 1 is CORRECT: The CEC and Election Commissioners have equal powers and receive equal salary and allowances. Statement 2 is INCORRECT: The Constitution has NOT prescribed the qualifications (legal, educational, administrative, or judicial) of the members of the Election Commission.',
-        subTopic: 'Constitutional Bodies',
-      },
-      {
-        id: 'q1_2',
-        questionText: 'Consider the following statements regarding the "Money Bill" under Article 110:\n1. A Money Bill can be introduced in either House of Parliament.\n2. The decision of the Speaker of Lok Sabha is final on whether a bill is a Money Bill or not.\nWhich of the statements given above is/are correct?',
-        options: ['1 only', '2 only', 'Both 1 and 2', 'Neither 1 nor 2'],
-        correctOptionIndex: 1,
-        explanation: 'Statement 1 is INCORRECT: A Money Bill can be introduced ONLY in the Lok Sabha, and only on the recommendation of the President. Statement 2 is CORRECT: Under Article 110(3), the decision of the Speaker is final.',
-        subTopic: 'Parliamentary Bills',
-      },
-      {
-        id: 'q1_3',
-        questionText: 'The term "Eminent Domain" in constitutional law relates to:',
-        options: [
-          'The power of the Judiciary to declare laws unconstitutional.',
-          'The power of the State to acquire private property for public use with compensation.',
-          'The exclusive power of the Rajya Sabha to create All-India Services.',
-          'The power of the President to grant pardons under Article 72.',
-        ],
-        correctOptionIndex: 1,
-        explanation: 'Eminent Domain refers to the sovereign power of the State to take or acquire private property for public purpose, subject to law and fair compensation principles.',
-        subTopic: 'Fundamental Rights & Property',
-      },
-      {
-        id: 'q1_4',
-        questionText: 'Which Schedule of the Constitution of India contains provisions regarding the disqualification of MPs and MLAs on grounds of Defection?',
-        options: ['7th Schedule', '9th Schedule', '10th Schedule', '11th Schedule'],
-        correctOptionIndex: 2,
-        explanation: 'The 10th Schedule (added by the 52nd Constitutional Amendment Act, 1985) contains provisions regarding anti-defection law.',
-        subTopic: 'Schedules of Constitution',
-      },
-      {
-        id: 'q1_5',
-        questionText: 'Preamble to the Constitution of India is:',
-        options: [
-          'A part of the Constitution but has no legal effect.',
-          'Not a part of the Constitution and has no legal effect.',
-          'A part of the Constitution and has the same legal effect as any other part.',
-          'A part of the Constitution but has no legal effect independently of other parts.',
-        ],
-        correctOptionIndex: 3,
-        explanation: 'As held in Kesavananda Bharati (1973) & LIC of India case (1995), the Preamble is an integral part of the Constitution, but it is non-justiciable and has no legal effect independently of other parts.',
-        subTopic: 'Preamble',
-      },
-    ],
-  },
-];
-
-const dbQuizAttempts: QuizAttempt[] = [
-  {
-    id: 'attempt_1',
-    quizId: 'quiz_1',
-    quizTitle: 'Daily Prelims Practice Quiz: Indian Polity & Governance',
-    aspirantId: 'user_aspirant_1',
-    aspirantName: 'Siddharth Mukherjee',
-    userAnswers: { q1_1: 0, q1_2: 1, q1_3: 1, q1_4: 2, q1_5: 0 },
-    score: 8,
-    totalQuestions: 5,
-    correctCount: 4,
-    incorrectCount: 1,
-    unattemptedCount: 0,
-    timeTakenSeconds: 245,
-    completedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-  },
-];
-
-const dbPrompts: Prompt[] = [
-  {
-    id: 'prompt_1',
-    title: 'Daily Mains Question: Urban Disaster Management & Climate Adaptation (GS-3)',
-    questionText: 'Urban flooding in Indian metro cities has transformed from a seasonal inconvenience into an annual socio-economic disaster. Critically examine the key causes behind urban flood risks in India. Suggest a strategic framework for resilient urban infrastructure in alignment with the Sendai Framework. (250 Words, 15 Marks)',
-    paperTag: 'GS3',
-    wordLimit: 250,
-    maxMarks: 15,
-    syllabusTag: 'Disaster Management & Urbanization Hazards',
-    modelAnswer: `### Model Answer Structure
-
-#### 1. Introduction (30-40 Words)
-- Define urban flooding as the inundation of land in a built environment caused by rainfall exceeding drainage capacity.
-- Mention recent instances (Chennai, Mumbai, Bengaluru, Delhi) highlighting increasing frequency and intensity driven by localized climate events.
-
-#### 2. Key Causes of Urban Flooding in India (100 Words)
-- **Encroachment of Water Bodies:** Destruction of wetlands, lakes, and floodplains due to unregulated real estate construction (e.g., disappearance of wetlands in East Kolkata & Bengaluru lakes).
-- **Inadequate Drainage Infrastructure:** Outdated stormwater drains designed for low-intensity rainfall, clogged with solid municipal waste.
-- **Unplanned Urbanization & Impervious Surfaces:** Over-paving with concrete reducing natural soil infiltration rates below 10%.
-- **Climate Change Impact:** Micro-climate shifts causing short-duration high-intensity rainfall events (cloudbursts).
-- **Governance Deficits:** Fragmented institutional accountability among municipal corporations, urban development authorities, and disaster management cells.
-
-#### 3. Strategic Resilient Framework & Sendai Framework Alignment (90 Words)
-- **Priority 1 (Understanding Risk):** Hydro-meteorological risk mapping, GIS-based flood zonation, and real-time sensor monitoring.
-- **Priority 2 (Strengthening Governance):** Unified Urban Water Management Authorities and strict enforcement of the Model Building Bye-Laws (2016).
-- **Priority 3 (Investing in Resilience - Nature-Based Solutions):**
-  - Implement **Sponge Cities Concept** (permeable pavements, urban forests, rain gardens).
-  - Rejuvenation of urban blue-green infrastructure (Operation Varuna).
-- **Priority 4 (Build Back Better & Early Warning):** Community-level disaster response teams and integrated warning systems (like CFLOWS in Chennai, I-FLOWS in Mumbai).
-
-#### 4. Conclusion (20-30 Words)
-Conclude that urban flood mitigation requires shifting from reactive emergency relief to proactive, climate-smart urban spatial planning, ensuring sustainable SDG-11 (Sustainable Cities) realization.`,
-    evaluationRubric: {
-      introductionWeight: '20% - Clear definition and recent context',
-      bodyArgumentsWeight: '60% - Multi-dimensional causes & Sendai Framework alignment with examples',
-      conclusionWeight: '20% - Forward-looking synthesis with SDG goals',
-    },
-    published: true,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: 'prompt_2',
-    title: 'Mains Ethics Question: Moral Dilemmas in Public Administration (GS-4)',
-    questionText: 'You are an District Collector overseeing a major national highway expansion project. A ancient temple of high local faith lies directly in the planned alignment. Moving the road incurs a ₹200 Crore budget overrun and 2-year delay, while demolishing the temple risks law and order unrest. Analyze the ethical dilemmas involved and outline your course of action. (250 Words, 15 Marks)',
-    paperTag: 'GS4',
-    wordLimit: 250,
-    maxMarks: 15,
-    syllabusTag: 'Ethics & Case Studies in Public Administration',
-    modelAnswer: `### Model Answer Framework
-
-#### Ethical Dilemmas Involved:
-1. Public Interest vs. Religious Sentiment & Community Trust.
-2. Financial Stewardship (Fiduciary Duty) vs. Social Harmony & Law and Order.
-3. Rule of Law & Development Velocity vs. Cultural Heritage Preservation.
-
-#### Course of Action:
-1. Stakeholder Consultation & Translucent Dialogue.
-2. Technical Feasibility & Relocation Engineering (Transposition).
-3. Preventive Peacekeeping & Community Leadership Involvement.`,
-    evaluationRubric: {
-      introductionWeight: '20% - Identification of core ethical dilemmas',
-      bodyArgumentsWeight: '60% - Pragmatic, lawful, and empathetic solution steps',
-      conclusionWeight: '20% - Administrative integrity principles',
-    },
-    published: true,
-    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-  },
-];
-
-const dbWritingAttempts: WritingAttempt[] = [
-  {
-    id: 'writing_attempt_1',
-    promptId: 'prompt_1',
-    promptTitle: 'Daily Mains Question: Urban Disaster Management & Climate Adaptation (GS-3)',
-    paperTag: 'GS3',
-    aspirantId: 'user_aspirant_1',
-    aspirantName: 'Siddharth Mukherjee',
-    aspirantEmail: 'aspirant@adhigam.com',
-    answerText: `Urban flooding has emerged as a severe annual crisis across major Indian metropolitan hubs like Mumbai, Chennai, Bengaluru, and Delhi. The phenomenon is driven by both natural climate events and man-made urban planning vulnerabilities.
-
-Major Causes:
-1. Encroachment of Wetlands: Rapid real estate expansion has filled up natural urban water bodies and lake channels, severing natural drainage pathways.
-2. Inadequate Stormwater Drains: Most municipal drains are century-old, choked with plastic waste, and inadequate for intense downpours.
-3. High Impervious Surface Area: Extensive concreting reduces natural soil percolation, causing 90% of rainwater to run off immediately.
-4. Climate Change: Sudden high-intensity rainfall bursts occurring in short timeframes.
-
-Sendai Framework & Strategic Action Plan:
-- Sponge Cities Framework: Adopt permeable concrete, rain gardens, and floodplains protection to absorb runoff.
-- Integrated Early Warning Systems: Expand radar technology and real-time sensors (like I-FLOWS Mumbai).
-- Urban Lake Rejuvenation: Mandate buffer zones around lakes as per NGT guidelines.
-- Governance Integration: Form unified urban water bodies integrating municipal and disaster relief departments.
-
-Conclusion:
-A shift from emergency disaster relief to eco-centric climate-resilient spatial planning is essential for achieving SDG-11.`,
-    status: 'reviewed',
-    submittedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-    review: {
-      facultyId: 'user_faculty_1',
-      facultyName: 'Prof. Ananya Roy',
-      reviewedAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
-      marksObtained: 9.5,
-      maxMarks: 15,
-      structureFeedback: 'Good intro and systematic subheadings. Your division into causes and Sendai framework alignment is crisp.',
-      contentFeedback: 'Substantiated causes well. Adding specific statistics (e.g. loss of 70% waterbodies in Bengaluru) and mentioning the NDMA urban flooding guidelines would elevate this to a top-tier score.',
-      languageFeedback: 'Lucid articulation with good administrative vocabulary.',
-      overallComments: 'Very commendable attempt! Incorporate maps or flowcharts in the body section for extra visual impact in the exam.',
-      modelComparisonNotes: 'Your points on Sponge Cities align well with the model answer. Review the 4 priorities of Sendai framework explicitly in bullet points.',
-      isAiEvaluated: false,
-    },
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-  },
-];
-
-const dbEnquiries: Enquiry[] = [
-  {
-    id: 'enq_1',
-    referenceId: 'ADHIGAM-Q-7341',
-    name: 'Aarav Singhal',
-    email: 'aarav.singhal@gmail.com',
-    phone: '+91 98112 34567',
-    telegram: '@aarav_ias',
-    category: 'Early Bird Enrolment',
-    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
-    preferredMode: 'online',
-    message: 'I want to enroll under the Early Bird offer (₹7,650) before 9th October. Could you please share the UPI / QR code payment process and confirmation steps?',
-    status: 'new',
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-  },
-  {
-    id: 'enq_2',
-    referenceId: 'ADHIGAM-Q-7342',
-    name: 'Meera Nambiar',
-    email: 'meera.nambiar@yahoo.com',
-    phone: '+91 98450 12345',
-    telegram: '@meera_soc',
-    category: 'Existing Student Discount',
-    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
-    preferredMode: 'online',
-    message: 'I completed the previous edition of RISE. How do I verify my existing student status to avail of the 25% discount fee of ₹6,675?',
-    status: 'contacted',
-    notes: 'Counselor confirmed prior registration ID. Sent verification instructions.',
-    adminReply: 'Verification confirmed! You can complete payment for ₹6,675. Welcome back to RISE 2.0.',
-    repliedAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: 'enq_3',
-    referenceId: 'ADHIGAM-Q-7343',
-    name: 'Devendra Patel',
-    email: 'dev.patel@outlook.com',
-    phone: '+91 99240 88776',
-    telegram: '@dev_aspirant',
-    category: 'Evaluation & Test Routine',
-    courseKeyOrTitle: 'RISE 2.0 – Sociology Optional Test Series',
-    preferredMode: 'online',
-    message: 'If I write my answers on UPSC-format ruled paper, scan and send the PDF by 9:00 PM via Telegram (@adhigamias1), will the evaluated copy be returned with line-by-line comments within 3 days?',
-    status: 'resolved',
-    notes: 'Clarified evaluation routine: Question paper at 6:00 PM, submit single PDF by 9:00 PM, model answer at 9:00 PM, evaluated copy within 3 days.',
-    adminReply: 'Yes, exactly! Submit your single scanned PDF by 9:00 PM on test day (Mon/Wed/Fri) via Telegram or email. Evaluated copy with detailed faculty comments is returned within 3 days.',
-    repliedAt: new Date(Date.now() - 86400000 * 1.5).toISOString(),
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  },
-];
-
-const dbBookmarks: Bookmark[] = [
-  {
-    id: 'bm_1',
-    aspirantId: 'user_aspirant_1',
-    itemType: 'article',
-    itemId: 'art_1',
-    title: 'The Office of the Governor: Constitutional Discretion & Supreme Court Guidelines',
-    metaTag: 'GS2 Polity',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-const dbFollows: Follow[] = [
-  {
-    id: 'fol_1',
-    aspirantId: 'user_aspirant_1',
-    itemType: 'course',
-    itemId: 'course_1',
-    title: 'GS Integrated Foundation Program (Prelims-cum-Mains) 2026',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-const dbFiles: FileRecord[] = [];
+// Pre-create initial active sessions for seamless testing
+if (dbUsers.length > 0) createSession(dbUsers[0]);
+if (dbUsers.length > 1) createSession(dbUsers[1]);
+if (dbUsers.length > 2) createSession(dbUsers[2]);
 
 // -------------------------------------------------------------
 // AUTH ENDPOINTS
@@ -630,6 +197,7 @@ app.post('/api/aspirants/register', (req: Request, res: Response) => {
   };
 
   dbUsers.push(newUser);
+  db.save();
   const token = createSession(newUser);
   res.cookie('aspirant_access_token', token, { httpOnly: true, maxAge: 7 * 86400 * 1000, path: '/' });
   return res.json({
@@ -846,6 +414,7 @@ app.post('/api/enquiries', (req: Request, res: Response) => {
   };
 
   dbEnquiries.unshift(enq);
+  db.save();
   res.json({
     success: true,
     enquiry: enq,
@@ -910,6 +479,7 @@ app.post('/api/contact', (req: Request, res: Response) => {
   };
 
   dbEnquiries.unshift(enq);
+  db.save();
   res.json({
     success: true,
     referenceId,
@@ -1343,6 +913,7 @@ app.post('/api/admin/test-series', requireStaff, (req: Request, res: Response) =
   };
 
   dbTestSeries.unshift(ts);
+  db.save();
   res.json(ts);
 });
 
@@ -1354,12 +925,16 @@ app.put('/api/admin/test-series/:id', requireStaff, (req: Request, res: Response
     ...dbTestSeries[idx],
     ...req.body,
   };
+  db.save();
   res.json(dbTestSeries[idx]);
 });
 
 app.delete('/api/admin/test-series/:id', requireStaff, (req: Request, res: Response) => {
   const idx = dbTestSeries.findIndex((t) => t.id === req.params.id);
-  if (idx !== -1) dbTestSeries.splice(idx, 1);
+  if (idx !== -1) {
+    dbTestSeries.splice(idx, 1);
+    db.save();
+  }
   res.json({ success: true });
 });
 
@@ -1518,6 +1093,7 @@ app.put('/api/enquiries/:id', requireStaff, (req: Request, res: Response) => {
     ...dbEnquiries[idx],
     ...updateData,
   };
+  db.save();
   res.json(dbEnquiries[idx]);
 });
 
@@ -1534,18 +1110,25 @@ app.put('/api/admin/enquiries/:id', requireStaff, (req: Request, res: Response) 
     ...dbEnquiries[idx],
     ...updateData,
   };
+  db.save();
   res.json(dbEnquiries[idx]);
 });
 
 app.delete('/api/enquiries/:id', requireStaff, (req: Request, res: Response) => {
   const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
-  if (idx !== -1) dbEnquiries.splice(idx, 1);
+  if (idx !== -1) {
+    dbEnquiries.splice(idx, 1);
+    db.save();
+  }
   res.json({ success: true });
 });
 
 app.delete('/api/admin/enquiries/:id', requireStaff, (req: Request, res: Response) => {
   const idx = dbEnquiries.findIndex((e) => e.id === req.params.id);
-  if (idx !== -1) dbEnquiries.splice(idx, 1);
+  if (idx !== -1) {
+    dbEnquiries.splice(idx, 1);
+    db.save();
+  }
   res.json({ success: true });
 });
 
@@ -1623,6 +1206,29 @@ app.get('/api/uploads', requireStaff, (req: Request, res: Response) => {
 app.get('/api/files/:path', (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/pdf');
   res.send(`%PDF-1.4 Simulated Adhigam IAS Document for path: ${req.params.path}`);
+});
+
+// -------------------------------------------------------------
+// BLUEHOST DATABASE MANAGEMENT & BACKUP APIS
+// -------------------------------------------------------------
+app.get('/api/admin/db/stats', requireStaff, (req: Request, res: Response) => {
+  res.json(db.getStats());
+});
+
+app.get('/api/admin/db/export', requireStaff, (req: Request, res: Response) => {
+  const backup = db.exportData();
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename="adhigam_db_backup_${Date.now()}.json"`);
+  res.send(JSON.stringify(backup, null, 2));
+});
+
+app.post('/api/admin/db/import', requireAdmin, (req: Request, res: Response) => {
+  try {
+    db.importData(req.body);
+    res.json({ success: true, message: 'Database imported and synchronized successfully to disk.' });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || 'Invalid database structure.' });
+  }
 });
 
 // -------------------------------------------------------------

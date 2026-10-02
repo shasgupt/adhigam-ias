@@ -146,7 +146,7 @@ export interface Prompt {
   id: string;
   title: string;
   questionText: string;
-  paperTag: 'GS1' | 'GS2' | 'GS3' | 'GS4' | 'Essay';
+  paperTag: 'GS1' | 'GS2' | 'GS3' | 'GS4' | 'Essay' | 'Optional';
   wordLimit: number;
   maxMarks: number;
   syllabusTag: string;

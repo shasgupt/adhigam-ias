@@ -166,7 +166,30 @@ Instead of manual ZIP uploads, you can automate deployments using GitHub Actions
 After deployment completes:
 
 1. **Test Home Page**: Open `https://yourdomain.com` in your browser.
-2. **Test Direct Routes**: Refresh the page on `/courses`, `/free-initiatives`, and `/join-us` to ensure Apache `.htaccess` routing works without 404 errors.
-3. **Test Quick Inquiry Modal**: Submit a test inquiry to verify lead capture in local storage and WhatsApp link redirects.
-4. **Test Responsive Design**: Open the site on mobile devices to confirm the header badge, navigation drawer, and course drawers scale fluidly.
-5. **Inspect Console Logs**: Press `F12` -> Console in your browser to verify no missing asset bundle errors occur.
+2. **Test Direct Routes**: Refresh the page on `/test-series` and `/join-us` to ensure Apache `.htaccess` routing works without 404 errors.
+3. **Test Student Query Tracking**: Submit an enquiry on the portal and verify the query reference code (`ADHIGAM-Q-XXXX`) is generated and retrievable via `/api/enquiries/track`.
+4. **Test Faculty CMS Dashboard**: Sign in at `/admin/login` (`admin@adhigamias.com`) and verify test series CRUD operations and inquiries CRM.
+5. **Test Responsive Design**: Open the site on mobile devices to confirm the header badge, navigation drawer, and test series explorer scale fluidly.
+6. **Inspect Console Logs**: Press `F12` -> Console in your browser to verify no missing asset bundle errors occur.
+
+---
+
+## Step 8: Database & Data Persistence on Bluehost
+
+The Adhigam IAS platform includes a **built-in zero-cost persistent database engine** tailored specifically for Bluehost hosting:
+
+### How It Works:
+- **Persistent Disk Storage**: The server automatically writes and synchronizes all student inquiries, user registrations, test series packages (CRUD), and answer script submissions to `data/adhigam_db.json` on your Bluehost server disk.
+- **Process & Restart Resilience**: When your Node.js application recycles or restarts on Bluehost (via Phusion Passenger or PM2), **zero data is lost**. The server immediately reloads all saved records from `data/adhigam_db.json`.
+- **Zero Cloud Costs**: Requires no external database accounts, no third-party API keys, and no monthly cloud subscriptions.
+
+### Bluehost Folder Permissions Setup:
+1. In Bluehost cPanel -> **File Manager**, verify that the `data/` folder exists in your application root (e.g. `/public_html/data/` or `/home/username/data/`).
+2. Ensure permissions on the `data/` folder are set to **`755`** (Read, Write, Execute for Owner).
+3. The server will automatically create `adhigam_db.json` with initial seeds if it does not already exist.
+
+### 1-Click Database Backups from the CMS:
+1. Log in to the Faculty CMS at `/faculty/cms` or `/admin/login`.
+2. Go to the **Settings & Guide** tab.
+3. Click **"Download Backup (.json)"** to download a complete timestamped snapshot of all student inquiries, test series configurations, and user accounts.
+4. To restore on another server, click **"Restore Backup"** and select any backup `.json` file.
